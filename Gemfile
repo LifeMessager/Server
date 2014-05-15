@@ -1,10 +1,8 @@
-source 'https://rubygems.org'
+source 'http://ruby.taobao.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.0'
-# Use postgresql as the database for Active Record
-gem 'pg'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.3'
 # Use Uglifier as compressor for JavaScript assets
@@ -23,8 +21,36 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
-# Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-gem 'spring',        group: :development
+# postmark RoR SDK
+gem 'postmark-rails', '~> 0.7.0'
+# 支持 CORS
+gem 'rack-cors', :require => 'rack/cors'
+# 模型字段值枚举
+gem 'enumerize'
+# 用来分页
+gem 'kaminari'
+
+group :production do
+  # Use postgresql as the database for Active Record
+  gem 'pg'
+end
+
+group :development, :test do
+  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  gem 'spring'
+  # 测试框架
+  gem 'rspec-rails'
+  # 加速测试
+  gem 'spork-rails'
+
+  # 自动重启服务
+  gem 'guard-rails'
+  # 自动测试
+  gem 'guard-rspec'
+
+  # 用来给模型声明数据库结构的工具
+  gem 'annotate', ">=2.6.0"
+end
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

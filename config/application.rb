@@ -34,5 +34,10 @@ module Backend
       generators.view_specs false
       generators.helper_specs false
     end
+
+    config.action_mailer do |action_mailer|
+      action_mailer.delivery_method = :postmark
+      action_mailer.postmark_settings = { :api_key => ENV['POSTMARK_KEY'] }
+    end
   end
 end
