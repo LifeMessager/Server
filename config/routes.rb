@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  post 'mail/receivers'
+
   resources :users
 
   # The priority is based upon order of creation: first created -> highest priority.
