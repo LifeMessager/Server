@@ -1,4 +1,4 @@
-source 'http://ruby.taobao.org'
+source 'https://ruby.taobao.org/'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -21,8 +21,9 @@ gem 'jbuilder', '~> 2.0'
 # bundle exec rake doc:rails generates the API under doc/api.
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
-# postmark RoR SDK
-gem 'postmark-rails', '~> 0.7.0'
+gem 'haml'
+# Mailgun RoR adapter
+gem 'mailgun_rails'
 # 支持 CORS
 gem 'rack-cors', :require => 'rack/cors'
 # 模型字段值枚举

@@ -26,6 +26,7 @@ module Backend
     # The default locale is :en and all translations from config/locales/*.rb,yml are auto loaded.
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
+
     # http://stackoverflow.com/questions/4235264/how-can-i-make-sure-rails-doesnt-generate-spec-tests-for-views-and-helpers
     config.generators do |generators|
       generators.assets false
@@ -35,9 +36,11 @@ module Backend
       generators.helper_specs false
     end
 
-    config.action_mailer do |action_mailer|
-      action_mailer.delivery_method = :postmark
-      action_mailer.postmark_settings = { :api_key => ENV['POSTMARK_KEY'] }
-    end
+    config.action_mailer.preview_path = "#{Rails.root}/app/mailer_previews"
+    config.action_mailer.delivery_method = :mailgun
+    config.action_mailer.mailgun_settings = {
+      api_key: ENV['MAILGUN_API_KEY'],
+      domain:  ENV['MAILGUN_DOMAIN']
+    }
   end
 end
