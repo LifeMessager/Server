@@ -18,4 +18,8 @@ class Diary < ActiveRecord::Base
   validates :user_id   , presence: true
 
   belongs_to :user
+
+  def create_date(time_zone = Time.zone.now.zone)
+    created_at.in_time_zone(time_zone).to_date
+  end
 end
