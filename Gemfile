@@ -50,7 +50,7 @@ group :development, :test do
   gem 'guard-rspec'
 
   # 用来给模型声明数据库结构的工具
-  gem 'annotate', ">=2.6.0"
+  gem 'guard-annotate'
 end
 
 # Use ActiveModel has_secure_password
