@@ -3,10 +3,10 @@ class UsersController < ApplicationController
     user = User.new params_for_create
     if user.save
       UserMailer.welcome(user).deliver
-      respond user, status: 201
+      respond user, status: :created
     else
       data = { errors: user.errors, message: 'Register failed' }
-      respond data, status: 422
+      respond data, status: :unprocessable_entity
     end
   end
 

@@ -3,11 +3,11 @@ class MailController < ApplicationController
     user = User.find_by_email params["sender"]
     diary = user.diaries.build from_email: params['sender'], content: params['stripped-text']
     if diary.save
-      respond nil, status: 201
+      respond nil, status: :created
     else
       puts 'diary save error'
       puts diary.errors
-      respond nil, status: 500
+      respond nil, status: :internal_server_error
     end
   end
 end

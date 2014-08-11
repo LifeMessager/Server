@@ -1,7 +1,7 @@
 class DiariesController < ApplicationController
   def index
     diaries = User.find_by_id(params[:user_id]).diaries
-    respond orginaze_diaries(diaries), status: 200
+    respond orginaze_diaries(diaries), status: :ok
   end
 
   private
