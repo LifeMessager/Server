@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   def create
     user = User.new params_for_create
     if user.save
-      UserMailer.welcome(user).deliver
+      DiaryMailer.welcome(user).deliver
       respond user, status: :created
     else
       data = { errors: user.errors, message: 'Register failed' }

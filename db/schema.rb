@@ -11,15 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140810094723) do
+ActiveRecord::Schema.define(version: 20140811151059) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "diaries", force: true do |t|
-    t.string   "from_email", null: false
-    t.text     "content",    null: false
-    t.integer  "user_id",    null: false
+    t.string   "from_email",     null: false
+    t.text     "content",        null: false
+    t.integer  "user_id",        null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.date     "note_date",      null: false
+    t.string   "sender_address", null: false
+  end
+
+  create_table "mail_senders", force: true do |t|
+    t.string   "address",    null: false
+    t.string   "receiver",   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

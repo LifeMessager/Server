@@ -7,8 +7,8 @@ class DiariesController < ApplicationController
   private
 
   def orginaze_diaries(diaries)
-    diaries.group_by(&:create_date).map do |create_date, grouped_diaries|
-      {create_date: create_date, diaries: grouped_diaries}
+    diaries.group_by(&:note_date).map do |note_date, grouped_diaries|
+      {note_date: note_date, diaries: grouped_diaries}
     end
   end
 end

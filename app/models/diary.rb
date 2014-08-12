@@ -2,12 +2,14 @@
 #
 # Table name: diaries
 #
-#  id         :integer          not null, primary key
-#  from_email :string(255)      not null
-#  content    :text             not null
-#  user_id    :integer          not null
-#  created_at :datetime
-#  updated_at :datetime
+#  id             :integer          not null, primary key
+#  from_email     :string(255)      not null
+#  content        :text             not null
+#  user_id        :integer          not null
+#  created_at     :datetime
+#  updated_at     :datetime
+#  note_date      :date             not null
+#  sender_address :string(255)      not null
 #
 
 class Diary < ActiveRecord::Base
@@ -18,8 +20,4 @@ class Diary < ActiveRecord::Base
   validates :user_id   , presence: true
 
   belongs_to :user
-
-  def create_date(time_zone = Time.zone.now.zone)
-    created_at.in_time_zone(time_zone).to_date
-  end
 end
