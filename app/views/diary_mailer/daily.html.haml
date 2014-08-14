@@ -1,0 +1,7 @@
+
+- @diaries.each do |diary|
+  %section= diary.content
+
+- if @diaries.empty?
+  %section= t 'mail.daily.empty_diary_content'
+

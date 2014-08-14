@@ -1,6 +1,5 @@
 source 'https://ruby.taobao.org/'
 
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.0'
 # Use SCSS for stylesheets
@@ -30,11 +29,12 @@ gem 'rack-cors', :require => 'rack/cors'
 gem 'enumerize'
 # 用来分页
 gem 'kaminari'
-
-group :production do
-  # Use postgresql as the database for Active Record
-  gem 'pg'
-end
+# 定时任务
+gem 'whenever', require: false
+# postgreSQL 驱动
+gem 'pg'
+# 国际化辅助
+gem 'rails-i18n'
 
 group :development, :test do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring

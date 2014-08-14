@@ -42,5 +42,9 @@ module Backend
       api_key: ENV['MAILGUN_API_KEY'],
       domain:  ENV['MAILGUN_DOMAIN']
     }
+
+    config.i18n.default_locale = 'zh-CN'
+    config.i18n.available_locales = ['zh-CN', 'zh-TW', :en, 'en-US']
+    I18n.load_path += Dir[Rails.root.join('config', 'locale', '*.{yml|rb}').to_s]
   end
 end

@@ -1,0 +1,14 @@
+
+zh-CN:
+  mail:
+    welcome:
+      title: '感谢使用日记服务'
+      content: '非常感谢您的注册，回复这封邮件开始记录您的第一篇日记吧~'
+    daily:
+      title: '今天是 %{date} ，和我说说发生了什么有趣的事？'
+      empty_diary_content: '您还没有任何日记，回复这封邮件开始记录您的第一篇日记吧~'
+
+  time:
+    formats:
+      mail_title: '%Y年%b%d日 %A'
+
