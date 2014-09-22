@@ -1,7 +1,6 @@
 
-- @diaries.each do |diary|
-  %section= diary.content
+- @diary_notes.each do |note|
+  %section= note.content
 
-- if @diaries.empty?
+- if @diary_notes.empty?
   %section= t 'mail.daily.empty_diary_content'
-

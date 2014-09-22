@@ -1,9 +1,27 @@
 # A sample Guardfile
 # More info at https://github.com/guard/guard#readme
 
+require 'guard/plugin'
+
+module ::Guard
+  class Whenever < ::Guard::Plugin
+    def run_all
+      `bundle exec whenever --update-crontab`
+    end
+
+    def run_on_changes
+      `bundle exec whenever --update-crontab`
+    end
+  end
+end
+
 guard :rails do
   watch('Gemfile.lock')
-  watch(%r{^(config|app|lib)/.*})
+  watch(%r{^(app|lib)/.*|^config/(?!schedule).*})
+end
+
+guard :whenever do
+  watch('config/schedule.rb')
 end
 
 guard 'annotate' do
@@ -38,4 +56,3 @@ end
 #   watch(%r{^spec/acceptance/(.+)\.feature$})
 #   watch(%r{^spec/acceptance/steps/(.+)_steps\.rb$})   { |m| Dir[File.join("**/#{m[1]}.feature")][0] || 'spec/acceptance' }
 # end
-
