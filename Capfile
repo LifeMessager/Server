@@ -24,6 +24,7 @@ require 'capistrano/unicorn_nginx'
 require 'capistrano/safe_deploy_to'
 require 'capistrano/postgresql'
 require 'capistrano/rbenv_install'
+require "whenever/capistrano"
 
 # Loads custom tasks from `lib/capistrano/tasks' if you have any defined.
 Dir.glob('lib/capistrano/tasks/*.cap').each { |r| import r }

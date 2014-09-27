@@ -42,6 +42,8 @@ set :nginx_error_log_file, "/var/log/nginx/#{fetch(:application)}_error.log" # D
 # set :pg_user, # Default is whatever is set for `pg_database` option
 # set :pg_password, ENV["PG_PASSWORD"] # Default generate a new random password each time create a new database
 
+# setup whenever
+set :whenever_identifier, ->{ "#{fetch :application}_#{fetch :stage}" }
 
 
 # Default branch is :master
