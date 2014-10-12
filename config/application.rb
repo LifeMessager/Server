@@ -46,5 +46,10 @@ module Backend
     config.i18n.default_locale = 'zh-CN'
     config.i18n.available_locales = ['zh-CN', 'zh-TW', :en, 'en-US']
     I18n.load_path += Dir[Rails.root.join('config', 'locale', '*.{yml|rb}').to_s]
+
+    config.mailer_info = {
+      domain: 'lifemessager.com',
+      nikename: 'LifeMessager'
+    }
   end
 end
