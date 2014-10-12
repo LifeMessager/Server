@@ -5,7 +5,7 @@ class DiaryMailer < ActionMailer::Base
   end
 
   def daily(user)
-    @diary_notes = user.random_diary or []
+    @diary_notes = (user.random_diary or [])
     @user = user
     (ms = MailSender.new receiver: user.email).save
     mail(
