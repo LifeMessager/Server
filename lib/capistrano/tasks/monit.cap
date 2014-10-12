@@ -1,0 +1,45 @@
+require 'erb'
+
+def template(template_name)
+  config_file = "#{fetch(:templates_path)}/#{template_name}"
+  StringIO.new ERB.new(File.read(config_file)).result(binding)
+end
+
+def file_exists?(path)
+  test "[ -e #{path} ]"
+end
+
+def monit_conf
+  "/etc/monit.d/#{fetch(:application)}"
+end
+
+def shared_config
+  shared_path.join 'config/monit.conf'
+end
+
+namespace :load do
+  task :defaults do
+    set :templates_path, 'config/deploy/templates'
+  end
+end
+
+namespace :monit do
+  task :setup_config_file do
+    on roles :app do
+      execute :rm, '-f', shared_config if file_exists? shared_config
+      upload! template('monit.erb'), shared_config
+      sudo :ln, '-fs', shared_config, monit_conf
+    end
+  end
+
+  task :reload do
+    on roles :app do
+      sudo :monit, "reload"
+    end
+  end
+end
+
+namespace :deploy do
+  before :publishing, 'monit:setup_config_file'
+  after :publishing, 'monit:reload'
+end

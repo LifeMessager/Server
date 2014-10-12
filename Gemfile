@@ -1,7 +1,8 @@
+# coding: utf-8
 source 'https://ruby.taobao.org/'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.1.0'
+gem 'rails', '4.1.5'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.3'
 # Use Uglifier as compressor for JavaScript assets
@@ -38,7 +39,7 @@ gem 'rails-i18n'
 
 group :development, :test do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'spring'
+  # gem 'spring'
   # 测试框架
   gem 'rspec-rails'
   # 加速测试
@@ -57,11 +58,27 @@ end
 # gem 'bcrypt', '~> 3.1.7'
 
 # Use unicorn as the app server
-# gem 'unicorn'
+gem 'unicorn'
 
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
+gem 'capistrano', '~> 3.1.0'
+# Rails specific capistrano functions
+gem 'capistrano-rails', '~> 1.1.0'
+# Integrate bundler with capistrano
+gem 'capistrano-bundler'
+# Integrate rbenv with capistrano
+gem 'capistrano-rbenv', '~> 2.0'
+# Deployment should never fail because of forgot to create a deployment directory
+gem 'capistrano-safe-deploy-to', '~> 1.1.1'
+# Automatic install specificed ruby
+gem 'capistrano-rbenv-install'
+group :development do
+  # Automatic and sensible unicorn + nginx configuraion.
+  gem 'capistrano-unicorn-nginx', '~> 2.0'
+  # Abstracts and speeds up common administration tasks for PostgreSQL
+  gem 'capistrano-postgresql', '~> 3.0'
+end
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
-

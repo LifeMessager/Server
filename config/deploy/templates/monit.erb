@@ -1,0 +1,4 @@
+check process <%= fetch(:application) %> with pidfile <%= fetch(:unicorn_pid) %>
+  start program = "/etc/init.d/<%= fetch(:unicorn_service) %> start" with timeout 60 seconds
+  restart program = "/etc/init.d/<%= fetch(:unicorn_service) %> restart" with timeout 60 seconds
+  stop program  = "/etc/init.d/<%= fetch(:unicorn_service) %> stop"
