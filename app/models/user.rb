@@ -15,11 +15,11 @@ class User < ActiveRecord::Base
 
   before_save { self.email = self.email.downcase }
 
-  has_many :diaries
+  has_many :mail_receivers
+  has_many :notes, through: :mail_receivers
 
   def random_diary
-    return if self.diaries.length == 0
-    random_note_date = self.diaries.map(&:note_date).uniq.sample
-    self.diaries.where note_date: random_note_date
+    return if notes.empty?
+    mail_receivers.sample.notes
   end
 end

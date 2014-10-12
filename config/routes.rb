@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
-  post 'mail/receivers'
+  post 'mails/receivers'
 
   resources :users, only: [:create] do
-    resources :diaries, only: [:index]
+    resources :notes, only: [:index]
   end
 
   # The priority is based upon order of creation: first created -> highest priority.

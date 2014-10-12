@@ -34,7 +34,7 @@ gem 'enumerize'
 gem 'kaminari'
 # 定时任务
 gem 'whenever', require: false
-# postgreSQL 驱动
+# PostgreSQL 驱动
 gem 'pg'
 # 国际化辅助
 gem 'rails-i18n'
@@ -42,18 +42,25 @@ gem 'rails-i18n'
 group :development, :test do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   # gem 'spring'
+  # 自动重启服务
+  gem 'guard-rails'
+  # 用来给模型声明数据库结构的工具
+  gem 'guard-annotate'
+
   # 测试框架
   gem 'rspec-rails'
   # 加速测试
   gem 'spork-rails'
-
-  # 自动重启服务
-  gem 'guard-rails'
+  # 测试数据预构件
+  gem 'factory_girl_rails'
   # 自动测试
   gem 'guard-rspec'
-
-  # 用来给模型声明数据库结构的工具
-  gem 'guard-annotate'
+  # 邮件测试的常用匹配器
+  # https://github.com/bmabey/email-spec/
+  gem 'email_spec'
+  # 常用的 mock 数据生成
+  # https://github.com/stympy/faker
+  gem 'ffaker'
 end
 
 # Use ActiveModel has_secure_password

@@ -1,21 +1,22 @@
 # == Schema Information
 #
-# Table name: mail_senders
+# Table name: mail_receivers
 #
 #  id         :integer          not null, primary key
 #  address    :string(255)      not null
-#  receiver   :string(255)      not null
 #  created_at :datetime
 #  updated_at :datetime
+#  user_id    :integer          not null
 #
 
 require 'securerandom'
 
-class MailSender < ActiveRecord::Base
-  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
+class MailReceiver < ActiveRecord::Base
+  validates :address, presence: true
+  validates :user   , presence: true
 
-  validates :address , presence: true
-  validates :receiver, presence: true, format: { with: VALID_EMAIL_REGEX }
+  belongs_to :user
+  has_many :notes
 
   after_initialize do
     self.address ||= "post+#{SecureRandom.hex}"

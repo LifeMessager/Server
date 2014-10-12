@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe UsersController do
+describe UsersController, type: :controller do
   describe '#create' do
-    it 'should work' do
+    it 'return the created user' do
       post :create, email: 'test@test.com'
-      response.should be_success
-      respond_json['email'].should eq 'test@test.com'
+      expect(response).to have_http_status :created
+      expect(respond_json['email']).to eq 'test@test.com'
     end
   end
 end

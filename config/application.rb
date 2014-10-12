@@ -49,7 +49,8 @@ module Backend
 
     config.mailer_info = {
       domain: 'lifemessager.com',
-      nikename: 'LifeMessager'
+      nickname: 'LifeMessager',
+      deliverer: 'alfred'
     }
   end
 end
