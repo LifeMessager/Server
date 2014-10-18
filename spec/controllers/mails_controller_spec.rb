@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe MailsController, type: :controller do
-  describe "POST /receivers" do
+  describe "POST /notes" do
     before do
       @mail_receiver = create :mail_receiver
       @mail_data = {
@@ -13,7 +13,7 @@ describe MailsController, type: :controller do
     end
 
     it 'create a new note and returns http status `created`' do
-      post 'receivers', @mail_data
+      post 'notes', @mail_data
       expect(response).to have_http_status :created
       expect(@mail_receiver.notes.length).to eq 1
     end

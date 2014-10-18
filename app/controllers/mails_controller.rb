@@ -1,5 +1,5 @@
 class MailsController < ApplicationController
-  def receivers
+  def notes
     mail_receiver = MailReceiver.find_by_address get_receiver_address params['recipient']
 
     note = mail_receiver.notes.build(

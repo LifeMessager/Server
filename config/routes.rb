@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  post 'mails/receivers'
+  post 'mails/notes'
 
   resources :users, only: [:create] do
     resources :notes, only: [:index]
