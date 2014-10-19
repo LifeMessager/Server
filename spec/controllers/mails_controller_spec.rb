@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 describe MailsController, type: :controller do
   describe "POST /notes" do

@@ -10,7 +10,7 @@
 #  mail_receiver_id :integer          not null
 #
 
-require 'spec_helper'
+require 'rails_helper'
 
 describe Note do
   before do
