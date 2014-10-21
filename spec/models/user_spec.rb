@@ -2,10 +2,12 @@
 #
 # Table name: users
 #
-#  id         :integer          not null, primary key
-#  email      :string(255)      not null
-#  created_at :datetime
-#  updated_at :datetime
+#  id                :integer          not null, primary key
+#  email             :string(255)      not null
+#  created_at        :datetime
+#  updated_at        :datetime
+#  subscribed        :boolean          default(TRUE)
+#  unsubscribe_token :string(255)      not null
 #
 
 require 'rails_helper'
@@ -21,11 +23,18 @@ describe User do
 
   it { is_expected.to respond_to :mail_receivers }
 
+  it { is_expected.to respond_to :unsubscribe_token }
+
+  it 'subscribe email and generate unsubscribe token by default' do
+    expect(@user.subscribed).to be true
+    expect(@user.unsubscribe_token).not_to be_nil
+  end
+
   it 'work fine with valid email address' do
     valid_addresses = %w[user@foo.COM A_US-ER@f.b.org frst.lst@foo.jp a+b@baz.cn]
     valid_addresses.each do |valid_address|
       @user.email = valid_address
-      expect(@user.save).to be_truthy
+      expect(@user.save).to be true
     end
   end
 
@@ -82,6 +91,53 @@ describe User do
         @user.save
         expect(@user.random_diary).to be_nil
       end
+    end
+  end
+
+  describe '#subscribed' do
+    it 'is readonly' do
+      expect { @user.subscribed = false }.to raise_error NoMethodError
+    end
+  end
+
+  describe '#unsubscribe_token' do
+    it 'is readonly' do
+      expect { @user.unsubscribe_token = 'some thing' }.to raise_error NoMethodError
+    end
+  end
+
+  describe '#subscribe' do
+    context 'when user subscribed email' do
+      it 'do nothing' do
+        user = build :user
+        unsubscribe_token = user.unsubscribe_token
+        user.subscribe
+        expect(user.unsubscribe_token).to eq unsubscribe_token
+      end
+    end
+
+    context 'when user unsubscribed email' do
+      it 'subscribe email and update unsubscribe token' do
+        user = build :user
+        unsubscribe_token = user.unsubscribe_token
+        user.unsubscribe token: unsubscribe_token
+        user.subscribe
+        expect(user.unsubscribe_token).not_to eq unsubscribe_token
+      end
+    end
+  end
+
+  describe '#unsubscribe' do
+    it 'unsubscribe email' do
+      user = build :user
+      expect(user.unsubscribe token: user.unsubscribe_token).to be true
+      expect(user.subscribed).to be false
+    end
+
+    it 'need valid token' do
+      user = build :user
+      expect(user.unsubscribe).to be false
+      expect(user.unsubscribe token: 'invalid token').to be false
     end
   end
 end

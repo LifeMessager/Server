@@ -3,6 +3,11 @@ Rails.application.routes.draw do
 
   resources :users, only: [:create] do
     resources :notes, only: [:index]
+
+    scope on: :member do
+      put 'subscription', to: :subscribe
+      delete 'subscription', to: :unsubscribe
+    end
   end
 
   # The priority is based upon order of creation: first created -> highest priority.
