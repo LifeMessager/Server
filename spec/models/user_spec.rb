@@ -60,6 +60,17 @@ describe User do
     expect(@user.email).to eq @user.email.downcase
   end
 
+  it 'generate a path to unsubscribe for mail' do
+    @user.save
+    unsubscribe_path = Rails.application.routes.url_helpers.user_subscription_path(
+      token: "unsubscribe #{@user.unsubscribe_token}",
+      _method: :delete,
+      user_id: @user.id,
+      action: :unsubscribe
+    )
+    expect(@user.unsubscribe_path).to eq unsubscribe_path
+  end
+
   describe '#random_diary' do
     context 'when there are several notes' do
       it 'return a random diary' do

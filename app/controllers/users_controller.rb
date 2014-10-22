@@ -43,7 +43,12 @@ class UsersController < ApplicationController
   end
 
   def unsubscribe_token
-    authorization = request.authorization
-    authorization.gsub(/^unsubscribe /, '') if authorization
+    if authorization = request.authorization
+      token = authorization
+    elsif params[:_method] && params[:_method].downcase == 'delete'
+      token = params[:token]
+    end
+
+    token.gsub(/^unsubscribe /, '') if token
   end
 end

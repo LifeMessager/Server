@@ -39,5 +39,10 @@ describe UsersController, type: :controller do
         expect(@user.subscribed).to be true
       end
     end
+
+    it 'support unsubscribe from mail link' do
+      get :unsubscribe, user_id: @user.id, _method: 'delete', token: "unsubscribe #{@user.unsubscribe_token}"
+      expect(response).to have_http_status :no_content
+    end
   end
 end

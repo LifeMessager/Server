@@ -34,6 +34,17 @@ class User < ActiveRecord::Base
     mail_receivers.sample.notes
   end
 
+  # http://api.rubyonrails.org/classes/ActionDispatch/Routing/UrlFor.html
+  # http://stackoverflow.com/questions/341143/can-rails-routing-helpers-i-e-mymodel-pathmodel-be-used-in-models
+  def unsubscribe_path
+    Rails.application.routes.url_helpers.user_subscription_path(
+      _method: :delete,
+      token: "unsubscribe #{unsubscribe_token}",
+      user_id: id,
+      action: :unsubscribe
+    )
+  end
+
   def subscribe
     return if subscribed
     self.subscribed = true
