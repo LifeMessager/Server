@@ -49,6 +49,8 @@ group :development, :test do
 
   # 测试框架
   gem 'rspec-rails'
+  # 扩展 rspec ，增加 2.x 版本中的 its 方法
+  gem 'rspec-its'
   # 加速测试
   gem 'spork-rails'
   # 测试数据预构件

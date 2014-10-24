@@ -18,19 +18,17 @@ describe User do
   subject { @user }
 
   it { is_expected.to respond_to :email }
+  its(:email) { is_expected.not_to be_nil }
 
   it { is_expected.to respond_to :notes }
 
   it { is_expected.to respond_to :mail_receivers }
 
   it { is_expected.to have_readonly_attribute :subscribed }
+  its(:subscribed) { is_expected.to be true }
 
   it { is_expected.to have_readonly_attribute :unsubscribe_token }
-
-  it 'subscribe email and generate unsubscribe token by default' do
-    expect(@user.subscribed).to be true
-    expect(@user.unsubscribe_token).not_to be_nil
-  end
+  its(:unsubscribe_token) { is_expected.not_to be_nil }
 
   it 'work fine with valid email address' do
     valid_addresses = %w[user@foo.COM A_US-ER@f.b.org frst.lst@foo.jp a+b@baz.cn]
