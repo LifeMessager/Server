@@ -23,7 +23,9 @@ describe User do
 
   it { is_expected.to respond_to :mail_receivers }
 
-  it { is_expected.to respond_to :unsubscribe_token }
+  it { is_expected.to have_readonly_attribute :subscribed }
+
+  it { is_expected.to have_readonly_attribute :unsubscribe_token }
 
   it 'subscribe email and generate unsubscribe token by default' do
     expect(@user.subscribed).to be true
@@ -102,18 +104,6 @@ describe User do
         @user.save
         expect(@user.random_diary).to be_nil
       end
-    end
-  end
-
-  describe '#subscribed' do
-    it 'is readonly' do
-      expect { @user.subscribed = false }.to raise_error NoMethodError
-    end
-  end
-
-  describe '#unsubscribe_token' do
-    it 'is readonly' do
-      expect { @user.unsubscribe_token = 'some thing' }.to raise_error NoMethodError
     end
   end
 
