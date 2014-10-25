@@ -38,6 +38,8 @@ gem 'whenever', require: false
 gem 'pg'
 # 国际化辅助
 gem 'rails-i18n'
+# 身份验证
+gem 'jwt'
 
 group :development, :test do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring

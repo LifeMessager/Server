@@ -1,3 +1,4 @@
+# coding: utf-8
 require File.expand_path('../boot', __FILE__)
 
 # Pick the frameworks you want:
@@ -8,6 +9,8 @@ require "action_mailer/railtie"
 # require "action_view/railtie"
 require "sprockets/railtie"
 require "rails/test_unit/railtie"
+
+require 'securerandom'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -52,5 +55,9 @@ module Backend
       nickname: 'LifeMessager',
       deliverer: 'alfred'
     }
+
+    # 每次重启都重置 jwt_secret ，反正 jwt 的过期时间非常短，所以即使在用户
+    # 得到 jwt 后重置了这个东西也不会产生太大的影响
+    config.jwt_secret = SecureRandom.hex 256
   end
 end
