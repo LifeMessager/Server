@@ -13,6 +13,10 @@ class Token
     @id = args[:id] || JWT.encode(data, args[:secret] || secret)
   end
 
+  def login_url
+    "http://#{mailer_info[:domain]}/login?token=#{id}"
+  end
+
   def self.decode id, **args
     begin
       info = JWT.decode(id, args[:secret] || secret).first
@@ -33,5 +37,9 @@ class Token
 
   def secret
     Token.secret
+  end
+
+  def mailer_info
+    Rails.application.config.mailer_info
   end
 end

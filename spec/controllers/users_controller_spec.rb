@@ -3,6 +3,9 @@ require 'rails_helper'
 describe UsersController, type: :controller do
   describe '#create' do
     it 'return the created user' do
+      expect(UserMailer).to receive(:welcome).and_call_original do |user|
+        expect(user.email).to eq 'test@test.com'
+      end
       post :create, email: 'test@test.com'
       expect(response).to have_http_status :created
       expect(respond_json['email']).to eq 'test@test.com'
@@ -10,8 +13,15 @@ describe UsersController, type: :controller do
   end
 
   describe '#subscribe' do
+    it 'need authentication' do
+      user = create :user, subscribed: false
+      put :subscribe, user_id: user.id
+      expect(response).to have_http_status :unauthorized
+    end
+
     it 'subscribe mail for user' do
       user = create :user, subscribed: false
+      login user
       put :subscribe, user_id: user.id
       expect(response).to have_http_status :created
       user.reload
@@ -43,6 +53,18 @@ describe UsersController, type: :controller do
     it 'support unsubscribe from mail link' do
       get :unsubscribe, user_id: @user.id, _method: 'delete', token: "unsubscribe #{@user.unsubscribe_token}"
       expect(response).to have_http_status :no_content
+    end
+  end
+
+  describe '#send_login_mail' do
+    before(:all) { @user = create :user }
+
+    it 'send a mail contain valid token' do
+      expect(UserMailer).to receive(:login).and_call_original do |user|
+        expect(user.email).to eq @user.email
+      end
+      post :send_login_mail, email: @user.email
+      expect(response).to have_http_status :created
     end
   end
 end

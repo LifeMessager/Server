@@ -1,4 +1,6 @@
 class MailsController < ApplicationController
+  skip_before_action :verify_token
+
   def notes
     mail_receiver = MailReceiver.find_by_address get_receiver_address params['recipient']
 

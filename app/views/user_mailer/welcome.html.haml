@@ -1,0 +1,7 @@
+
+%section= t 'user_mailer.welcome.welcome'
+
+%section= t 'user_mailer.welcome.click_link'
+
+%section
+  %a{href: @token.login_url}= @token.login_url

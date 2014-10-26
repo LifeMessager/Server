@@ -53,15 +53,18 @@ group :development, :test do
   gem 'rspec-rails'
   # 扩展 rspec ，增加 2.x 版本中的 its 方法
   gem 'rspec-its'
+  # expect().to receive
+  gem 'rspec-mocks'
+  # 邮件测试的常用匹配器
+  # https://github.com/bmabey/email-spec/
+  gem 'email_spec'
+
   # 加速测试
   gem 'spork-rails'
   # 测试数据预构件
   gem 'factory_girl_rails'
   # 自动测试
   gem 'guard-rspec'
-  # 邮件测试的常用匹配器
-  # https://github.com/bmabey/email-spec/
-  gem 'email_spec'
   # 常用的 mock 数据生成
   # https://github.com/stympy/faker
   gem 'ffaker'

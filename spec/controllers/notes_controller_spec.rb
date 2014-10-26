@@ -8,7 +8,13 @@ describe NotesController, type: :controller do
   end
 
   describe '#index' do
+    it 'need authentication' do
+      get :index, user_id: @user
+      expect(response).to have_http_status :unauthorized
+    end
+
     it "return current user's all notes" do
+      login @user
       get :index, user_id: @user
       expect(response).to have_http_status :ok
       expect(respond_json.map(&[:id])).to eq @user.notes.map(&:id)

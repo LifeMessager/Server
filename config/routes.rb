@@ -4,9 +4,11 @@ Rails.application.routes.draw do
   resources :users, only: [:create] do
     resources :notes, only: [:index]
 
+    post :login_mail, action: :send_login_mail, on: :collection
+
     scope on: :member do
-      put 'subscription', to: :subscribe
-      delete 'subscription', to: :unsubscribe
+      put :subscription, action: :subscribe
+      delete :subscription, action: :unsubscribe
     end
   end
 

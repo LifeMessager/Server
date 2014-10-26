@@ -248,6 +248,7 @@ DEPENDENCIES
   rails (= 4.1.5)
   rails-i18n
   rspec-its
+  rspec-mocks
   rspec-rails
   spork-rails
   unicorn
