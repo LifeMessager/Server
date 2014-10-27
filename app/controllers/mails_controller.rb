@@ -12,11 +12,11 @@ class MailsController < ApplicationController
     )
 
     if note.save
-      respond nil, status: :created
+      simple_respond nil, status: :created
     else
       puts 'note save error'
       puts note.errors
-      respond nil, status: :internal_server_error
+      simple_respond nil, status: :internal_server_error
     end
   end
 

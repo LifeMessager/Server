@@ -12,6 +12,22 @@ describe UsersController, type: :controller do
     end
   end
 
+  describe '#show' do
+    let(:user) { create :user }
+
+    it 'need authentication' do
+      get :show, id: user.id
+      expect(response).to have_http_status :unauthorized
+    end
+
+    it 'return user info' do
+      login user
+      get :show, id: user.id
+      expect(response).to have_http_status :ok
+      expect(respond_json).to include 'id', 'email', 'created_at', 'subscribed', 'timezone'
+    end
+  end
+
   describe '#subscribe' do
     it 'need authentication' do
       user = create :user, subscribed: false

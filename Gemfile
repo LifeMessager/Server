@@ -21,7 +21,8 @@ gem 'rails', '4.1.5'
 # gem 'sdoc', '~> 0.4.0',          group: :doc
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.0'
+# gem 'jbuilder', '~> 2.0'
+gem 'rabl'
 # 模板引擎
 gem 'haml'
 # Mailgun RoR adapter

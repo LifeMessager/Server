@@ -1,7 +1,7 @@
 class NotesController < ApplicationController
   def index
     notes = User.find_by_id(params[:user_id]).notes
-    respond orginaze_notes(notes), status: :ok
+    simple_respond orginaze_notes(notes), status: :ok
   end
 
   private

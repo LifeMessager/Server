@@ -1,18 +1,20 @@
 class ApplicationController < ActionController::Base
-  # Prevent CSRF attacks by raising an exception.
-  # For APIs, you may want to use :null_session instead.
-  # protect_from_forgery with: :exception
-  skip_before_action :verify_authenticity_token
+  SUPPORT_FORMAT = [:json, :xml]
 
+  skip_before_action :verify_authenticity_token
   before_action :verify_token
+  before_action :default_format
 
   private
 
-  def verify_token
-    unless current_user
-      error = build_resp 'Header Authorization is required'
-      return respond(error, status: :unauthorized)
+  def default_format
+    unless SUPPORT_FORMAT.include? request.format
+      request.format = SUPPORT_FORMAT.first
     end
+  end
+
+  def verify_token
+    return simple_respond(nil, status: :unauthorized) unless current_user
   end
 
   def current_user
@@ -27,29 +29,23 @@ class ApplicationController < ActionController::Base
     auth = request.authorization || params[:token]
     return unless auth
     auth_parts = auth.split ' ', 2
-    { type: auth_parts.first, token: auth_parts.last }
+    {type: auth_parts.first, token: auth_parts.last}
   end
 
-  def respond(resp, opts)
-    request_format = Mime::Type.lookup(request.accepts.first)
-    request_format = :json unless [:xml, :json].include? request_format
+  def simple_respond(resp, opts)
+    default_resps = {
+      not_found: build_error('Resource not found'),
+      unauthorized: build_error('Header Authorization is required')
+    }
 
-    opts = opts.deep_dup
-    opts[request_format] = fill_default_resp resp, opts
-
-    render opts
-  end
-
-  def build_resp message, *args
-    { message: message, errors: args.first || [] }
-  end
-
-  def fill_default_resp resp, opts
-    case opts[:status]
-    when :not_found
-      { message: 'Resource not found', errors: [] }.merge resp
-    else
-      resp
+    if default_resp = default_resps[opts[:status]]
+      resp = default_resp.merge resp || {}
     end
+    format_opt = resp ? {request.format.to_sym => resp} : {nothing: true}
+    render format_opt.merge opts
+  end
+
+  def build_error message, *args
+    {message: message, errors: args.first || []}
   end
 end

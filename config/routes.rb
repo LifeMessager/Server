@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   post 'mails/notes'
 
-  resources :users, only: [:create] do
+  resources :users, only: [:create, :show] do
     resources :notes, only: [:index]
 
     post :login_mail, action: :send_login_mail, on: :collection

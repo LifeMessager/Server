@@ -5,45 +5,49 @@ class UsersController < ApplicationController
     user = User.new info_of_user
     if user.save
       UserMailer.welcome(user).deliver
-      respond user, status: :created
+      simple_respond user, status: :created
     else
-      data = build_resp 'Register failed', user.errors
-      respond data, status: :unprocessable_entity
+      data = build_error 'Register failed', user.errors
+      simple_respond data, status: :unprocessable_entity
     end
+  end
+
+  def show
+    @user = User.find_by_id params[:id]
+    return simple_respond(nil, status: :not_found) unless @user
   end
 
   def subscribe
     user = User.find_by_id params[:user_id]
-    return respond(nil, status: :not_found) unless user
+    return simple_respond(nil, status: :not_found) unless user
     user.subscribe
     if user.save
-      respond nil, status: :created
+      simple_respond nil, status: :created
     else
-      data = build_resp 'Subscribe failed', user.errors
-      respond data, status: :unprocessable_entity
+      data = build_error 'Subscribe failed', user.errors
+      simple_respond data, status: :unprocessable_entity
     end
   end
 
   def unsubscribe
     user = User.find_by_id params[:user_id]
-    return respond(nil, status: :not_found) unless user
-    error = build_resp 'Header Authorization is required'
+    return simple_respond(nil, status: :not_found) unless user
     unless authorization && authorization[:token] && authorization[:type] == 'unsubscribe'
-      return respond(error, status: :unauthorized)
+      return simple_respond(nil, status: :unauthorized)
     end
     user.unsubscribe token: authorization[:token]
     if user.save
-      respond nil, status: :no_content
+      simple_respond nil, status: :no_content
     else
-      data = build_resp 'Unsubscribe failed', user.errors
-      respond data, status: :unprocessable_entity
+      data = build_error 'Unsubscribe failed', user.errors
+      simple_respond data, status: :unprocessable_entity
     end
   end
 
   def send_login_mail
     user = User.find_by_email params[:email]
     UserMailer.login(user).deliver
-    respond nil, status: :created
+    simple_respond nil, status: :created
   end
 
   private
