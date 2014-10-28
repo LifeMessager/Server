@@ -8,6 +8,7 @@
 #  updated_at        :datetime
 #  subscribed        :boolean          default(TRUE)
 #  unsubscribe_token :string(255)      not null
+#  timezone          :string(255)      not null
 #
 
 require 'rails_helper'
@@ -15,7 +16,7 @@ require 'rails_helper'
 describe User do
   before { @user = build :user }
 
-  subject { @user }
+  subject { create :user }
 
   it { is_expected.to respond_to :email }
   its(:email) { is_expected.not_to be_nil }
@@ -29,6 +30,8 @@ describe User do
 
   it { is_expected.to have_readonly_attribute :unsubscribe_token }
   its(:unsubscribe_token) { is_expected.not_to be_nil }
+
+  its(:timezone) { is_expected.not_to be_nil }
 
   it 'work fine with valid email address' do
     valid_addresses = %w[user@foo.COM A_US-ER@f.b.org frst.lst@foo.jp a+b@baz.cn]
@@ -47,6 +50,12 @@ describe User do
     end
   end
 
+  it 'report errors without email address' do
+    @user.email = nil
+    expect(@user).to be_invalid
+    expect(@user.errors[:email]).to include ModelError.BLANK
+  end
+
   it 'is invalid with a duplicate email address' do
     @user.save
     newUser = build :user, email: @user.email
@@ -58,6 +67,12 @@ describe User do
     @user.email = 'HELLO@world.com'
     @user.save
     expect(@user.email).to eq @user.email.downcase
+  end
+
+  it 'report errors without timezone' do
+    @user.timezone = nil
+    expect(@user).to be_invalid
+    expect(@user.errors[:timezone]).to include ModelError.BLANK
   end
 
   it 'generate a path to unsubscribe for mail' do

@@ -6,9 +6,22 @@ describe UsersController, type: :controller do
       expect(UserMailer).to receive(:welcome).and_call_original do |user|
         expect(user.email).to eq 'test@test.com'
       end
-      post :create, email: 'test@test.com'
+      userinfo = attributes_for :user
+      post :create, userinfo
       expect(response).to have_http_status :created
-      expect(respond_json['email']).to eq 'test@test.com'
+      expect(respond_json.symbolize_keys.slice(*userinfo.keys)).to eq userinfo
+    end
+
+    it 'require email' do
+      post :create, attributes_for(:user, email: nil)
+      expect(response).to have_http_status :unprocessable_entity
+      expect(respond_json['errors'].first).to include 'email'
+    end
+
+    it 'require timezone' do
+      post :create, attributes_for(:user, timezone: nil)
+      expect(response).to have_http_status :unprocessable_entity
+      expect(respond_json['errors'].first).to include 'timezone'
     end
   end
 

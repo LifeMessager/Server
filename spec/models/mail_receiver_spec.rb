@@ -7,6 +7,7 @@
 #  created_at :datetime
 #  updated_at :datetime
 #  user_id    :integer          not null
+#  timezone   :string(255)      not null
 #
 
 require 'rails_helper'
@@ -14,17 +15,17 @@ require 'rails_helper'
 describe MailReceiver do
   before { @mr = build :mail_receiver }
 
-  subject { @mr }
+  subject { create :mail_receiver }
 
   it { is_expected.to respond_to :user }
 
   it { is_expected.to respond_to :notes }
 
-  it { is_expected.to respond_to :address }
+  it { is_expected.to have_readonly_attribute :address }
+  its(:address) { is_expected.not_to be_nil }
 
-  it 'is valid with user' do
-    expect(@mr.save).to be_truthy
-  end
+  it { is_expected.to have_readonly_attribute :timezone }
+  its(:timezone) { is_expected.not_to be_nil }
 
   it 'is invalid without user' do
     @mr.user = nil
@@ -32,7 +33,10 @@ describe MailReceiver do
     expect(@mr.errors[:user]).to include ModelError.BLANK
   end
 
-  it 'auto generate address' do
-    expect(@mr.address).to be_a_kind_of String
+  it "auto assign user's timezone" do
+    originUser = @mr.user
+    @mr.user = create :user, timezone: User.timezones[3]
+    expect(@mr.timezone).to eq @mr.user.timezone
+    expect(@mr.timezone).not_to eq originUser.timezone
   end
 end

@@ -7,6 +7,7 @@
 #  created_at :datetime
 #  updated_at :datetime
 #  user_id    :integer          not null
+#  timezone   :string(255)      not null
 #
 
 # Read about factories at https://github.com/thoughtbot/factory_girl

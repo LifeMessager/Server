@@ -9,6 +9,7 @@
 #  updated_at        :datetime
 #  subscribed        :boolean          default(TRUE)
 #  unsubscribe_token :string(255)      not null
+#  timezone          :string(255)      not null
 #
 
 require 'securerandom'
@@ -16,7 +17,12 @@ require 'securerandom'
 class User < ActiveRecord::Base
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
-  validates :email, presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
+  def self.timezones
+    ActiveSupport::TimeZone.zones_map.values.map{ |zone| zone.tzinfo.name }.uniq
+  end
+
+  validates :email,      presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
+  validates :timezone,   presence: true, inclusion: { in: timezones }
 
   has_many :mail_receivers
   has_many :notes, through: :mail_receivers
