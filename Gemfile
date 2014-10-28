@@ -44,7 +44,8 @@ gem 'jwt'
 
 group :development, :test do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  # gem 'spring'
+  gem 'spring'
+  gem "spring-commands-rspec"
   # 自动重启服务
   gem 'guard-rails'
   # 用来给模型声明数据库结构的工具
@@ -61,7 +62,7 @@ group :development, :test do
   gem 'email_spec'
 
   # 加速测试
-  gem 'spork-rails'
+  # gem 'spork-rails'
   # 测试数据预构件
   gem 'factory_girl_rails'
   # 自动测试
