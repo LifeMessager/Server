@@ -5,6 +5,10 @@ class DiaryMailer < ActionMailer::Base
     send_mail_to user, subject: I18n.t('diary_mailer.daily.subject', date: I18n.l(Time.now, format: :mail_title))
   end
 
+  def batch_send
+    User.alertable.find_each { |user| daily(user).deliver! }
+  end
+
   private
 
   def send_mail_to user, headers = {}, &block

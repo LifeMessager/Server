@@ -53,6 +53,6 @@ class UsersController < ApplicationController
   private
 
   def info_of_user
-    params.permit :email, :timezone
+    params.permit :email, :timezone, :alert_time
   end
 end

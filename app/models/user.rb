@@ -10,19 +10,34 @@
 #  subscribed        :boolean          default(TRUE)
 #  unsubscribe_token :string(255)      not null
 #  timezone          :string(255)      not null
+#  alert_time        :datetime         not null
 #
 
 require 'securerandom'
 
+TimeZone = ActiveSupport::TimeZone
+
 class User < ActiveRecord::Base
-  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
+  VALID_EMAIL_REGEXP = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
+  ALERT_PLACEHOLDER_DAY = '2014-01-01'
 
   def self.timezones
-    ActiveSupport::TimeZone.zones_map.values.map{ |zone| zone.tzinfo.name }.uniq
+    TimeZone.zones_map.values.map{ |zone| zone.tzinfo.name }.uniq
   end
 
-  validates :email,      presence: true, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
+  # WARNING: 只接受本地时间
+  scope :alertable, -> (time = Time.now) do
+    formatted_time = time.strftime '%H:%M'
+    # 只有 Time 转化的时间是使用当前服务器时区的
+    query_time = Time.parse "#{User::ALERT_PLACEHOLDER_DAY} #{formatted_time}"
+    start_time = query_time.beginning_of_hour
+    end_time = query_time.end_of_hour
+    order(:alert_time).where('? <= alert_time AND alert_time < ?', start_time, end_time)
+  end
+
+  validates :email,      presence: true, format: { with: VALID_EMAIL_REGEXP }, uniqueness: { case_sensitive: false }
   validates :timezone,   presence: true, inclusion: { in: timezones }
+  validates :alert_time, presence: true
 
   has_many :mail_receivers
   has_many :notes, through: :mail_receivers
@@ -63,6 +78,30 @@ class User < ActiveRecord::Base
     return unless subscribed
     self.subscribed = false
     true
+  end
+
+  def tz
+    ActiveSupport::TimeZone.new timezone
+  end
+
+  def timezone= input_timezone
+    self.alert_time = nil if input_timezone.nil?
+    if input_timezone.class == ActiveSupport::TimeZone
+      input_timezone = input_timezone.identifier
+    end
+    write_attribute :timezone, input_timezone
+  end
+
+  def alert_time
+    return unless alert_datetime = read_attribute(:alert_time)
+    alert_datetime.in_time_zone(timezone).to_s :time
+  end
+
+  def alert_time= time
+    return unless timezone
+    formatted_time = "#{User::ALERT_PLACEHOLDER_DAY} #{time}#{tz.formatted_offset}"
+    acceptable = tz.parse formatted_time if time
+    write_attribute :alert_time, acceptable
   end
 
   private
