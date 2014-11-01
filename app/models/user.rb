@@ -58,6 +58,7 @@ class User < ActiveRecord::Base
   # http://api.rubyonrails.org/classes/ActionDispatch/Routing/UrlFor.html
   # http://stackoverflow.com/questions/341143/can-rails-routing-helpers-i-e-mymodel-pathmodel-be-used-in-models
   def unsubscribe_path
+    return if new_record?
     Rails.application.routes.url_helpers.user_subscription_path(
       _method: :delete,
       token: "unsubscribe #{unsubscribe_token}",

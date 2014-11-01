@@ -1,5 +1,7 @@
 require 'rails_helper'
 
+expected_user_info_keys = ['id', 'email', 'created_at', 'subscribed', 'timezone', 'alert_time']
+
 describe UsersController, type: :controller do
   describe '#create' do
     it 'return the created user' do
@@ -9,7 +11,7 @@ describe UsersController, type: :controller do
       userinfo = attributes_for :user
       post :create, userinfo
       expect(response).to have_http_status :created
-      expect(respond_json.symbolize_keys.slice(*userinfo.keys)).to eq userinfo
+      expect(respond_json).to include *expected_user_info_keys
     end
 
     it 'require email' do
@@ -37,7 +39,37 @@ describe UsersController, type: :controller do
       login user
       get :show, id: user.id
       expect(response).to have_http_status :ok
-      expect(respond_json).to include 'id', 'email', 'created_at', 'subscribed', 'timezone'
+      expect(respond_json).to include *expected_user_info_keys
+    end
+  end
+
+  describe '#update' do
+    let(:user) { create :user }
+
+    it 'need authentication' do
+      patch :update, id: user.id, timezone: User.timezones.sample
+      expect(response).to have_http_status :unauthorized
+    end
+
+    it 'allow update user timezone' do
+      login user
+      changed_timezone = User.timezones.sample
+      patch :update, id: user.id, timezone: changed_timezone
+      expect(response).to have_http_status :ok
+      expect(respond_json).to include *expected_user_info_keys
+      expect(respond_json['timezone']).to eq changed_timezone
+      user.reload
+      expect(user.timezone).to eq changed_timezone
+    end
+
+    it 'allow update user alert_time' do
+      login user
+      patch :update, id: user.id, alert_time: '01:00'
+      expect(response).to have_http_status :ok
+      expect(respond_json).to include *expected_user_info_keys
+      expect(respond_json['alert_time']).to eq '01:00'
+      user.reload
+      expect(user.alert_time).to eq '01:00'
     end
   end
 

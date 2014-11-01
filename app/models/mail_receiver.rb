@@ -23,8 +23,8 @@ class MailReceiver < ActiveRecord::Base
   readonly_attributes :address, :timezone
 
   after_initialize do
-    self.address || self.address = "post+#{SecureRandom.hex}"
-    self.timezone || self.timezone = user.timezone
+    self.address = "post+#{SecureRandom.hex}" unless address
+    self.timezone = user.timezone if not timezone and user
   end
 
   def note_date
