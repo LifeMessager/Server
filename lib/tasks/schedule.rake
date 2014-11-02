@@ -6,7 +6,7 @@ end
 namespace :schedule do
 
 desc 'Send mail to current hour alertable users'
-task :mail_hourly do
+task :mail_hourly => :environment do
   if User.alertable(Time.parse('08:00')).length < 1
     log 'mail_hourly', 'No alertable user'
   else
