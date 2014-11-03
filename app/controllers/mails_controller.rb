@@ -10,11 +10,6 @@ class MailsController < ApplicationController
       return simple_respond nil, status: :ok
     end
 
-    if params['sender'] != mail_receiver.user.email
-      error_log 'notes', "note mail sender invalid (#{params['sender']})"
-      return simple_respond nil, status: :ok
-    end
-
     note = mail_receiver.notes.build(
       from_email: params['sender'],
       content: params['stripped-text'],
