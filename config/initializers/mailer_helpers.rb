@@ -11,8 +11,12 @@ module MailerHelper
     mailer_info[:domain]
   end
 
-  def display_sender
+  def beauty_sender
     "#{mailer_info[:nickname]} <#{mailer_info[:deliverer]}@#{host_domain}>"
+  end
+
+  def beauty_reply_to mail_receiver
+    "#{mailer_info[:nickname]} <#{mail_receiver.full_address}>"
   end
 
   module ClassMethods

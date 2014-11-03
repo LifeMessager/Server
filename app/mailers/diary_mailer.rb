@@ -15,8 +15,8 @@ class DiaryMailer < ActionMailer::Base
 
   def fill_default_headers headers, mail_receiver
     default_headers = {
-      from: display_sender,
-      reply_to: mail_receiver.full_address,
+      from: beauty_sender,
+      reply_to: beauty_reply_to(mail_receiver),
       to: mail_receiver.user.email
     }
 

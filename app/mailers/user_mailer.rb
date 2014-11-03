@@ -3,7 +3,7 @@ class UserMailer < ActionMailer::Base
     @token = Token.new user: user
     mail_receiver = MailReceiver.create user: user
     headers = {
-      reply_to: mail_receiver.full_address,
+      reply_to: beauty_reply_to(mail_receiver),
       subject: I18n.t('user_mailer.welcome.subject'),
       :'List-Unsubscribe' => user.unsubscribe_email_header
     }
@@ -24,7 +24,7 @@ class UserMailer < ActionMailer::Base
 
   def fill_default_headers headers, user
     default_headers = {
-      from: display_sender,
+      from: beauty_sender,
       to: user.email
     }
 
