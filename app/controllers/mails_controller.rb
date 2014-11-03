@@ -17,6 +17,11 @@ class MailsController < ApplicationController
       created_at: params['Date']
     )
 
+    if note.invalid?
+      error_log 'notes', "note info not valid: #{note.errors}"
+      return simple_respond nil, status: :ok
+    end
+
     if note.save
       simple_respond nil, status: :created
     else

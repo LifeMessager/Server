@@ -20,10 +20,17 @@ describe MailsController, type: :controller do
     end
 
     it 'allow any sender' do
-      @mail_data['sender'] = 'not-exist-address'
+      @mail_data['sender'] = 'not-exist-address@example.com'
       post :notes, @mail_data
       expect(response).to have_http_status :created
       expect(@mail_receiver.notes.length).to eq 1
+    end
+
+    it 'do nothing with error format sender' do
+      @mail_data['sender'] = 'invalid sender'
+      post :notes, @mail_data
+      expect(response).to have_http_status :ok
+      expect(@mail_receiver.notes.length).to eq 0
     end
 
     it 'do nothing with error format recipient' do
