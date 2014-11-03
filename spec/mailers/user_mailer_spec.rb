@@ -4,30 +4,28 @@ mail_info = Rails.application.config.mailer_info
 
 RSpec.describe UserMailer, :type => :mailer do
   describe '.welcome' do
-    let(:mail) do
-      @user = create :user
-      UserMailer.welcome @user
-    end
+    let(:user) { create :user }
+
+    let(:mail) { UserMailer.welcome user }
 
     it 'send a welcome email to user' do
       expect(mail).to have_subject 'user_mailer.welcome.subject'
-      expect(mail).to reply_to "#{@user.mail_receivers.first.address}@#{mail_info[:domain]}"
-      expect(mail).to deliver_to @user.email
+      expect(mail).to reply_to user.mail_receivers.first.full_address
+      expect(mail).to deliver_to user.email
       expect(mail).to deliver_from "#{mail_info[:nickname]} <#{mail_info[:deliverer]}@#{mail_info[:domain]}>"
-      expect(mail).to have_header 'List-Unsubscribe', "<http://#{mail_info[:domain]}#{@user.unsubscribe_path}>"
-      expect(mail.mailgun_headers).to eq 'List-Unsubscribe' => "<http://#{mail_info[:domain]}#{@user.unsubscribe_path}>"
+      expect(mail).to have_header 'List-Unsubscribe', user.unsubscribe_email_header
+      expect(mail.mailgun_headers).to eq 'List-Unsubscribe' => user.unsubscribe_email_header
     end
   end
 
   describe ".login" do
-    let(:mail) do
-      @user = create :user
-      UserMailer.login @user
-    end
+    let(:user) { create :user }
+
+    let(:mail) { UserMailer.login user }
 
     it "renders the headers" do
       expect(mail).to have_subject 'user_mailer.login.subject'
-      expect(mail).to deliver_to @user.email
+      expect(mail).to deliver_to user.email
       expect(mail).to deliver_from "#{mail_info[:nickname]} <#{mail_info[:deliverer]}@#{mail_info[:domain]}>"
     end
   end

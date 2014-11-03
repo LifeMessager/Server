@@ -3,10 +3,6 @@ module MailgunCompatiblyExtension
 
   private
 
-  def mailer_info
-    Rails.application.config.mailer_info
-  end
-
   HANDLED_HEADERS = %w{from to subject reply-to mime-version content-type}
   def mail_with_mailgun_compatibly headers = {}, &block
     email = mail_without_mailgun_compatibly headers, &block

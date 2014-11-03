@@ -12,6 +12,8 @@
 
 require 'rails_helper'
 
+mailer_info = Rails.application.config.mailer_info
+
 describe MailReceiver do
   before { @mr = build :mail_receiver }
 
@@ -26,6 +28,8 @@ describe MailReceiver do
 
   it { is_expected.to have_readonly_attribute :timezone }
   its(:timezone) { is_expected.not_to be_nil }
+
+  its(:full_address) { is_expected.to eq "post+#{subject.address}@#{mailer_info[:domain]}" }
 
   it 'is invalid without user' do
     @mr.user = nil

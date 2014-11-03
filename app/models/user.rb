@@ -55,16 +55,29 @@ class User < ActiveRecord::Base
     mail_receivers.sample.notes
   end
 
-  # http://api.rubyonrails.org/classes/ActionDispatch/Routing/UrlFor.html
-  # http://stackoverflow.com/questions/341143/can-rails-routing-helpers-i-e-mymodel-pathmodel-be-used-in-models
-  def unsubscribe_path
+  def unsubscribe_link
     return if new_record?
-    Rails.application.routes.url_helpers.user_subscription_path(
+    host_domain = Rails.application.config.mailer_info[:domain]
+    # http://api.rubyonrails.org/classes/ActionDispatch/Routing/UrlFor.html
+    # http://stackoverflow.com/questions/341143/can-rails-routing-helpers-i-e-mymodel-pathmodel-be-used-in-models
+    path = Rails.application.routes.url_helpers.user_subscription_path(
       _method: :delete,
       token: "unsubscribe #{unsubscribe_token}",
       user_id: id,
       action: :unsubscribe
     )
+    "#{host_domain}#{path}"
+  end
+
+  def unsubscribe_email_address
+    return if new_record?
+    host_domain = Rails.application.config.mailer_info[:domain]
+    "unsubscribe+#{unsubscribe_token}@#{host_domain}"
+  end
+
+  def unsubscribe_email_header
+    return if new_record?
+    "<mailto:#{unsubscribe_email_address}>, <http://#{unsubscribe_link}>"
   end
 
   def subscribe

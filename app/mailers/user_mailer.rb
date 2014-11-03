@@ -3,9 +3,9 @@ class UserMailer < ActionMailer::Base
     @token = Token.new user: user
     mail_receiver = MailReceiver.create user: user
     headers = {
-      reply_to: "#{mail_receiver.address}@#{mailer_info[:domain]}",
+      reply_to: mail_receiver.full_address,
       subject: I18n.t('user_mailer.welcome.subject'),
-      :'List-Unsubscribe' => "<http://#{mailer_info[:domain]}#{user.unsubscribe_path}>"
+      :'List-Unsubscribe' => user.unsubscribe_email_header
     }
     mail fill_default_headers(headers, user)
   end
@@ -24,7 +24,7 @@ class UserMailer < ActionMailer::Base
 
   def fill_default_headers headers, user
     default_headers = {
-      from: "#{mailer_info[:nickname]} <#{mailer_info[:deliverer]}@#{mailer_info[:domain]}>",
+      from: display_sender,
       to: user.email
     }
 

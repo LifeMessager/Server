@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   post 'mails/notes'
 
+  post 'mails/unsubscriptions'
+
   resources :users, only: [:create, :show, :update] do
     resources :notes, only: [:index]
 

@@ -74,17 +74,6 @@ describe User do
     expect(@user.email).to eq @user.email.downcase
   end
 
-  it 'generate a path to unsubscribe for mail' do
-    @user.save
-    unsubscribe_path = Rails.application.routes.url_helpers.user_subscription_path(
-      token: "unsubscribe #{@user.unsubscribe_token}",
-      _method: :delete,
-      user_id: @user.id,
-      action: :unsubscribe
-    )
-    expect(@user.unsubscribe_path).to eq unsubscribe_path
-  end
-
   it 'report errors without alert_time' do
     @user.alert_time = nil
     expect(@user).to be_invalid
@@ -187,6 +176,47 @@ describe User do
       instance = TimeZone.new User.timezones.sample
       @user.timezone = instance
       expect(@user.timezone).to eq instance.identifier
+    end
+  end
+
+  describe '#unsubscribe_link' do
+    it 'return nil if user is a new record' do
+      expect(@user.unsubscribe_link).to be_nil
+    end
+
+    it 'generate unsubscribe link' do
+      @user.save
+      host_domain = Rails.application.config.mailer_info[:domain]
+      unsubscribe_path = Rails.application.routes.url_helpers.user_subscription_path(
+        token: "unsubscribe #{@user.unsubscribe_token}",
+        _method: :delete,
+        user_id: @user.id,
+        action: :unsubscribe
+      )
+      expect(@user.unsubscribe_link).to eq "#{host_domain}#{unsubscribe_path}"
+    end
+  end
+
+  describe '#unsubscribe_email_address' do
+    it 'return nil if user is a new record' do
+      expect(@user.unsubscribe_email_address).to be_nil
+    end
+
+    it 'generate unsubscribe email address' do
+      @user.save
+      host_domain = Rails.application.config.mailer_info[:domain]
+      expect(@user.unsubscribe_email_address).to eq "unsubscribe+#{@user.unsubscribe_token}@#{host_domain}"
+    end
+  end
+
+  describe '#unsubscribe_email_header' do
+    it 'return nil if user is a new record' do
+      expect(@user.unsubscribe_email_header).to be_nil
+    end
+
+    it 'generate unsubscribe email header' do
+      @user.save
+      expect(@user.unsubscribe_email_header).to eq "<mailto:#{@user.unsubscribe_email_address}>, <http://#{@user.unsubscribe_link}>"
     end
   end
 end
