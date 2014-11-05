@@ -127,5 +127,13 @@ describe UsersController, type: :controller do
       post :send_login_mail, email: @user.email
       expect(response).to have_http_status :created
     end
+
+    context 'if user not exist' do
+      it 'return an error' do
+        post :send_login_mail, email: 'not-exist@example.com'
+        expect(response).to have_http_status :unprocessable_entity
+        expect(respond_json['errors'].first.symbolize_keys).to eq resource: 'User', field: 'email', code: 'missing'
+      end
+    end
   end
 end
