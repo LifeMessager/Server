@@ -10,6 +10,7 @@
 #  unsubscribe_token :string(255)      not null
 #  timezone          :string(255)      not null
 #  alert_time        :datetime         not null
+#  language          :string(255)      not null
 #
 
 require 'rails_helper'
@@ -21,9 +22,6 @@ describe User, type: :model do
 
   subject { create :user }
 
-  it { is_expected.to respond_to :email }
-  its(:email) { is_expected.not_to be_nil }
-
   it { is_expected.to respond_to :notes }
 
   it { is_expected.to respond_to :mail_receivers }
@@ -34,52 +32,46 @@ describe User, type: :model do
   it { is_expected.to have_readonly_attribute :unsubscribe_token }
   its(:unsubscribe_token) { is_expected.not_to be_nil }
 
-  it 'work fine with valid email address' do
-    valid_addresses = %w[user@foo.COM A_US-ER@f.b.org frst.lst@foo.jp a+b@baz.cn]
-    valid_addresses.each do |valid_address|
-      @user.email = valid_address
-      expect(@user.save).to be true
-    end
-  end
+  describe '#email' do
+    it { is_expected.to respond_to :email }
 
-  it 'report errors with invalid email address' do
-    invalid_addresses = %w[user@foo,com user_at_foo.org example.user@foo.foo@bar_baz.com foo@bar+baz.com]
-    invalid_addresses.each do |invalid_address|
-      @user.email = invalid_address
+    its(:email) { is_expected.not_to be_nil }
+
+    it 'is required' do
+      @user.email = nil
       expect(@user).to be_invalid
-      expect(@user.errors[:email]).to include ModelError.INVALID
+      expect(@user.errors[:email]).to include ModelError.BLANK
     end
-  end
 
-  it 'report errors without email address' do
-    @user.email = nil
-    expect(@user).to be_invalid
-    expect(@user.errors[:email]).to include ModelError.BLANK
-  end
+    it 'save address with downcase' do
+      @user.email = 'HELLO@world.com'
+      @user.save
+      expect(@user.email).to eq @user.email.downcase
+    end
 
-  it 'is invalid with a duplicate email address' do
-    @user.save
-    newUser = build :user, email: @user.email
-    expect(newUser).to be_invalid
-    expect(newUser.errors[:email]).to include ModelError.TAKEN
-  end
+    it 'work fine with valid format' do
+      valid_addresses = %w[user@foo.COM A_US-ER@f.b.org frst.lst@foo.jp a+b@baz.cn]
+      valid_addresses.each do |valid_address|
+        @user.email = valid_address
+        expect(@user.save).to be true
+      end
+    end
 
-  it 'save email with downcase' do
-    @user.email = 'HELLO@world.com'
-    @user.save
-    expect(@user.email).to eq @user.email.downcase
-  end
+    it 'is invalid with wrong format' do
+      invalid_addresses = %w[user@foo,com user_at_foo.org example.user@foo.foo@bar_baz.com foo@bar+baz.com]
+      invalid_addresses.each do |invalid_address|
+        @user.email = invalid_address
+        expect(@user).to be_invalid
+        expect(@user.errors[:email]).to include ModelError.INVALID
+      end
+    end
 
-  it 'report errors without alert_time' do
-    @user.alert_time = nil
-    expect(@user).to be_invalid
-    expect(@user.errors[:alert_time]).to include ModelError.BLANK
-  end
-
-  it 'report errors without timezone' do
-    @user.timezone = nil
-    expect(@user).to be_invalid
-    expect(@user.errors[:timezone]).to include ModelError.BLANK
+    it 'is invalid with a duplicate address' do
+      @user.save
+      newUser = build :user, email: @user.email
+      expect(newUser).to be_invalid
+      expect(newUser.errors[:email]).to include ModelError.TAKEN
+    end
   end
 
   describe '#random_diary' do
@@ -152,6 +144,12 @@ describe User, type: :model do
   end
 
   describe '#alert_time' do
+    it 'is required' do
+      @user.alert_time = nil
+      expect(@user).to be_invalid
+      expect(@user.errors[:alert_time]).to include ModelError.BLANK
+    end
+
     it 'cannot been assign without timezone' do
       @user.timezone = nil
       expect(@user.alert_time).to be_nil
@@ -171,6 +169,17 @@ describe User, type: :model do
     its(:timezone) { is_expected.not_to be_nil }
 
     its(:tz) { is_expected.to be_a_kind_of(TimeZone).and eq TimeZone.new subject.timezone }
+
+    it 'is required' do
+      @user.timezone = nil
+      expect(@user).to be_invalid
+      expect(@user.errors[:timezone]).to include ModelError.BLANK
+    end
+
+    it 'verify identifier acceptable' do
+      @user.timezone = 'invalid timezone'
+      expect(@user.timezone).to be_nil
+    end
 
     it 'accept ActiveSupport::TimeZone instance' do
       instance = TimeZone.new User.timezones.sample
@@ -218,6 +227,22 @@ describe User, type: :model do
     it 'generate unsubscribe email header' do
       @user.save
       expect(@user.unsubscribe_email_header).to eq "<mailto:#{@user.unsubscribe_email_address}>, <http://#{@user.unsubscribe_link}>"
+    end
+  end
+
+  describe '#language' do
+    it { is_expected.to respond_to :language }
+
+    it 'is required' do
+      @user.language = nil
+      expect(@user).not_to be_valid
+      expect(@user.errors.first).to include :language
+    end
+
+    it 'only accept language in User.languages' do
+      @user.language = 'non-exist-language'
+      expect(@user).not_to be_valid
+      expect(@user.errors.first).to include :language
     end
   end
 end

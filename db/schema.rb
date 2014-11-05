@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141028073853) do
+ActiveRecord::Schema.define(version: 20141105075246) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 20141028073853) do
     t.string   "unsubscribe_token",                null: false
     t.string   "timezone",                         null: false
     t.datetime "alert_time",                       null: false
+    t.string   "language",                         null: false
   end
 
 end

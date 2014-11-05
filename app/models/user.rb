@@ -11,6 +11,7 @@
 #  unsubscribe_token :string(255)      not null
 #  timezone          :string(255)      not null
 #  alert_time        :datetime         not null
+#  language          :string(255)      not null
 #
 
 require 'securerandom'
@@ -25,6 +26,10 @@ class User < ActiveRecord::Base
     TimeZone.zones_map.values.map{ |zone| zone.tzinfo.name }.uniq
   end
 
+  def self.languages
+    ['zh-Hans', 'zh-Hant', 'en']
+  end
+
   # WARNING: 只接受本地时间
   scope :alertable, -> (time = Time.now) do
     formatted_time = time.strftime '%H:%M'
@@ -37,6 +42,7 @@ class User < ActiveRecord::Base
 
   validates :email,      presence: true, format: { with: VALID_EMAIL_REGEXP }, uniqueness: { case_sensitive: false }
   validates :timezone,   presence: true, inclusion: { in: timezones }
+  validates :language,   presence: true, inclusion: { in: languages }
   validates :alert_time, presence: true
 
   has_many :mail_receivers
@@ -99,10 +105,13 @@ class User < ActiveRecord::Base
   end
 
   def timezone= input_timezone
-    self.alert_time = nil if input_timezone.nil?
     if input_timezone.class == ActiveSupport::TimeZone
       input_timezone = input_timezone.identifier
     end
+    unless User.timezones.include? input_timezone
+      input_timezone = nil
+    end
+    self.alert_time = nil if input_timezone.nil?
     write_attribute :timezone, input_timezone
   end
 

@@ -76,7 +76,7 @@ class UsersController < ApplicationController
   private
 
   def info_of_user
-    params.permit :email, :timezone, :alert_time
+    params.permit :email, :timezone, :alert_time, :language
   end
 
   def update_info
