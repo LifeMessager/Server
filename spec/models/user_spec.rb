@@ -16,7 +16,7 @@ require 'rails_helper'
 
 TimeZone = ActiveSupport::TimeZone
 
-describe User do
+describe User, type: :model do
   before { @user = build :user }
 
   subject { create :user }
@@ -33,10 +33,6 @@ describe User do
 
   it { is_expected.to have_readonly_attribute :unsubscribe_token }
   its(:unsubscribe_token) { is_expected.not_to be_nil }
-
-  its(:timezone) { is_expected.not_to be_nil }
-
-  its(:tz) { is_expected.to be_a_kind_of(TimeZone).and eq TimeZone.new subject.timezone }
 
   it 'work fine with valid email address' do
     valid_addresses = %w[user@foo.COM A_US-ER@f.b.org frst.lst@foo.jp a+b@baz.cn]
@@ -172,9 +168,14 @@ describe User do
   end
 
   describe '#timezone' do
+    its(:timezone) { is_expected.not_to be_nil }
+
+    its(:tz) { is_expected.to be_a_kind_of(TimeZone).and eq TimeZone.new subject.timezone }
+
     it 'accept ActiveSupport::TimeZone instance' do
       instance = TimeZone.new User.timezones.sample
       @user.timezone = instance
+      expect(@user).to be_valid
       expect(@user.timezone).to eq instance.identifier
     end
   end
