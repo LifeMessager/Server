@@ -27,17 +27,7 @@ class User < ActiveRecord::Base
   end
 
   def self.languages
-    ['zh-Hans', 'zh-Hant', 'en']
-  end
-
-  # WARNING: 只接受本地时间
-  scope :alertable, -> (time = Time.now) do
-    formatted_time = time.strftime '%H:%M'
-    # 只有 Time 转化的时间是使用当前服务器时区的
-    query_time = Time.parse "#{User::ALERT_PLACEHOLDER_DAY} #{formatted_time}"
-    start_time = query_time.beginning_of_hour
-    end_time = query_time.end_of_hour
-    order(:alert_time).where('? <= alert_time AND alert_time < ?', start_time, end_time)
+    ['zh-Hans-CN', 'zh-Hant-TW', 'en']
   end
 
   validates :email,      presence: true, format: { with: VALID_EMAIL_REGEXP }, uniqueness: { case_sensitive: false }
@@ -50,11 +40,21 @@ class User < ActiveRecord::Base
 
   readonly_attributes :subscribed, :unsubscribe_token
 
-  before_save { self.email = self.email.downcase }
+  before_save { self.email = email.downcase }
 
   # ActiveRecord 在实例化 User 的时候，subscribed 是有默认值的，但此时
   # unsubscribe_token 还是空的，所以需要额外检查一下
   after_initialize { generate_unsubscribe_token if unsubscribe_token.nil? }
+
+  # WARNING: 只接受本地时间
+  scope :alertable, -> (time = Time.now) do
+    formatted_time = time.strftime '%H:%M'
+    # 只有 Time 转化的时间是使用当前服务器时区的
+    query_time = Time.parse "#{User::ALERT_PLACEHOLDER_DAY} #{formatted_time}"
+    start_time = query_time.beginning_of_hour
+    end_time = query_time.end_of_hour
+    order(:alert_time).where('? <= alert_time AND alert_time < ?', start_time, end_time)
+  end
 
   def random_diary
     return if notes.empty?

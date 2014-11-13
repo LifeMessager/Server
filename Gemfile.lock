@@ -94,6 +94,7 @@ GEM
       tilt
     hike (1.2.3)
     hitimes (1.2.2)
+    http_accept_language (2.0.2)
     i18n (0.6.11)
     json (1.8.1)
     jwt (1.0.0)
@@ -237,6 +238,7 @@ DEPENDENCIES
   guard-rails
   guard-rspec
   haml
+  http_accept_language
   jwt
   kaminari
   mailgun_rails

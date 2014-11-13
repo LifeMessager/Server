@@ -1,9 +1,11 @@
+# coding: utf-8
+
 class ApplicationController < ActionController::Base
   SUPPORT_FORMAT = [:json, :xml]
 
   skip_before_action :verify_authenticity_token
+  before_action :default_format # 这个 filter 必须放在最前面，因为它约束了响应的数据格式
   before_action :verify_token
-  before_action :default_format
 
   private
 
@@ -18,10 +20,10 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user
-    return false unless authorization
-    return false unless authorization[:type] == 'Bearer'
+    return unless authorization
+    return unless authorization[:type] == 'Bearer'
     token = Token.decode authorization[:token]
-    return false unless token[:success]
+    return unless token[:success]
     token[:token].user
   end
 

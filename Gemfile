@@ -41,6 +41,8 @@ gem 'pg'
 gem 'rails-i18n'
 # 身份验证
 gem 'jwt'
+# 请求头的 accept-language 信息
+gem 'http_accept_language'
 
 group :development, :test do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
