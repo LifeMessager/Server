@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   skip_before_action :verify_authenticity_token
   before_action :default_format # 这个 filter 必须放在最前面，因为它约束了响应的数据格式
   before_action :verify_token
+  before_action :verify_timezone_header
 
   private
 
@@ -17,6 +18,18 @@ class ApplicationController < ActionController::Base
 
   def verify_token
     return simple_respond(nil, status: :unauthorized) unless current_user
+  end
+
+  def verify_timezone_header
+    error_info = build_error 'Header Timezone is required'
+    return simple_respond(error_info, status: :precondition_required) unless current_timezone
+  end
+
+  def current_timezone
+    return unless timezone_header = request.headers['Timezone']
+    client_time, posixtz, timezone = timezone_header.split ';', 3
+    return unless timezone and User.timezones.include? timezone
+    timezone
   end
 
   def current_user

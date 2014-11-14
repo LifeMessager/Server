@@ -63,4 +63,6 @@ RSpec.configure do |config|
 
   config.include CustomMatchers
   config.include CustomControllerHelper, type: :controller
+
+  config.before(type: :controller) { setup_timezone_header }
 end

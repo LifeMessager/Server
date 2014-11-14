@@ -4,6 +4,8 @@ class UsersController < ApplicationController
   def create
     @user = User.new info_of_user
     @user.language ||= http_accept_language.language_region_compatible_from User.languages
+    @user.timezone = current_timezone
+    @user.alert_time ||= '08:00'
     unless @user.save
       data = build_error 'Register failed', @user.errors
       return simple_respond data, status: :unprocessable_entity
