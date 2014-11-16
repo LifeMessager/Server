@@ -61,6 +61,21 @@ describe UsersController, type: :controller do
     end
   end
 
+  describe '#get_current_user' do
+    it 'need authentication' do
+      get :get_current_user
+      expect(response).to have_http_status :unauthorized
+    end
+
+    it 'return current user info' do
+      user = create :user
+      login user
+      get :get_current_user
+      expect(response).to have_http_status :ok
+      expect(respond_json.slice *expected_user_info_keys).to eq JSON.parse(user.to_json).slice *expected_user_info_keys
+    end
+  end
+
   describe '#subscribe' do
     it 'need authentication' do
       user = create :user, subscribed: false

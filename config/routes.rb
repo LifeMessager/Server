@@ -3,6 +3,8 @@ Rails.application.routes.draw do
 
   post 'mails/unsubscriptions'
 
+  get 'user' => 'users#get_current_user'
+
   resources :users, only: [:create, :show, :update] do
     resources :notes, only: [:index]
 

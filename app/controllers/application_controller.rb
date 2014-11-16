@@ -17,7 +17,12 @@ class ApplicationController < ActionController::Base
   end
 
   def verify_token
-    return simple_respond(nil, status: :unauthorized) unless current_user
+    if authorization.nil?
+      error_info = build_error 'Header Authentication is required'
+    elsif current_user.nil?
+      error_info = build_error 'Header Authentication is invalid'
+    end
+    return simple_respond(error_info, status: :unauthorized) if error_info
   end
 
   def verify_timezone_header
@@ -49,8 +54,7 @@ class ApplicationController < ActionController::Base
 
   def simple_respond(resp, opts)
     default_resps = {
-      not_found: build_error('Resource not found'),
-      unauthorized: build_error('Header Authorization is required')
+      not_found: build_error('Resource not found')
     }
 
     if default_resp = default_resps[opts[:status]]

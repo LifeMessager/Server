@@ -39,6 +39,14 @@ class UsersController < ApplicationController
     end
   end
 
+  def get_current_user
+    @user = current_user
+    respond_to do |format|
+      format.json
+      format.xml
+    end
+  end
+
   def subscribe
     user = User.find_by_id params[:user_id]
     return simple_respond(nil, status: :not_found) unless user
