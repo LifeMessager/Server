@@ -19,8 +19,8 @@ class Note < ActiveRecord::Base
 
   belongs_to :mail_receiver
 
-  def note_date
-    mail_receiver.note_date
+  def local_note_date
+    mail_receiver.local_note_date
   end
 
   def user

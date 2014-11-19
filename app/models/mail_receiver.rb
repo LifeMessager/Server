@@ -2,20 +2,22 @@
 #
 # Table name: mail_receivers
 #
-#  id         :integer          not null, primary key
-#  address    :string(255)      not null
-#  created_at :datetime
-#  updated_at :datetime
-#  user_id    :integer          not null
-#  timezone   :string(255)      not null
+#  id              :integer          not null, primary key
+#  address         :string(255)      not null
+#  created_at      :datetime
+#  updated_at      :datetime
+#  user_id         :integer          not null
+#  timezone        :string(255)      not null
+#  local_note_date :date             not null
 #
 
 require 'securerandom'
 
 class MailReceiver < ActiveRecord::Base
-  validates :address  , presence: true
-  validates :user     , presence: true
-  validates :timezone , presence: true
+  validates :address         , presence: true
+  validates :user            , presence: true
+  validates :timezone        , presence: true
+  validates :local_note_date , presence: true
 
   belongs_to :user
   has_many :notes
@@ -25,10 +27,7 @@ class MailReceiver < ActiveRecord::Base
   after_initialize do
     self.address = SecureRandom.hex unless address
     self.timezone = user.timezone if not timezone and user
-  end
-
-  def note_date
-    created_at.in_time_zone(timezone).to_date
+    refresh_note_date if local_note_date.nil?
   end
 
   def full_address
@@ -44,5 +43,11 @@ class MailReceiver < ActiveRecord::Base
       write_attribute :user_id, nil
       self.timezone = nil
     end
+  end
+
+  private
+
+  def refresh_note_date
+    self.local_note_date = Time.now.in_time_zone(timezone).to_date
   end
 end

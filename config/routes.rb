@@ -6,8 +6,6 @@ Rails.application.routes.draw do
   get 'user' => 'users#get_current_user'
 
   resources :users, only: [:create, :show, :update] do
-    resources :notes, only: [:index]
-
     post :login_mail, action: :send_login_mail, on: :collection
 
     scope on: :member do
@@ -15,6 +13,8 @@ Rails.application.routes.draw do
       delete :subscription, action: :unsubscribe
     end
   end
+
+  resources :diaries, only: [:show]
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
