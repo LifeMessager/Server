@@ -14,7 +14,7 @@ class Token
   end
 
   def login_url
-    "http://#{mailer_info[:domain]}/login?token=#{id}"
+    "http://#{mailer_info[:domain]}/#!/login?token=#{id}"
   end
 
   def self.decode id, **args
