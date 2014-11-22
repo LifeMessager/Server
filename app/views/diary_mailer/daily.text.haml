@@ -1,3 +1,7 @@
 
 - @diary_notes.each do |note|
   = note.content
+
+= t 'diary_mailer.daily.login_link'
+
+= @token.login_url

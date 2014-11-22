@@ -4,3 +4,10 @@
 
 - if @diary_notes.empty?
   %section= t 'diary_mailer.daily.empty_diary_content'
+
+%hr
+
+%section= t 'diary_mailer.daily.login_link'
+
+%section
+  %a{href: @token.login_url}= @token.login_url
