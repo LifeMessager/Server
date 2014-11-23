@@ -1,5 +1,6 @@
 class MailsController < ApplicationController
   skip_before_action :verify_token
+  skip_before_action :verify_timezone_header
   before_action :check_recipient
 
   def notes
