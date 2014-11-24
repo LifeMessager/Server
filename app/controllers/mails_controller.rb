@@ -1,3 +1,4 @@
+# coding: utf-8
 class MailsController < ApplicationController
   skip_before_action :verify_token
   skip_before_action :verify_timezone_header
@@ -13,7 +14,7 @@ class MailsController < ApplicationController
 
     note = mail_receiver.notes.build(
       from_email: params['sender'],
-      content: params['stripped-text'],
+      content: cleaned_content,
       mail_receiver: mail_receiver,
       created_at: params['Date']
     )
@@ -57,6 +58,13 @@ class MailsController < ApplicationController
 
   def error_log method_name, content
     Rails.logger.error "[MailsController##{method_name}] #{content}"
+  end
+
+  def cleaned_content
+    params['stripped-text']
+      .gsub(/\r\n/, "\n\n")
+      .gsub(/\n{3,}/, "\n\n")
+      .gsub(/(\n$){2,}/, '') # 去除最后一段和下一行的换行符
   end
 
   def recipient
