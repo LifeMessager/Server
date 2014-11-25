@@ -1,9 +1,9 @@
 class UserMailerPreview < ActionMailer::Preview
   def welcome
-    UserMailer.welcome User.find_or_create_by email: 'hello@world.com'
+    UserMailer.welcome User.all.sample
   end
 
   def login
-    UserMailer.login User.find_or_create_by email: 'hello@world.com'
+    UserMailer.login User.all.sample
   end
 end
