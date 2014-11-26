@@ -4,7 +4,7 @@ class AddLanguageToUser < ActiveRecord::Migration
       dir.up do
         add_column :users, :language, :string
         User.find_each do |user|
-          user.language = 'zh-Hans'
+          user.language = User.languages.first
           user.save! validate: false
         end
         change_column :users, :language, :string, null: false
