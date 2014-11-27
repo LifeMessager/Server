@@ -30,6 +30,10 @@ class MailReceiver < ActiveRecord::Base
     refresh_note_date if local_note_date.nil?
   end
 
+  def self.current_date_in_timezone timezone
+    Time.now.in_time_zone(timezone).to_date
+  end
+
   def full_address
     mailer_info = Rails.application.config.mailer_info
     "post+#{address}@#{mailer_info[:domain]}"
@@ -48,6 +52,6 @@ class MailReceiver < ActiveRecord::Base
   private
 
   def refresh_note_date
-    self.local_note_date = Time.now.in_time_zone(timezone).to_date
+    self.local_note_date = self.class.current_date_in_timezone timezone
   end
 end
