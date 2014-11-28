@@ -18,7 +18,7 @@ describe DiariesController, type: :controller do
 
     it "return current user's diary in specified date" do
       mail_receivers = @user.mail_receivers
-      query_note_date = mail_receivers.map(&:local_note_date).sample
+      query_note_date = "2013-02-0#{Array(1..5).sample}"
       expected_ids = mail_receivers.find_by_local_note_date(query_note_date).notes.map(&:id)
       login @user
       get :show, id: query_note_date
