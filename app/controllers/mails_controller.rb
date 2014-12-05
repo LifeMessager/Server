@@ -61,10 +61,7 @@ class MailsController < ApplicationController
   end
 
   def cleaned_content
-    params['stripped-text']
-      .gsub(/\r\n/, "\n\n")
-      .gsub(/\n{3,}/, "\n\n")
-      .gsub(/(\n$){2,}/, '') # 去除最后一段和下一行的换行符
+    NoteHelper.clean_content params['stripped-text']
   end
 
   def recipient

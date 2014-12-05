@@ -16,6 +16,6 @@ class NotesController < ApplicationController
   private
 
   def info_for_create
-    params.permit :content
+    {content: NoteHelper.clean_content(params[:content])}
   end
 end
