@@ -20,7 +20,7 @@ class MailReceiver < ActiveRecord::Base
   validates :local_note_date , presence: true
 
   belongs_to :user
-  has_many :notes
+  has_many :notes, -> { order :created_at }
 
   readonly_attributes :address, :timezone
 
