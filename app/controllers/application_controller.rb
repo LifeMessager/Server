@@ -22,7 +22,16 @@ class ApplicationController < ActionController::Base
     elsif current_user.nil?
       error_info = build_error 'Header Authentication is invalid'
     end
+
     return simple_respond(error_info, status: :unauthorized) if error_info
+
+    unless current_user.email_verified
+      current_user.email_verified = true
+      unless current_user.save
+        message = "save user.email_verified failed, #{current_user.errors.full_messages}"
+        Rails.logger.error "[ApplicationController#verify_token] #{message}"
+      end
+    end
   end
 
   def verify_timezone_header
@@ -31,25 +40,28 @@ class ApplicationController < ActionController::Base
   end
 
   def current_timezone
+    return @_current_timezone if @_current_timezone
     return unless timezone_header = request.headers['Timezone']
     client_time, posixtz, timezone = timezone_header.split ';', 3
     return unless timezone and User.timezones.include? timezone
-    timezone
+    @_current_timezone = timezone
   end
 
   def current_user
+    return @_current_user if @_current_user
     return unless authorization
     return unless authorization[:type] == 'Bearer'
     token = Token.decode authorization[:token]
     return unless token[:success]
-    token[:token].user
+    @_current_user = token[:token].user
   end
 
   def authorization
+    return @_auth_info if @_auth_info
     auth = request.authorization || params[:token]
     return unless auth
     auth_parts = auth.split ' ', 2
-    {type: auth_parts.first, token: auth_parts.last}
+    @_auth_info = {type: auth_parts.first, token: auth_parts.last}
   end
 
   def simple_respond(resp, opts)

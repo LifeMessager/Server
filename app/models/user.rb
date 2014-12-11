@@ -53,7 +53,7 @@ class User < ActiveRecord::Base
     query_time = Time.parse "#{User::ALERT_PLACEHOLDER_DAY} #{formatted_time}"
     start_time = query_time.beginning_of_hour
     end_time = query_time.end_of_hour
-    order(:alert_time).where('? <= alert_time AND alert_time < ?', start_time, end_time)
+    order(:alert_time).where('? <= alert_time AND alert_time < ? AND email_verified = true', start_time, end_time)
   end
 
   def random_diary

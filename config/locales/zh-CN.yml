@@ -6,12 +6,14 @@ zh-CN:
 
   user_mailer:
     welcome:
-      subject: '感谢使用日记服务'
+      subject: '感谢使用 LifeMessager'
       welcome: '非常感谢您的注册，回复这封邮件开始记录您的第一篇日记吧~'
       click_link: '您也可以点击或者复制打开下方链接登录您的账号'
+      is_unexpected_user: '如果这封邮件不是您要求发送的，请勿点击链接或者回复邮件，我们不会向您发送其他内容'
     login:
       subject: '登录到 LifeMessager'
       content: '点击或复制下方链接登录您的账号'
+      is_unexpected_user: '如果这封邮件不是您要求发送的，请勿点击链接或者回复邮件，我们不会向您发送其他内容'
 
   diary_mailer:
     daily:

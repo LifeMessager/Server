@@ -1,9 +1,15 @@
 class UserMailerPreview < ActionMailer::Preview
   def welcome
-    UserMailer.welcome User.all.sample
+    UserMailer.welcome user
   end
 
   def login
-    UserMailer.login User.all.sample
+    UserMailer.login user
+  end
+
+  private
+
+  def user
+    @user ||= User.all.sample
   end
 end

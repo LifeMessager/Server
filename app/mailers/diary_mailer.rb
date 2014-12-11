@@ -10,7 +10,7 @@ class DiaryMailer < ActionMailer::Base
 
   def send_mail_to user, headers = {}, &block
     mail_receiver = MailReceiver.create user: user
-    headers 'List-Unsubscribe' => user.unsubscribe_email_header
+    headers['List-Unsubscribe'] = user.unsubscribe_email_header
     mail fill_default_headers(headers, mail_receiver), &block
   end
 

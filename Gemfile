@@ -53,6 +53,10 @@ group :development, :test do
   # 用来给模型声明数据库结构的工具
   gem 'guard-annotate'
 
+  # 调试
+  gem 'pry'
+  gem 'pry-nav'
+
   # 测试框架
   gem 'rspec-rails'
   # 扩展 rspec ，增加 2.x 版本中的 its 方法

@@ -3,10 +3,9 @@ class MailsController < ApplicationController
   skip_before_action :verify_token
   skip_before_action :verify_timezone_header
   before_action :check_recipient
+  before_action :verify_user_email
 
   def notes
-    mail_receiver = MailReceiver.find_by_address recipient[:id]
-
     unless mail_receiver
       error_log 'notes', "target mail_receiver not exist (#{recipient[:id]})"
       return simple_respond nil, status: :ok
@@ -14,7 +13,7 @@ class MailsController < ApplicationController
 
     note = mail_receiver.notes.build(
       from_email: params['sender'],
-      content: cleaned_content,
+      content: NoteHelper.clean_content(params['stripped-text']),
       mail_receiver: mail_receiver,
       created_at: params['Date']
     )
@@ -33,20 +32,19 @@ class MailsController < ApplicationController
   end
 
   def unsubscriptions
-    user = User.find_by_email params['sender']
     unsubscribe_token = recipient[:id]
 
-    unless user
+    unless email_user
       error_log 'unsubscriptions', "target user not exist (#{params['sender']})"
       return simple_respond nil, status: :ok
     end
 
-    unless user.unsubscribe token: unsubscribe_token
+    unless email_user.unsubscribe token: unsubscribe_token
       error_log 'unsubscriptions', "unsubscribe_token not valid (#{unsubscribe_token})"
       return simple_respond nil, status: :ok
     end
 
-    if user.save
+    if email_user.save
       simple_respond nil, status: :created
     else
       error_log 'unsubscriptions', "unsubscription save failed: #{user.errors}"
@@ -56,12 +54,25 @@ class MailsController < ApplicationController
 
   private
 
-  def error_log method_name, content
-    Rails.logger.error "[MailsController##{method_name}] #{content}"
+  def check_recipient
+    unless recipient[:id]
+      Rails.logger.error "[MailsController] recipient invalid"
+      return simple_respond nil, status: :ok
+    end
   end
 
-  def cleaned_content
-    NoteHelper.clean_content params['stripped-text']
+  def verify_user_email
+    if user = mail_receiver ? mail_receiver.user : email_user
+      user.email_verified = true
+      unless user.save
+        message = "save user.email_verified failed, #{user.errors.full_messages}"
+        error_log 'verify_user_email', message
+      end
+    end
+  end
+
+  def error_log method_name, content
+    Rails.logger.error "[MailsController##{method_name}] #{content}"
   end
 
   def recipient
@@ -71,10 +82,11 @@ class MailsController < ApplicationController
     {type: type, id: id}
   end
 
-  def check_recipient
-    unless recipient[:id]
-      Rails.logger.error "[MailsController] recipient invalid"
-      return simple_respond nil, status: :ok
-    end
+  def email_user
+    @email_user ||= User.find_by_email params['sender']
+  end
+
+  def mail_receiver
+    @mail_receiver ||= MailReceiver.find_by_address recipient[:id]
   end
 end

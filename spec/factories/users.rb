@@ -20,6 +20,7 @@ FactoryGirl.define do
     sequence(:email) { |n| "person#{DateTime.now.to_i}#{n}@example.com" }
     timezone User.timezones[2]
     language User.languages.first
+    email_verified true
     alert_time '08:00'
   end
 end
