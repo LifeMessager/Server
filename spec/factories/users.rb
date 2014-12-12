@@ -11,6 +11,7 @@
 #  timezone          :string(255)      not null
 #  alert_time        :datetime         not null
 #  language          :string(255)      not null
+#  email_verified    :boolean          default(FALSE), not null
 #
 
 # Read about factories at https://github.com/thoughtbot/factory_girl

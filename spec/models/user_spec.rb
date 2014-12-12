@@ -11,6 +11,7 @@
 #  timezone          :string(255)      not null
 #  alert_time        :datetime         not null
 #  language          :string(255)      not null
+#  email_verified    :boolean          default(FALSE), not null
 #
 
 require 'rails_helper'
@@ -82,16 +83,15 @@ describe User, type: :model do
         10.times do |i|
           created_at = DateTime.now + i.day
           mr = create :mail_receiver, user: @user, created_at: created_at
-          create :note, {
-            mail_receiver: mr,
+          mr.notes << Note.new(
             from_email: @user.email,
             content: 'hello world',
             created_at: created_at
-          }
+          )
         end
 
         def random_diary_id
-          @user.random_diary.first.id
+          @user.random_diary.id
         end
 
         sample_result = 10.times.map { random_diary_id != random_diary_id }

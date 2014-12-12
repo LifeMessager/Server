@@ -9,6 +9,7 @@
 #  user_id         :integer          not null
 #  timezone        :string(255)      not null
 #  local_note_date :date             not null
+#  notes_count     :integer          default(0)
 #
 
 require 'securerandom'

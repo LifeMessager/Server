@@ -12,6 +12,7 @@
 #  timezone          :string(255)      not null
 #  alert_time        :datetime         not null
 #  language          :string(255)      not null
+#  email_verified    :boolean          default(FALSE), not null
 #
 
 require 'securerandom'
@@ -58,7 +59,7 @@ class User < ActiveRecord::Base
 
   def random_diary
     return if notes.empty?
-    mail_receivers.sample.notes
+    mail_receivers.where('notes_count > 0').sample
   end
 
   def unsubscribe_link

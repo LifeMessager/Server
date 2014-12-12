@@ -17,7 +17,7 @@ class Note < ActiveRecord::Base
   validates :content      , presence: true
   validates :mail_receiver, presence: true
 
-  belongs_to :mail_receiver
+  belongs_to :mail_receiver, counter_cache: true
 
   def local_note_date
     mail_receiver.local_note_date
