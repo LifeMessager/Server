@@ -23,7 +23,7 @@ class MailReceiver < ActiveRecord::Base
   belongs_to :user
   has_many :notes, -> { order :created_at }
 
-  readonly_attributes :address, :timezone
+  pattr_writer :address, :timezone
 
   after_initialize do
     self.address = SecureRandom.hex unless address

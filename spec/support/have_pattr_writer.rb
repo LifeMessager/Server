@@ -1,13 +1,13 @@
 require 'rspec/expectations'
 
 module CustomMatchers
-  class HaveReadonlyAttribute
+  class HavePattrWriter
     def initialize attribute
       @attribute = attribute
     end
 
     def description
-      "have readonly attribute: #{@attribute}"
+      "have private attribute writer: #{@attribute}"
     end
 
     def matches? instance
@@ -36,8 +36,8 @@ module CustomMatchers
     end
   end
 
-  def have_readonly_attribute attribute
-    HaveReadonlyAttribute.new attribute
+  def have_pattr_writer attribute
+    HavePattrWriter.new attribute
   end
 
   def self.included base

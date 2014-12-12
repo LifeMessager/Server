@@ -25,10 +25,10 @@ describe MailReceiver do
 
   it { is_expected.to respond_to :notes }
 
-  it { is_expected.to have_readonly_attribute :address }
+  it { is_expected.to have_pattr_writer :address }
   its(:address) { is_expected.not_to be_nil }
 
-  it { is_expected.to have_readonly_attribute :timezone }
+  it { is_expected.to have_pattr_writer :timezone }
   its(:timezone) { is_expected.not_to be_nil }
 
   its(:full_address) { is_expected.to eq "post+#{subject.address}@#{mailer_info[:domain]}" }

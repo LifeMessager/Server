@@ -7,10 +7,10 @@ describe Token do
 
   subject { @token }
 
-  it { is_expected.to have_readonly_attribute :id }
+  it { is_expected.to have_pattr_writer :id }
   its(:id) { is_expected.not_to be_nil }
 
-  it { is_expected.to have_readonly_attribute :user }
+  it { is_expected.to have_pattr_writer :user }
 
   it 'receive :expired_interval option' do
     token = Token.new user: @user, expired_interval: -10

@@ -39,7 +39,7 @@ class User < ActiveRecord::Base
   has_many :mail_receivers
   has_many :notes, through: :mail_receivers
 
-  readonly_attributes :subscribed, :unsubscribe_token
+  pattr_writer :subscribed, :unsubscribe_token
 
   before_save { self.email = email.downcase }
 

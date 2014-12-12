@@ -27,10 +27,10 @@ describe User, type: :model do
 
   it { is_expected.to respond_to :mail_receivers }
 
-  it { is_expected.to have_readonly_attribute :subscribed }
+  it { is_expected.to have_pattr_writer :subscribed }
   its(:subscribed) { is_expected.to be true }
 
-  it { is_expected.to have_readonly_attribute :unsubscribe_token }
+  it { is_expected.to have_pattr_writer :unsubscribe_token }
   its(:unsubscribe_token) { is_expected.not_to be_nil }
 
   describe '#email' do

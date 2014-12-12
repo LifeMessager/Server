@@ -4,15 +4,12 @@
 # Is there a way to make Rails ActiveRecord attributes private?
 # http://stackoverflow.com/questions/3764899/is-there-a-way-to-make-rails-activerecord-attributes-private
 
-class ReadonlyAttrError < NoMethodError
-end
-
-module ActiveRecordReadonlyAttrExtension
+module ActiveRecordPattrWriterExtension
   extend ActiveSupport::Concern
 
   # add your static(class) methods here
   module ClassMethods
-    def readonly_attributes *attrs
+    def pattr_writer *attrs
       attrs.each do |attr|
         method_name = "#{attr.to_s}=".to_sym
 
@@ -27,4 +24,4 @@ module ActiveRecordReadonlyAttrExtension
 end
 
 # include the extension
-ActiveRecord::Base.send :include, ActiveRecordReadonlyAttrExtension
+ActiveRecord::Base.send :include, ActiveRecordPattrWriterExtension
