@@ -22,8 +22,9 @@ class Token
       info = JWT.decode(id, args[:secret] || secret).first
       user = User.find_by_id info['user_id']
       return {success: false, message: 'user not exist'} unless user
-      return {success: false, message: 'token expired'} if Time.now.to_i > info['exp']
       {success: true, token: Token.new(user: user, id: id)}
+    rescue JWT::ExpiredSignature
+      {success: false, message: 'token expired'}
     rescue JWT::DecodeError
       {success: false, message: 'unprocessable token'}
     end

@@ -77,14 +77,18 @@ describe UsersController, type: :controller do
   end
 
   describe '#subscribe' do
+    let(:user) do
+      result = create :user
+      result.send :subscribed=, false
+      result
+    end
+
     it 'need authentication' do
-      user = create :user, subscribed: false
       put :subscribe, id: user.id
       expect(response).to have_http_status :unauthorized
     end
 
     it 'subscribe mail for user' do
-      user = create :user, subscribed: false
       login user
       put :subscribe, id: user.id
       expect(response).to have_http_status :created
@@ -94,7 +98,10 @@ describe UsersController, type: :controller do
   end
 
   describe '#unsubscribe' do
-    before { @user = create :user, subscribed: true }
+    before do
+      @user = create :user
+      @user.send :subscribed=, true
+    end
 
     context 'when request with Authorization header' do
       it 'unsubscribe mail for user' do

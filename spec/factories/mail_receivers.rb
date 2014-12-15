@@ -16,7 +16,6 @@
 
 FactoryGirl.define do
   factory :mail_receiver do
-    sequence(:address) { |n| "mail_receiver#{DateTime.now.to_i}#{n}" }
     user
   end
 end
