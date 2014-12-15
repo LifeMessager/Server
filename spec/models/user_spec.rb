@@ -197,10 +197,10 @@ describe User, type: :model do
     it 'generate unsubscribe link' do
       @user.save
       host_domain = Rails.application.config.mailer_info[:domain]
-      unsubscribe_path = Rails.application.routes.url_helpers.user_subscription_path(
+      unsubscribe_path = Rails.application.routes.url_helpers.subscription_user_path(
         token: "unsubscribe #{@user.unsubscribe_token}",
         _method: :delete,
-        user_id: @user.id,
+        id: @user.id,
         action: :unsubscribe
       )
       expect(@user.unsubscribe_link).to eq "#{host_domain}#{unsubscribe_path}"

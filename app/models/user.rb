@@ -67,10 +67,10 @@ class User < ActiveRecord::Base
     host_domain = Rails.application.config.mailer_info[:domain]
     # http://api.rubyonrails.org/classes/ActionDispatch/Routing/UrlFor.html
     # http://stackoverflow.com/questions/341143/can-rails-routing-helpers-i-e-mymodel-pathmodel-be-used-in-models
-    path = Rails.application.routes.url_helpers.user_subscription_path(
+    path = Rails.application.routes.url_helpers.subscription_user_path(
       _method: :delete,
       token: "unsubscribe #{unsubscribe_token}",
-      user_id: id,
+      id: id,
       action: :unsubscribe
     )
     "#{host_domain}#{path}"

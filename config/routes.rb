@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   resources :users, only: [:create, :show, :update] do
     post :login_mail, action: :send_login_mail, on: :collection
 
-    scope on: :member do
+    member do
       put :subscription, action: :subscribe
       delete :subscription, action: :unsubscribe
     end

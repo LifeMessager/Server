@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   skip_before_action :verify_token, only: [:create, :unsubscribe, :send_login_mail]
+  before_action :check_params_user, except: [:create, :send_login_mail, :get_current_user]
 
   def create
     @user = User.new info_of_user
@@ -18,8 +19,6 @@ class UsersController < ApplicationController
   end
 
   def show
-    @user = User.find_by_id params[:id]
-    return simple_respond(nil, status: :not_found) unless @user
     respond_to do |format|
       format.json
       format.xml
@@ -27,8 +26,6 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user = User.find_by_id params[:id]
-    return simple_respond(nil, status: :not_found) unless @user
     unless @user.update update_info
       data = build_error 'Update failed', @user.errors
       return simple_respond data, status: :unprocessable_entity
@@ -39,37 +36,25 @@ class UsersController < ApplicationController
     end
   end
 
-  def get_current_user
-    @user = current_user
-    respond_to do |format|
-      format.json
-      format.xml
-    end
-  end
-
   def subscribe
-    user = User.find_by_id params[:user_id]
-    return simple_respond(nil, status: :not_found) unless user
-    user.subscribe
-    if user.save
+    @user.subscribe
+    if @user.save
       simple_respond nil, status: :created
     else
-      data = build_error 'Subscribe failed', user.errors
+      data = build_error 'Subscribe failed', @user.errors
       simple_respond data, status: :unprocessable_entity
     end
   end
 
   def unsubscribe
-    user = User.find_by_id params[:user_id]
-    return simple_respond(nil, status: :not_found) unless user
     unless authorization && authorization[:token] && authorization[:type] == 'unsubscribe'
       return simple_respond(nil, status: :unauthorized)
     end
-    user.unsubscribe token: authorization[:token]
-    if user.save
+    @user.unsubscribe token: authorization[:token]
+    if @user.save
       simple_respond nil, status: :no_content
     else
-      data = build_error 'Unsubscribe failed', user.errors
+      data = build_error 'Unsubscribe failed', @user.errors
       simple_respond data, status: :unprocessable_entity
     end
   end
@@ -84,7 +69,20 @@ class UsersController < ApplicationController
     simple_respond nil, status: :created
   end
 
+  def get_current_user
+    @user = current_user
+    respond_to do |format|
+      format.json
+      format.xml
+    end
+  end
+
   private
+
+  def check_params_user
+    @user = User.find_by_id params[:id]
+    return simple_respond(nil, status: :not_found) unless @user
+  end
 
   def info_of_user
     params.permit :email, :timezone, :alert_time, :language
