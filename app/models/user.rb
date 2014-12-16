@@ -73,7 +73,7 @@ class User < ActiveRecord::Base
       "(timezone = '#{tz.identifier}' AND alert_time = '#{alert_time}')"
     }.join ' OR '
 
-    where(email_verified: true).where(query_string)
+    where(email_verified: true).where(subscribed: true).where(query_string)
   end
 
   def random_diary

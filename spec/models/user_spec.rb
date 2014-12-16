@@ -42,18 +42,26 @@ describe User, type: :model do
     before(:all) do
       @user1 = create_user Time.now
       @user2 = create_user Time.now - 1.hour
+
+      @unsubscribed_user1 = create_user Time.now
+      @unsubscribed_user1.update_attribute :subscribed, false
+
+      @unsubscribed_user2 = create_user Time.now - 1.hour
+      @unsubscribed_user2.update_attribute :subscribed, false
     end
 
     context 'when alert time unspecified' do
       subject { User.alertable.pluck :id }
       it { is_expected.to include @user1.id }
       it { is_expected.not_to include @user2.id }
+      it { is_expected.not_to include @unsubscribed_user1.id }
     end
 
     context 'when alert time specified' do
       subject { User.alertable(@user2.timezone.parse @user2.alert_time).pluck :id }
       it { is_expected.not_to include @user1.id }
       it { is_expected.to include @user2.id }
+      it { is_expected.not_to include @unsubscribed_user2.id }
     end
   end
 
