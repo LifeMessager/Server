@@ -47,7 +47,7 @@ describe UsersController, type: :controller do
       expect(respond_json).to include *expected_user_info_keys
       expect(respond_json['timezone']).to eq changed_timezone
       user.reload
-      expect(user.timezone).to eq changed_timezone
+      expect(user.timezone.identifier).to eq changed_timezone
     end
 
     it 'allow update user alert_time' do

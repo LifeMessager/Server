@@ -23,7 +23,7 @@ class MailReceiver < ActiveRecord::Base
   belongs_to :user
   has_many :notes, -> { order :created_at }
 
-  pattr_writer :address, :timezone
+  pattr_writer :address
 
   after_initialize do
     self.address = SecureRandom.hex unless address
@@ -50,9 +50,24 @@ class MailReceiver < ActiveRecord::Base
     end
   end
 
+  def timezone
+    return unless identifier = read_attribute(:timezone)
+    ActiveSupport::TimeZone[identifier]
+  end
+
   private
 
   def refresh_note_date
     self.local_note_date = self.class.current_date_in_timezone timezone
+  end
+
+  def timezone= input_timezone
+    if input_timezone.instance_of? ActiveSupport::TimeZone
+      input_timezone = input_timezone.identifier
+    end
+    unless User.timezones.include? input_timezone
+      input_timezone = nil
+    end
+    write_attribute :timezone, input_timezone
   end
 end

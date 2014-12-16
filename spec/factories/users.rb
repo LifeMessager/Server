@@ -9,9 +9,9 @@
 #  subscribed        :boolean          default(TRUE)
 #  unsubscribe_token :string(255)      not null
 #  timezone          :string(255)      not null
-#  alert_time        :datetime         not null
 #  language          :string(255)      not null
 #  email_verified    :boolean          default(FALSE), not null
+#  alert_time        :string(255)      default("08:00"), not null
 #
 
 # Read about factories at https://github.com/thoughtbot/factory_girl

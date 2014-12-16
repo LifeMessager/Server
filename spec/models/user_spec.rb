@@ -9,14 +9,12 @@
 #  subscribed        :boolean          default(TRUE)
 #  unsubscribe_token :string(255)      not null
 #  timezone          :string(255)      not null
-#  alert_time        :datetime         not null
 #  language          :string(255)      not null
 #  email_verified    :boolean          default(FALSE), not null
+#  alert_time        :string(255)      default("08:00"), not null
 #
 
 require 'rails_helper'
-
-TimeZone = ActiveSupport::TimeZone
 
 describe User, type: :model do
   before { @user = build :user }
@@ -32,6 +30,32 @@ describe User, type: :model do
 
   it { is_expected.to have_pattr_writer :unsubscribe_token }
   its(:unsubscribe_token) { is_expected.not_to be_nil }
+
+  describe '.alertable' do
+    def create_user alert_time
+      user = build :user
+      user.alert_time = alert_time.in_time_zone(user.timezone).strftime '%H:00'
+      user.save!
+      user
+    end
+
+    before(:all) do
+      @user1 = create_user Time.now
+      @user2 = create_user Time.now - 1.hour
+    end
+
+    context 'when alert time unspecified' do
+      subject { User.alertable.pluck :id }
+      it { is_expected.to include @user1.id }
+      it { is_expected.not_to include @user2.id }
+    end
+
+    context 'when alert time specified' do
+      subject { User.alertable(@user2.timezone.parse @user2.alert_time).pluck :id }
+      it { is_expected.not_to include @user1.id }
+      it { is_expected.to include @user2.id }
+    end
+  end
 
   describe '#email' do
     it { is_expected.to respond_to :email }
@@ -143,32 +167,10 @@ describe User, type: :model do
     end
   end
 
-  describe '#alert_time' do
-    it 'is required' do
-      @user.alert_time = nil
-      expect(@user).to be_invalid
-      expect(@user.errors[:alert_time]).to include ModelError.BLANK
-    end
-
-    it 'cannot been assign without timezone' do
-      @user.timezone = nil
-      expect(@user.alert_time).to be_nil
-      @user.alert_time = '08:00'
-      expect(@user.alert_time).to be_nil
-    end
-
-    it 'save time to database with datetime format' do
-      @user.alert_time = '08:00'
-      expect_datetime = TimeZone.new(@user.timezone).parse "#{User::ALERT_PLACEHOLDER_DAY} 08:00"
-      expect(@user.alert_time).to eq '08:00'
-      expect(@user.read_attribute :alert_time).to eq expect_datetime
-    end
-  end
-
   describe '#timezone' do
     its(:timezone) { is_expected.not_to be_nil }
 
-    its(:tz) { is_expected.to be_a_kind_of(TimeZone).and eq TimeZone.new subject.timezone }
+    its(:timezone) { is_expected.to be_a_kind_of ActiveSupport::TimeZone }
 
     it 'is required' do
       @user.timezone = nil
@@ -182,10 +184,18 @@ describe User, type: :model do
     end
 
     it 'accept ActiveSupport::TimeZone instance' do
-      instance = TimeZone.new User.timezones.sample
+      instance = ActiveSupport::TimeZone.all.sample
       @user.timezone = instance
       expect(@user).to be_valid
-      expect(@user.timezone).to eq instance.identifier
+      expect(@user.timezone.identifier).to eq instance.identifier
+    end
+  end
+
+  describe '#alert_time' do
+    it 'is required' do
+      @user.alert_time = nil
+      expect(@user).to be_invalid
+      expect(@user.errors[:alert_time]).to include ModelError.BLANK
     end
   end
 
