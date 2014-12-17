@@ -36,6 +36,22 @@ class UsersController < ApplicationController
     end
   end
 
+  def destroy
+    if @user.destroy
+      simple_respond nil, status: :no_content
+    else
+      data = build_error 'Destroy user failed', @user.errors
+      simple_respond data, status: :unprocessable_entity
+    end
+  end
+
+  def cancel_destroy
+    if @user.destroyed?
+      User.restore @user.id
+    end
+    simple_respond nil, status: :no_content
+  end
+
   def subscribe
     @user.subscribe
     if @user.save
@@ -80,7 +96,7 @@ class UsersController < ApplicationController
   private
 
   def check_params_user
-    @user = User.find_by_id params[:id]
+    @user = User.with_deleted.find_by_id params[:id]
     return simple_respond(nil, status: :not_found) unless @user
   end
 

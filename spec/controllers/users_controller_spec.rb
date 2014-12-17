@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-expected_user_info_keys = ['id', 'email', 'created_at', 'subscribed', 'timezone', 'alert_time']
+expected_user_info_keys = ['id', 'email', 'created_at', 'deleted_at', 'subscribed', 'timezone', 'alert_time']
 
 describe UsersController, type: :controller do
   describe '#create' do
@@ -27,6 +27,15 @@ describe UsersController, type: :controller do
       login user
       get :show, id: user.id
       expect(response).to have_http_status :ok
+      expect(respond_json).to include *expected_user_info_keys
+    end
+
+    it 'can get deleted user' do
+      user.destroy!
+      login user
+      get :show, id: user.id
+      expect(response).to have_http_status :ok
+      expect(respond_json['deleted_at']).to eq Time.zone.now.as_json
       expect(respond_json).to include *expected_user_info_keys
     end
   end
@@ -58,6 +67,40 @@ describe UsersController, type: :controller do
       expect(respond_json['alert_time']).to eq '01:00'
       user.reload
       expect(user.alert_time).to eq '01:00'
+    end
+  end
+
+  describe '#destroy' do
+    let(:user) { create :user }
+
+    it 'need authentication' do
+      delete :destroy, id: user.id
+      expect(response).to have_http_status :unauthorized
+    end
+
+    it 'will mark user deleted' do
+      login user
+      delete :destroy, id: user.id
+      expect(response).to have_http_status :no_content
+      user.reload
+      expect(user).to be_destroyed
+    end
+  end
+
+  describe '#cancel_destroy' do
+    let(:user) { create :user, deleted_at: Time.now }
+
+    it 'need authentication' do
+      post :cancel_destroy, id: user.id
+      expect(response).to have_http_status :unauthorized
+    end
+
+    it 'restore deleted user' do
+      login user
+      post :cancel_destroy, id: user.id
+      expect(response).to have_http_status :no_content
+      user.reload
+      expect(user).not_to be_destroyed
     end
   end
 

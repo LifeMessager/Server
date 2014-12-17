@@ -1,5 +1,19 @@
 module ActiveSupport
   class TimeWithZone
-    alias_method :as_json, :iso8601
+    def as_json *args
+      iso8601
+    end
+  end
+end
+
+class DateTime
+  def as_json *args
+    iso8601
+  end
+end
+
+class Time
+  def as_json *args
+    iso8601
   end
 end

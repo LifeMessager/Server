@@ -13,6 +13,7 @@
 #  language          :string(255)      not null
 #  email_verified    :boolean          default(FALSE), not null
 #  alert_time        :string(255)      default("08:00"), not null
+#  deleted_at        :datetime
 #
 
 require 'securerandom'
@@ -41,6 +42,8 @@ class User < ActiveRecord::Base
   def self.languages
     ['zh-Hans-CN', 'zh-Hant-TW', 'en']
   end
+
+  acts_as_paranoid
 
   validates :email,      presence: true, format: { with: VALID_EMAIL_REGEXP }, uniqueness: { case_sensitive: false }
   validates :timezone,   presence: true, inclusion: { in: TimezoneValidator.new }
@@ -74,6 +77,10 @@ class User < ActiveRecord::Base
     }.join ' OR '
 
     where(email_verified: true).where(subscribed: true).where(query_string)
+  end
+
+  scope :really_destroyable, -> do
+    only_deleted.where('? <= deleted_at', Time.zone.now.beginning_of_day - 7.days)
   end
 
   def random_diary
@@ -118,6 +125,10 @@ class User < ActiveRecord::Base
     return unless subscribed
     self.subscribed = false
     true
+  end
+
+  def export_data **options
+    mail_receivers.includes(:notes).where('notes_count > 0').as_json({include: :notes}.merge options)
   end
 
   def timezone

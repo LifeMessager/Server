@@ -12,6 +12,7 @@
 #  language          :string(255)      not null
 #  email_verified    :boolean          default(FALSE), not null
 #  alert_time        :string(255)      default("08:00"), not null
+#  deleted_at        :datetime
 #
 
 # Read about factories at https://github.com/thoughtbot/factory_girl

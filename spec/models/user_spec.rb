@@ -12,6 +12,7 @@
 #  language          :string(255)      not null
 #  email_verified    :boolean          default(FALSE), not null
 #  alert_time        :string(255)      default("08:00"), not null
+#  deleted_at        :datetime
 #
 
 require 'rails_helper'
@@ -63,6 +64,21 @@ describe User, type: :model do
       it { is_expected.to include @user2.id }
       it { is_expected.not_to include @unsubscribed_user2.id }
     end
+  end
+
+  describe '.really_destroyable' do
+    before(:all) do
+      @user1 = create :user
+      @user2 = create :user
+
+      @user1.update_attribute :deleted_at, Time.now
+      @user2.update_attribute :deleted_at, Time.now - 8.days
+    end
+
+    subject { User.really_destroyable.pluck :id }
+
+    it { is_expected.to include @user1.id }
+    it { is_expected.not_to include @user2.id }
   end
 
   describe '#email' do
