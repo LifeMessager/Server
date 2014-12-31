@@ -9,7 +9,7 @@ RSpec.describe UserMailer, :type => :mailer do
     let(:mail) { UserMailer.welcome user }
 
     it 'send a welcome email to user' do
-      expect(mail).to have_subject 'user_mailer.welcome.subject'
+      expect(mail).to have_subject 'subject'
       expect(mail).to reply_to "#{mail_info[:nickname]} <#{user.mail_receivers.first.full_address}>"
       expect(mail).to deliver_to user.email
       expect(mail).to deliver_from "#{mail_info[:nickname]} <#{mail_info[:deliverer]}@#{mail_info[:domain]}>"
@@ -24,7 +24,19 @@ RSpec.describe UserMailer, :type => :mailer do
     let(:mail) { UserMailer.login user }
 
     it "renders the headers" do
-      expect(mail).to have_subject 'user_mailer.login.subject'
+      expect(mail).to have_subject 'subject'
+      expect(mail).to deliver_to user.email
+      expect(mail).to deliver_from "#{mail_info[:nickname]} <#{mail_info[:deliverer]}@#{mail_info[:domain]}>"
+    end
+  end
+
+  describe ".destoryed" do
+    let(:user) { create :user, deleted_at: Time.now }
+
+    let(:mail) { UserMailer.destroyed user }
+
+    it "renders the headers" do
+      expect(mail).to have_subject 'subject'
       expect(mail).to deliver_to user.email
       expect(mail).to deliver_from "#{mail_info[:nickname]} <#{mail_info[:deliverer]}@#{mail_info[:domain]}>"
     end

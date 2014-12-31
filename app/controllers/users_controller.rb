@@ -38,6 +38,7 @@ class UsersController < ApplicationController
 
   def destroy
     if @user.destroy
+      UserMailer.destroyed(@user).deliver
       simple_respond nil, status: :no_content
     else
       data = build_error 'Destroy user failed', @user.errors

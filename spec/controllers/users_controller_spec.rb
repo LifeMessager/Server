@@ -79,6 +79,9 @@ describe UsersController, type: :controller do
     end
 
     it 'will mark user deleted' do
+      expect(UserMailer).to receive(:destroyed).and_call_original do |receive_user|
+        expect(receive_user.email).to eq user.email
+      end
       login user
       delete :destroy, id: user.id
       expect(response).to have_http_status :no_content

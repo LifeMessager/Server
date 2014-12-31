@@ -1,0 +1,5 @@
+
+%section= t 'user_mailer.destroyed.content', deleted_at: l(@user.deleted_at)
+
+%section
+  %a{href: @token.login_url}= @token.login_url

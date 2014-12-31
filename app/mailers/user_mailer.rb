@@ -4,7 +4,6 @@ class UserMailer < ActionMailer::Base
     mail_receiver = MailReceiver.create user: user
     headers = {
       reply_to: beauty_reply_to(mail_receiver),
-      subject: I18n.t('user_mailer.welcome.subject'),
       :'List-Unsubscribe' => user.unsubscribe_email_header
     }
     mail fill_default_headers(headers, user)
@@ -17,7 +16,13 @@ class UserMailer < ActionMailer::Base
   #
   def login user
     @token = Token.new user: user
-    mail fill_default_headers({subject: I18n.t('user_mailer.login.subject')}, user)
+    mail fill_default_headers(nil, user)
+  end
+
+  def destroyed user
+    @user = user
+    @token = Token.new user: user
+    mail fill_default_headers(nil, user)
   end
 
   private
@@ -28,6 +33,6 @@ class UserMailer < ActionMailer::Base
       to: user.email
     }
 
-    default_headers.merge headers
+    default_headers.merge headers || {}
   end
 end
