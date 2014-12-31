@@ -248,6 +248,7 @@ DEPENDENCIES
   jwt
   kaminari
   mailgun_rails
+  paranoia (~> 2.0)
   pg
   pry
   pry-nav

@@ -7,6 +7,11 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.login user
   end
 
+  def destroyed
+    user.deleted_at = Time.now
+    UserMailer.destroyed user
+  end
+
   private
 
   def user

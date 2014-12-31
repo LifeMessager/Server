@@ -14,6 +14,9 @@ zh-CN:
       subject: '登录到 LifeMessager'
       content: '点击或复制下方链接登录您的账号'
       is_unexpected_user: '如果这封邮件不是您要求发送的，请勿点击链接或者回复邮件，我们不会向您发送其他内容'
+    destroyed:
+      subject: '您的 LifeMessager 帐号已被标记为删除'
+      content: '操作时间：%{deleted_at}。如果这个操作不是您本人所为，请点击或复制下方链接登录您的账号并进行撤销操作'
 
   diary_mailer:
     daily:

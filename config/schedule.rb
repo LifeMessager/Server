@@ -5,3 +5,7 @@ job_type :rake_with_env , "cd :path && source .env && :environment_variable=:env
 every 1.hours do
   rake_with_env 'schedule:mail_hourly', :output => "log/crontab.log"
 end
+
+every 1.days do
+  rake_with_env 'schedule:delete_user_daily', :output => "log/crontab.log"
+end

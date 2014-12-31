@@ -20,7 +20,7 @@ class Token
   def self.decode id, **args
     begin
       info = JWT.decode(id, args[:secret] || secret).first
-      user = User.find_by_id info['user_id']
+      user = User.with_deleted.find_by_id info['user_id']
       return {success: false, message: 'user not exist'} unless user
       {success: true, token: Token.new(user: user, id: id)}
     rescue JWT::ExpiredSignature
