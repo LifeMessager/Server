@@ -16,7 +16,7 @@ task :mail_hourly => :environment do
         DiaryMailer.daily(user).deliver!
         log 'mail_hourly', "Alert user #{user.email} finished"
       rescue => error
-        log 'mail_hourly', "Alert user #{user.email} failed: \n #{error.backtrace.join "\n"}"
+        log 'mail_hourly', "Alert user #{user.email} failed: \n #{error.message} \n #{error.backtrace.join "\n"}"
       end
     end
     log 'mail_hourly', 'Alert user all finished'
@@ -34,7 +34,7 @@ task :delete_user_daily => :environment do
       User.destroy! destroyable_user_ids
       log 'delete_user_daily', "Destroy user finished"
     rescue => error
-      log 'delete_user_daily', "Destroy user failed: \n #{error.backtrace.join "\n"}"
+      log 'delete_user_daily', "Destroy user failed: \n #{error.message} \n #{error.backtrace.join "\n"}"
     end
   end
 end
