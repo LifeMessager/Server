@@ -1,6 +1,6 @@
 module ActiveSupport
   class TimeZone
-    def identifier
+    def identifier *args
       tzinfo.name
     end
 

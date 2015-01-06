@@ -22,6 +22,10 @@ class UserMailer < ActionMailer::Base
   def destroyed user
     @user = user
     @token = Token.new user: user
+    attachments['exported_data.json'] = {
+      mime_type: 'application/json',
+      content: user.export_data.to_json
+    }
     mail fill_default_headers(nil, user)
   end
 
