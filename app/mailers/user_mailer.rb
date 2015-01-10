@@ -1,7 +1,7 @@
 class UserMailer < ActionMailer::Base
   def welcome user
     @token = Token.new user: user
-    mail_receiver = MailReceiver.create user: user
+    mail_receiver = MailReceiver.for user
     headers = {
       reply_to: beauty_reply_to(mail_receiver),
       :'List-Unsubscribe' => user.unsubscribe_email_header

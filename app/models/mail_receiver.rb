@@ -31,6 +31,10 @@ class MailReceiver < ActiveRecord::Base
     refresh_note_date if local_note_date.nil?
   end
 
+  def self.for user, **opts
+    find_or_create_by user: user, local_note_date: opts[:date] || Date.today.in_time_zone(user.timezone).to_date
+  end
+
   def self.current_date_in_timezone timezone
     Time.now.in_time_zone(timezone).to_date
   end

@@ -45,4 +45,39 @@ describe MailReceiver do
     expect(@mr.timezone).to eq @mr.user.timezone
     expect(@mr.timezone).not_to eq originUser.timezone
   end
+
+  describe '.for' do
+    let(:user) { create :user }
+
+    subject { MailReceiver }
+
+    it { is_expected.to respond_to :for }
+
+    context 'when the mail receiver for specified date not exist' do
+      it 'will create a new record for today' do
+        expect(user.mail_receivers).to be_empty
+        newMailReceiver = MailReceiver.for user
+        expect(newMailReceiver.local_note_date).to eq Date.today
+        expect(user.mail_receivers.count).to eq 1
+        expect(user.mail_receivers.last).to eq newMailReceiver
+      end
+
+      it 'can specify date' do
+        expect(user.mail_receivers).to be_empty
+        newMailReceiver = MailReceiver.for user, date: Date.today - 1.day
+        expect(newMailReceiver.local_note_date).to eq Date.today - 1.day
+        expect(user.mail_receivers.count).to eq 1
+        expect(user.mail_receivers.last).to eq newMailReceiver
+      end
+    end
+
+    context 'when the mail receiver for specified date existed' do
+      let(:mail_receiver) { create :mail_receiver }
+
+      it 'will lookup the existed record' do
+        result = MailReceiver.for mail_receiver.user
+        expect(result).to eq mail_receiver
+      end
+    end
+  end
 end
