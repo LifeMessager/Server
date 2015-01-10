@@ -25,16 +25,17 @@ end
 
 desc 'Check destroyable user daily'
 task :delete_user_daily => :environment do
-  destroyable_user_ids = User.really_destroyable.pluck :id
-  if destroyable_user_ids.empty?
+  if User.really_destroyable.empty?
     log 'delete_user_daily', 'No destroyable users'
   else
     log 'delete_user_daily', 'Destroy user start'
-    begin
-      User.destroy! destroyable_user_ids
-      log 'delete_user_daily', "Destroy user finished"
-    rescue => error
-      log 'delete_user_daily', "Destroy user failed: \n #{error.message} \n #{error.backtrace.join "\n"}"
+    User.really_destroyable.find_each do |user|
+      begin
+        user.really_destroy!
+        log 'delete_user_daily', "Destroy user #{user.email} finished"
+      rescue => error
+        log 'delete_user_daily', "Destroy user #{user.email} failed: \n #{error.message} \n #{error.backtrace.join "\n"}"
+      end
     end
   end
 end
