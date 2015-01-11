@@ -30,6 +30,7 @@ set :nginx_pid, "/var/run/nginx.pid" # Default path is "/run/nginx.pid"
 # set :nginx_location, # Default path is "/etc/nginx"
 set :nginx_access_log_file, "/var/log/nginx/#{fetch(:application)}_access.log" # Default is shared_path.join('log/nginx.access.log')
 set :nginx_error_log_file, "/var/log/nginx/#{fetch(:application)}_error.log" # Default is shared_path.join('log/nginx.error.log')
+set :nginx_gzip, true
 
 # setup unicorn
 # set :unicorn_service, # Default is "unicorn_#{fetch(:application)}_#{fetch(:stage)}"
