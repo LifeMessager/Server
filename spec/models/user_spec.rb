@@ -279,4 +279,19 @@ describe User, type: :model do
       expect(@user.errors.first).to include :language
     end
   end
+
+  describe '#really_destroy!' do
+    let(:user) { create :user }
+
+    it 'will destroy dependent mail receiver and notes' do
+      mail_receiver = create :mail_receiver, user: user
+      note = create :note, mail_receiver: mail_receiver
+      expect(user.mail_receivers.count).to eq 1
+      user.destroy
+      expect(user.mail_receivers.count).to eq 1
+      user.really_destroy!
+      expect(MailReceiver.find_by_id mail_receiver.id).to be_nil
+      expect(Note.find_by_id note.id).to be_nil
+    end
+  end
 end

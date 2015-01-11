@@ -146,6 +146,15 @@ class User < ActiveRecord::Base
     write_attribute :timezone, input_timezone
   end
 
+  # 因为在调用 destroy 的时候不应该删除 mail_receiver ，只有在真正删除
+  # 数据的时候才需要这么做
+  def really_destroy!
+    User.transaction do
+      mail_receivers.destroy_all
+      super
+    end
+  end
+
   private
 
   def generate_unsubscribe_token
