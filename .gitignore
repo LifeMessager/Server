@@ -17,6 +17,7 @@
 
 config/cap_config.yml
 config/database.yml
+config/ssl
 vendor/cache
 vendor/bundle
 .env

@@ -16,7 +16,7 @@ set :configs, YAML.load_file(Pathname.new './config/cap_config.yml')
 
 # setup repo details
 # set :scm, :git # Default value for :scm is :git
-set :repo_url, 'https://github.com/bolasblack/diary.git'
+set :repo_url, 'https://github.com/LifeMessager/Server.git'
 
 # setup rbenv.
 set :rbenv_type, :user
@@ -30,6 +30,9 @@ set :nginx_pid, "/var/run/nginx.pid" # Default path is "/run/nginx.pid"
 # set :nginx_location, # Default path is "/etc/nginx"
 set :nginx_access_log_file, "/var/log/nginx/#{fetch(:application)}_access.log" # Default is shared_path.join('log/nginx.access.log')
 set :nginx_error_log_file, "/var/log/nginx/#{fetch(:application)}_error.log" # Default is shared_path.join('log/nginx.error.log')
+set :nginx_use_ssl, true
+set :nginx_ssl_cert_local_path, Pathname.new('./config/ssl/cert.crt').to_s
+set :nginx_ssl_cert_key_local_path, Pathname.new('./config/ssl/private_key.key').to_s
 set :nginx_gzip, true
 
 # setup unicorn
