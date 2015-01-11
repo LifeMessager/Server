@@ -1,6 +1,6 @@
 
 - @diary_notes.each do |note|
-  %section= note.content
+  %section{style: "margin-bottom: 20px"}!= note_content_to_html(note.content)
 
 - if @diary_notes.empty?
   %section= t 'diary_mailer.daily.empty_diary_content'

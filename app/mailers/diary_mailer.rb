@@ -1,4 +1,6 @@
 class DiaryMailer < ActionMailer::Base
+  helper_method :note_content_to_html, :note_content_to_text
+
   def daily user
     random_diary = user.random_diary
     @diary_notes = random_diary ? random_diary.notes : []
@@ -8,6 +10,16 @@ class DiaryMailer < ActionMailer::Base
   end
 
   private
+
+  def note_content_to_html content
+    p_tag_style="margin: 5px 0"
+    inner_html = NoteHelper.clean_content(content).split(/\n\n/).join("</p><p style='#{p_tag_style}'>")
+    "<p style='#{p_tag_style}'>#{inner_html}</p>"
+  end
+
+  def note_content_to_text content
+    NoteHelper.clean_content content
+  end
 
   def send_mail_to user, headers = {}, &block
     mail_receiver = MailReceiver.for user
