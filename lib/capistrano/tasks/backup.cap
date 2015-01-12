@@ -1,0 +1,38 @@
+
+def backup_config_file_path
+  shared_path.join('backup')
+end
+
+namespace :backup do
+
+  desc 'Install backup gem'
+  task :install_gem do
+    on roles :app do
+      unless bin_exists? 'backup'
+        gem_install 'backup'
+      end
+    end
+  end
+
+  desc "Upload backup config files."
+  task :upload_config do
+    on roles :app do
+      execute :rm, '-rf', backup_config_file_path if dir_exists? backup_config_file_path
+      execute :mkdir, '-pv', backup_config_file_path.join('models')
+      upload! template("backup/config.rb.erb"), "#{backup_config_file_path}/config.rb"
+      upload! template('backup/models/backup_db.rb.erb'), "#{backup_config_file_path}/models/backup_db.rb"
+    end
+  end
+
+end
+
+namespace :load do
+  task :defaults do
+    set :templates_path, 'config/deploy/templates'
+  end
+end
+
+task :setup do
+  invoke 'backup:install_gem'
+  invoke 'backup:upload_config'
+end

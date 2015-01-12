@@ -10,12 +10,12 @@ task :mail_hourly => :environment do
   if User.alertable.empty?
     log 'mail_hourly', 'No alertable user'
   else
-    log 'mail_hourly', 'Alert user start'
+    log 'mail_hourly', '===================== Alert user start ====================='
     User.alertable.find_each do |user|
       DiaryMailer.daily(user).deliver!
       log 'mail_hourly', "Alert user #{user.email} finished"
     end
-    log 'mail_hourly', 'Alert user all finished'
+    log 'mail_hourly', '===================== Alert user finished =================='
   end
 end
 
@@ -24,11 +24,12 @@ task :delete_user_daily => :environment do
   if User.really_destroyable.empty?
     log 'delete_user_daily', 'No destroyable users'
   else
-    log 'delete_user_daily', 'Destroy user start'
+    log 'delete_user_daily', '==================== Destroy user start ===================='
     User.really_destroyable.find_each do |user|
       user.really_destroy!
       log 'delete_user_daily', "Destroy user #{user.email} finished"
     end
+    log 'delete_user_daily', '==================== Destroy user finished ================='
   end
 end
 

@@ -18,6 +18,8 @@
 config/cap_config.yml
 config/database.yml
 config/ssl
+config/backup/*.rb
+config/backup/models/*.rb
 vendor/cache
 vendor/bundle
 .env

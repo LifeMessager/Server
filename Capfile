@@ -26,5 +26,7 @@ require 'capistrano/postgresql'
 require 'capistrano/rbenv_install'
 require "whenever/capistrano"
 
+require "./lib/capistrano/dsl/dsl.rb"
+
 # Loads custom tasks from `lib/capistrano/tasks' if you have any defined.
 Dir.glob('lib/capistrano/tasks/*.cap').each { |r| import r }
