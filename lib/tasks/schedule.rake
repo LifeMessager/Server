@@ -12,12 +12,8 @@ task :mail_hourly => :environment do
   else
     log 'mail_hourly', 'Alert user start'
     User.alertable.find_each do |user|
-      begin
-        DiaryMailer.daily(user).deliver!
-        log 'mail_hourly', "Alert user #{user.email} finished"
-      rescue => error
-        log 'mail_hourly', "Alert user #{user.email} failed: \n #{error.message} \n #{error.backtrace.join "\n"}"
-      end
+      DiaryMailer.daily(user).deliver!
+      log 'mail_hourly', "Alert user #{user.email} finished"
     end
     log 'mail_hourly', 'Alert user all finished'
   end
@@ -30,12 +26,8 @@ task :delete_user_daily => :environment do
   else
     log 'delete_user_daily', 'Destroy user start'
     User.really_destroyable.find_each do |user|
-      begin
-        user.really_destroy!
-        log 'delete_user_daily', "Destroy user #{user.email} finished"
-      rescue => error
-        log 'delete_user_daily', "Destroy user #{user.email} failed: \n #{error.message} \n #{error.backtrace.join "\n"}"
-      end
+      user.really_destroy!
+      log 'delete_user_daily', "Destroy user #{user.email} finished"
     end
   end
 end

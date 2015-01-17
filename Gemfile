@@ -86,6 +86,9 @@ end
 # Use unicorn as the app server
 gem 'unicorn'
 
+# Collect errors
+gem "sentry-raven"
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 gem 'capistrano', '~> 3.1.0'
