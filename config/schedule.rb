@@ -13,7 +13,7 @@ end
 every :day, at: '20:00' do
   command_string = <<-SHELL
     echo "=================== Start Backup Database ==================";
-    backup perform -t backup_db --config-file ../../shared/backup/config.rb;
+    hash backup && backup perform -t backup_db --config-file ../../shared/backup/config.rb;
     echo "=================== Finish Backup Database =================";
   SHELL
 

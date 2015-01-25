@@ -25,24 +25,11 @@ set :rbenv_prefix, "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rben
 set :rbenv_map_bins, %w{rake gem bundle ruby rails backup}
 
 # setup nginx
-set :nginx_server_name, 'lifemessager.com' # Default is server's IP address
 set :nginx_pid, "/var/run/nginx.pid" # Default path is "/run/nginx.pid"
-# set :nginx_location, # Default path is "/etc/nginx"
 set :nginx_access_log_file, "/var/log/nginx/#{fetch(:application)}_access.log" # Default is shared_path.join('log/nginx.access.log')
 set :nginx_error_log_file, "/var/log/nginx/#{fetch(:application)}_error.log" # Default is shared_path.join('log/nginx.error.log')
-set :nginx_use_ssl, true
-set :nginx_ssl_cert_local_path, Pathname.new('./config/ssl/cert.crt').to_s
-set :nginx_ssl_cert_key_local_path, Pathname.new('./config/ssl/private_key.key').to_s
 set :nginx_gzip, true
-
-# setup backup
-set :backup_access_key_id, cap_configs('backup_access_key_id')
-set :backup_secret_access_key, cap_configs('backup_secret_access_key')
-set :backup_bucket, cap_configs('backup_bucket')
-set :backup_gpg_email, cap_configs('backup_gpg_email')
-set :backup_gpg_public_key, cap_configs('backup_gpg_public_key')
-set :backup_notify_url, cap_configs('backup_notify_url')
-set :backup_notify_params, cap_configs('backup_notify_params')
+# set :nginx_location, # Default path is "/etc/nginx"
 
 # setup unicorn
 # set :unicorn_service, # Default is "unicorn_#{fetch(:application)}_#{fetch(:stage)}"

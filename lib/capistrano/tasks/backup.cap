@@ -33,6 +33,8 @@ namespace :load do
 end
 
 task :setup do
-  invoke 'backup:install_gem'
-  invoke 'backup:upload_config'
+  if fetch(:backup_database)
+    invoke 'backup:install_gem'
+    invoke 'backup:upload_config'
+  end
 end

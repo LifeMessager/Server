@@ -1,7 +1,6 @@
 set :stage, :development
-set :branch, "develop"
+set :branch, 'develop'
 set :rails_env, fetch(:stage)
-# set :deploy_user,
 
 # Simple Role Syntax
 # ==================
@@ -20,7 +19,10 @@ set :rails_env, fetch(:stage)
 # definition into the server list. The second argument
 # something that quacks like a hash can be used to set
 # extended properties on the server.
-server fetch(:configs)['development']['server'], user: fetch(:deploy_user), roles: %w{web app db}, primary: true #, my_property: :my_value
+server cap_configs('server_name').call, user: fetch(:deploy_user), roles: %w{web app db}, primary: true #, my_property: :my_value
+
+# Nginx setup
+set :nginx_server_name, cap_configs('server_name') # Default is server's IP address
 
 # you can set custom ssh options
 # it's possible to pass any option but you need to keep in mind that net/ssh understand limited list of options
