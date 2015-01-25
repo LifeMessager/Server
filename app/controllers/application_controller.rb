@@ -77,6 +77,13 @@ class ApplicationController < ActionController::Base
   end
 
   def build_error message, *args
-    {message: message, errors: args.first || []}
+    errors = args.first || []
+    if errors.is_a? ActiveModel::Errors
+      resourceName = errors.instance_eval{ @base }.class.name
+      errors = errors.messages.map do |field, errors|
+        {resource: resourceName, field: field.to_s, code: errors.first}
+      end
+    end
+    {message: message, errors: errors}
   end
 end

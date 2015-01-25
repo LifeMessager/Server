@@ -16,4 +16,23 @@ describe ApplicationController, type: :controller do
     expect(response).to have_http_status :precondition_required
     expect(respond_json['message']).to eq 'Header Timezone is required'
   end
+
+  describe '#build_error' do
+    it 'will format ActiveModel::Errors' do
+      controller = ApplicationController.new
+      message = 'Note error'
+      errors = ActiveModel::Errors.new build :note
+      errors[:content] = "invalid"
+      expect(controller.instance_eval { build_error(message, errors)[:errors] })
+        .to eq [resource: 'Note', field: 'content', code: 'invalid']
+    end
+
+    it 'only format ActiveModel::Errors' do
+      controller = ApplicationController.new
+      message = 'Note error'
+      errors = [resource: 'Note', field: 'content', code: 'invalid']
+      expect(controller.instance_eval { build_error(message, errors)[:errors] })
+        .to eq [resource: 'Note', field: 'content', code: 'invalid']
+    end
+  end
 end
