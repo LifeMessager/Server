@@ -1,4 +1,8 @@
 
+def monit_exists?
+  dir_exists? "/etc/monit.d/"
+end
+
 def monit_conf_d
   "/etc/monit.d/#{fetch(:application)}"
 end
@@ -16,15 +20,17 @@ end
 namespace :monit do
   task :setup_config_file do
     on roles :app do
-      execute :rm, '-f', monit_config_file if file_exists? monit_config_file
-      upload! template('monit.erb'), monit_config_file
-      sudo :ln, '-fs', monit_config_file, monit_conf_d
+      if monit_exists?
+        execute :rm, '-f', monit_config_file if file_exists? monit_config_file
+        upload! template('monit.erb'), monit_config_file
+        sudo :ln, '-fs', monit_config_file, monit_conf_d
+      end
     end
   end
 
   task :reload do
     on roles :app do
-      sudo :monit, "reload"
+      sudo :monit, "reload" if monit_exists?
     end
   end
 end
