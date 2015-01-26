@@ -3,7 +3,7 @@ class AddUnsubscribeTokenToUser < ActiveRecord::Migration
     reversible do |dir|
       dir.up do
         add_column :users, :unsubscribe_token, :string
-        User.find_each do |user|
+        User.unscoped.find_each do |user|
           user.instance_eval { generate_unsubscribe_token }
           user.save!
         end

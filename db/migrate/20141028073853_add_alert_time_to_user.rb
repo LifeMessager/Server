@@ -3,7 +3,7 @@ class AddAlertTimeToUser < ActiveRecord::Migration
     reversible do |dir|
       dir.up do
         add_column :users, :alert_time, :datetime
-        User.find_each do |user|
+        User.unscoped.find_each do |user|
           user.alert_time = '08:00'
           user.save! validate: false
         end

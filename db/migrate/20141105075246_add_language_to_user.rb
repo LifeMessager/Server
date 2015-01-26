@@ -3,7 +3,7 @@ class AddLanguageToUser < ActiveRecord::Migration
     reversible do |dir|
       dir.up do
         add_column :users, :language, :string
-        User.find_each do |user|
+        User.unscoped.find_each do |user|
           user.language = User.languages.first
           user.save! validate: false
         end

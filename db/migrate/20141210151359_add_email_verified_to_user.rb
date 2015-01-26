@@ -1,7 +1,7 @@
 class AddEmailVerifiedToUser < ActiveRecord::Migration
   def up
     add_column :users, :email_verified, :boolean
-    User.find_each do |user|
+    User.unscoped.find_each do |user|
       user.email_verified = true
       user.save!
     end

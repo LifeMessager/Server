@@ -4,7 +4,7 @@ class AddTimezoneToUserAndMailReceiver < ActiveRecord::Migration
       dir.up do
         add_column :users         , :timezone, :string
         add_column :mail_receivers, :timezone, :string
-        User.find_each do |user|
+        User.unscoped.find_each do |user|
           user.timezone = ActiveSupport::TimeZone.new('Beijing').tzinfo.name
           user.save! validate: false
           user.mail_receivers.each do |mail_receiver|

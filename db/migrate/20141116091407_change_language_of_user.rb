@@ -6,14 +6,14 @@ class ChangeLanguageOfUser < ActiveRecord::Migration
   }
 
   def up
-    User.find_each do |user|
+    User.unscoped.find_each do |user|
       user.language = LANGUAGE_MAP[user.language.to_s]
       user.save
     end
   end
 
   def down
-    User.find_each do |user|
+    User.unscoped.find_each do |user|
       user.language = LANGUAGE_MAP.key user.language.to_s
       user.save
     end
