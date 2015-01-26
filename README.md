@@ -7,6 +7,10 @@
 * nginx
 * postgresql
 
+### ubuntu
+
+* apt-get install libpq-dev
+
 ## visudo
 
 ```visudo
