@@ -20,6 +20,12 @@ Rails.application.routes.draw do
 
   resources :notes, only: [:create]
 
+  root 'errors#not_found'
+  # From http://stackoverflow.com/questions/24235805/rails-4-how-do-i-create-a-custom-404-page-that-uses-the-asset-pipeline#answer-26286472
+  get 404, to: 'errors#not_found', code: 404
+  get 500, to: 'errors#internal_server_error', code: 500
+  get 503, to: 'errors#service_unavailable', code: 503
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
