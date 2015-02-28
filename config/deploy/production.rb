@@ -34,7 +34,7 @@ set :backup_bucket, cap_configs('backup_bucket')
 set :backup_gpg_email, cap_configs('backup_gpg_email')
 set :backup_gpg_public_key, cap_configs('backup_gpg_public_key')
 set :backup_notify_url, cap_configs('backup_notify_url')
-set :backup_notify_params, cap_configs('backup_notify_prams')
+set :backup_notify_params, cap_configs('backup_notify_params')
 
 # you can set custom ssh options
 # it's possible to pass any option but you need to keep in mind that net/ssh understand limited list of options
