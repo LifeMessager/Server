@@ -14,11 +14,11 @@ def file_exists? path
 end
 
 def bin_exists? bin
-  system "hash #{bin}"
+  test "hash #{bin}"
 end
 
 def gem_install *gems
-  `gem install #{gems.join ' '}`
+  execute :gem, :install, *gems
 end
 
 def cap_configs name

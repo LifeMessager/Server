@@ -18,11 +18,14 @@ set :configs, YAML.load_file(Pathname.new './config/cap_config.yml')
 # set :scm, :git # Default value for :scm is :git
 set :repo_url, 'https://github.com/LifeMessager/Server.git'
 
-# setup rbenv.
+# setup rbenv
 set :rbenv_type, :user
 set :rbenv_ruby, '2.2.0'
 set :rbenv_prefix, "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rbenv_ruby)} #{fetch(:rbenv_path)}/bin/rbenv exec"
 set :rbenv_map_bins, %w{rake gem bundle ruby rails backup}
+
+# setup bundler
+set :bundle_bins, %w{rake rails}
 
 # setup nginx
 set :nginx_pid, "/var/run/nginx.pid" # Default path is "/run/nginx.pid"

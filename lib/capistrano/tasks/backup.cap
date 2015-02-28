@@ -24,6 +24,14 @@ namespace :backup do
     end
   end
 
+  desc "Update backup config"
+  task :update do
+    if fetch(:backup_database)
+      invoke 'backup:install_gem'
+      invoke 'backup:upload_config'
+    end
+  end
+
 end
 
 namespace :load do
@@ -32,9 +40,6 @@ namespace :load do
   end
 end
 
-task :setup do
-  if fetch(:backup_database)
-    invoke 'backup:install_gem'
-    invoke 'backup:upload_config'
-  end
+namespace :deploy do
+  after :publishing, 'backup:update'
 end
