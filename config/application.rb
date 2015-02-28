@@ -39,6 +39,11 @@ module Backend
       generators.helper_specs false
     end
 
+    config.filter_parameters += [
+      'stripped-text', 'stripped-signature', 'stripped-html',
+      'body-plain', 'body-html'
+    ]
+
     config.middleware.use Rack::Cors do
       allow do
         origins '*'

@@ -76,8 +76,8 @@ class MailsController < ApplicationController
   end
 
   def recipient
-    return unless recipient = params['recipient']
-    return unless address = recipient[/^([^@]+).*$/, 1]
+    return {} unless recipient = params['recipient']
+    return {} unless address = recipient[/^([^@]+).*$/, 1]
     type, id = address.split '+', 2
     {type: type, id: id}
   end
