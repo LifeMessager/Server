@@ -4,7 +4,6 @@ job_type :shell_with_env, <<-SHELL
   export PATH="$HOME/.rbenv/bin:$PATH" &&
   eval "$(rbenv init -)" &&
   cd :path &&
-  source .env &&
   bin/rails runner -e :environment ":task" :output"
 SHELL
 
@@ -13,7 +12,6 @@ job_type :rake_with_env , <<-SHELL
   eval "$(rbenv init -)" &&
   source ~/.bashrc &&
   cd :path &&
-  source .env &&
   :environment_variable=:environment bin/rake :task --silent :output
 SHELL
 

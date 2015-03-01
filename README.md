@@ -11,6 +11,14 @@
 
 * apt-get install libpq-dev
 
+## configuration
+
+```bash
+cd config
+cp lifemessager.yml{.example,}
+vim lifemessager.yml
+```
+
 ## visudo
 
 ```visudo

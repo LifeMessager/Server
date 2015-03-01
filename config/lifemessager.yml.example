@@ -1,0 +1,31 @@
+production:
+  # The host domain, required
+  server_name: lifemessager.com
+
+  # The nickname and deliverer for mail address, required, example:
+  #
+  #   mailer_nickname <mailer_deliverer@server_name>
+  #
+  mailer_nickname: LifeMessager
+  mailer_deliverer: alfred
+
+  # Mailgun (the mail service for lifemessager) api key, required
+  mailgun_api_key: ...
+
+  # Sentry (the error report service for lifemessager) api key, optional
+  sentry_dsn: ...
+
+  # Config for backup database to amazon s3
+  # Required
+  backup_database: true
+  # Optional
+  backup_access_key_id: ...
+  backup_secret_access_key: ...
+  backup_bucket: ...
+  backup_notify_url: ...
+  backup_notify_params: ...
+  backup_gpg_email: ...
+  backup_gpg_public_key: |
+    -----BEGIN PGP PUBLIC KEY BLOCK-----
+    ...
+    -----END PGP PUBLIC KEY BLOCK-----

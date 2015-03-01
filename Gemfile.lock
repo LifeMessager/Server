@@ -1,3 +1,12 @@
+GIT
+  remote: git://github.com/bolasblack/capistrano-unicorn-nginx.git
+  revision: 224a491d8747562839b4c17c7fc944651c60abf4
+  branch: master
+  specs:
+    capistrano-unicorn-nginx (3.3.2)
+      capistrano (>= 3.1)
+      sshkit (>= 1.2.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -53,9 +62,6 @@ GEM
       capistrano-rbenv (>= 2.0)
     capistrano-safe-deploy-to (1.1.1)
       capistrano (>= 3.0)
-    capistrano-unicorn-nginx (2.1.0)
-      capistrano (>= 3.1)
-      sshkit (>= 1.2.0)
     celluloid (0.16.0)
       timers (~> 4.0.0)
     chronic (0.10.2)
@@ -248,7 +254,7 @@ DEPENDENCIES
   capistrano-rbenv (~> 2.0)
   capistrano-rbenv-install
   capistrano-safe-deploy-to (~> 1.1.1)
-  capistrano-unicorn-nginx (~> 2.0)
+  capistrano-unicorn-nginx!
   email_spec
   enumerize
   factory_girl_rails

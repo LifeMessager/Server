@@ -12,7 +12,7 @@ lock '3.1.0'
 set :application, 'lifemessager'
 set :deploy_user, fetch(:application)
 set :deploy_to, "/home/#{fetch(:deploy_user)}/#{fetch(:application)}" # Default is /var/www/my_app
-set :configs, YAML.load_file(Pathname.new './config/cap_config.yml')
+set :configs, YAML.load_file(Pathname.new './config/lifemessager.yml')
 
 # setup repo details
 # set :scm, :git # Default value for :scm is :git
@@ -33,6 +33,16 @@ set :nginx_access_log_file, "/var/log/nginx/#{fetch(:application)}_access.log" #
 set :nginx_error_log_file, "/var/log/nginx/#{fetch(:application)}_error.log" # Default is shared_path.join('log/nginx.error.log')
 set :nginx_gzip, true
 # set :nginx_location, # Default path is "/etc/nginx"
+
+# setup backup
+set :backup_database, cap_configs('backup_database')
+set :backup_access_key_id, cap_configs('backup_access_key_id')
+set :backup_secret_access_key, cap_configs('backup_secret_access_key')
+set :backup_bucket, cap_configs('backup_bucket')
+set :backup_gpg_email, cap_configs('backup_gpg_email')
+set :backup_gpg_public_key, cap_configs('backup_gpg_public_key')
+set :backup_notify_url, cap_configs('backup_notify_url')
+set :backup_notify_params, cap_configs('backup_notify_params')
 
 # setup unicorn
 # set :unicorn_service, # Default is "unicorn_#{fetch(:application)}_#{fetch(:stage)}"
@@ -62,7 +72,7 @@ set :log_level, :info
 # set :pty, true
 
 # files we want symlinking to specific entries in shared
-set :linked_files, %w{config/database.yml .env} # Default value for :linked_files is []
+set :linked_files, %w{config/database.yml config/lifemessager.yml} # Default value for :linked_files is []
 
 # dirs we want symlinking to shared
 set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system} # Default value for linked_dirs is []
@@ -71,6 +81,19 @@ set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public
 
 # how many old releases do we want to keep, not much
 # set :keep_releases, 5 # Default value for keep_releases is 5
+
+namespace :configs do
+  desc "Upload lifemessager.yml"
+  task :lifemessager_upload do
+    run_locally do
+      next unless file_exists? "config/lifemessager.yml"
+      on roles(:app) do
+        execute "mkdir -p #{shared_path}/config"
+        upload_file! "config/lifemessager.yml"
+      end
+    end
+  end
+end
 
 namespace :deploy do
 
@@ -93,4 +116,8 @@ namespace :deploy do
     end
   end
 
+end
+
+task :setup do
+  invoke 'configs:lifemessager_upload'
 end

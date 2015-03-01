@@ -26,16 +26,6 @@ set :nginx_use_ssl, true
 set :nginx_ssl_cert_local_path, Pathname.new('./config/ssl/cert.crt').to_s
 set :nginx_ssl_cert_key_local_path, Pathname.new('./config/ssl/private_key.key').to_s
 
-# setup backup
-set :backup_database, true
-set :backup_access_key_id, cap_configs('backup_access_key_id')
-set :backup_secret_access_key, cap_configs('backup_secret_access_key')
-set :backup_bucket, cap_configs('backup_bucket')
-set :backup_gpg_email, cap_configs('backup_gpg_email')
-set :backup_gpg_public_key, cap_configs('backup_gpg_public_key')
-set :backup_notify_url, cap_configs('backup_notify_url')
-set :backup_notify_params, cap_configs('backup_notify_params')
-
 # you can set custom ssh options
 # it's possible to pass any option but you need to keep in mind that net/ssh understand limited list of options
 # you can see them in [net/ssh documentation](http://net-ssh.github.io/net-ssh/classes/Net/SSH.html#method-c-start)

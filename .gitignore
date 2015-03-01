@@ -15,7 +15,7 @@
 /log/*.log
 /tmp
 
-config/cap_config.yml
+config/lifemessager.yml
 config/database.yml
 config/ssl
 config/backup/*.rb
