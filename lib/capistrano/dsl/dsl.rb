@@ -22,7 +22,19 @@ def bin_exists? bin
   test "hash #{bin}"
 end
 
+def gem_exists? gem
+  return false if gem.nil? || gem.empty?
+  test :gem, "list | grep '#{gem} '"
+end
+
 def gem_install *gems
+  result_gems = gems.delete_if { |gem| gem_exists? gem }
+  puts "result gems #{result_gems}"
+  gem_install! *result_gems
+end
+
+def gem_install! *gems
+  return if gems.empty?
   execute :gem, :install, *gems
 end
 
