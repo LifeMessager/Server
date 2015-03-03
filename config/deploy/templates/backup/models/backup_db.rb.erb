@@ -44,9 +44,10 @@ Backup::Model.new(:backup_db, 'Description for backup_db') do
   #  - us-west-1
   #
   store_with S3 do |s3|
+    s3.fog_options       =  <%= fetch(:backup_fog_option, "{}") %>
     s3.access_key_id     = "<%= fetch(:backup_access_key_id) %>"
     s3.secret_access_key = "<%= fetch(:backup_secret_access_key) %>"
-    s3.region            = "ap-northeast-1"
+    s3.region            = "<%= fetch(:backup_region) %>"
     s3.bucket            = "<%= fetch(:backup_bucket) %>"
     s3.path              = "/"
     s3.keep              = 10
