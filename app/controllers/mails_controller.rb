@@ -54,9 +54,22 @@ class MailsController < ApplicationController
 
   private
 
+  def error_log method_name, content
+    Rails.logger.error "[MailsController##{method_name}] #{content}"
+  end
+
+  def recipient_mail_id
+    return unless recipient = params['recipient']
+    @recipient_mail_id ||= recipient[/^([^@]+).*$/, 1]
+  end
+
+  def recipient_is_deliverer
+    recipient_mail_id == Rails.application.config.mailer_info[:deliverer]
+  end
+
   def check_recipient
-    unless recipient[:id]
-      Rails.logger.error "[MailsController] recipient invalid"
+    unless recipient_is_deliverer or recipient[:id]
+      error_log "check_recipient", "recipient invalid"
       return simple_respond nil, status: :ok
     end
   end
@@ -71,14 +84,8 @@ class MailsController < ApplicationController
     end
   end
 
-  def error_log method_name, content
-    Rails.logger.error "[MailsController##{method_name}] #{content}"
-  end
-
   def recipient
-    return {} unless recipient = params['recipient']
-    return {} unless address = recipient[/^([^@]+).*$/, 1]
-    type, id = address.split '+', 2
+    type, id = recipient_mail_id.split '+', 2
     {type: type, id: id}
   end
 
@@ -87,6 +94,13 @@ class MailsController < ApplicationController
   end
 
   def mail_receiver
-    @mail_receiver ||= MailReceiver.find_by_address recipient[:id]
+    return @mail_receiver if @mail_receiver
+    if recipient_is_deliverer
+      return unless email_user
+      @mail_receiver = MailReceiver.for email_user
+    else
+      @mail_receiver = MailReceiver.find_by_address recipient[:id]
+    end
+    @mail_receiver
   end
 end
