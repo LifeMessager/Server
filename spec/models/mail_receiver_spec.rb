@@ -54,10 +54,10 @@ describe MailReceiver do
     it { is_expected.to respond_to :for }
 
     context 'when the mail receiver for specified date not exist' do
-      it 'will create a new record for today' do
+      it 'will create a new record for now' do
         expect(user.mail_receivers).to be_empty
         newMailReceiver = MailReceiver.for user
-        expect(newMailReceiver.local_note_date).to eq Date.today
+        expect(newMailReceiver.local_note_date).to eq Time.now.in_time_zone(user.timezone).to_date
         expect(user.mail_receivers.count).to eq 1
         expect(user.mail_receivers.last).to eq newMailReceiver
       end

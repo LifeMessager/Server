@@ -32,7 +32,7 @@ class MailReceiver < ActiveRecord::Base
   end
 
   def self.for user, **opts
-    find_or_create_by user: user, local_note_date: opts[:date] || Date.today.in_time_zone(user.timezone).to_date
+    find_or_create_by user: user, local_note_date: opts[:date] || current_date_in_timezone(user.timezone)
   end
 
   def self.current_date_in_timezone timezone
