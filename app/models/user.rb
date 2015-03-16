@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
   ALERT_PLACEHOLDER_DAY = '2014-01-01'
 
   def self.timezones
-    ActiveSupport::TimeZone.all.map{ |tz| tz.identifier }.uniq
+    @timezones ||= ActiveSupport::TimeZone.all.map{ |tz| tz.identifier }.uniq
   end
 
   def self.languages

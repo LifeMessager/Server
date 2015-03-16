@@ -46,6 +46,16 @@ describe MailReceiver do
     expect(@mr.timezone).not_to eq originUser.timezone
   end
 
+  it "update local_note_date after user changed" do
+    user_in_first_timezone = create :user, timezone: User.timezones.first
+    @mr.user = user_in_first_timezone
+    local_note_date_in_first_timezone = @mr.local_note_date
+    user_in_last_timezone = create :user, timezone: User.timezones.last
+    @mr.user = user_in_last_timezone
+    local_note_date_in_last_timezone = @mr.local_note_date
+    expect(local_note_date_in_last_timezone.day - local_note_date_in_first_timezone.day).to be 1
+  end
+
   describe '.for' do
     let(:user) { create :user }
 

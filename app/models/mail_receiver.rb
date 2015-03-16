@@ -52,6 +52,7 @@ class MailReceiver < ActiveRecord::Base
       write_attribute :user_id, nil
       self.timezone = nil
     end
+    refresh_note_date
   end
 
   def timezone
@@ -62,7 +63,7 @@ class MailReceiver < ActiveRecord::Base
   private
 
   def refresh_note_date
-    self.local_note_date = self.class.current_date_in_timezone timezone
+    self.local_note_date = (created_at || Time.now).in_time_zone(timezone).to_date
   end
 
   def timezone= input_timezone
