@@ -47,10 +47,12 @@ module Backend
       generators.helper_specs false
     end
 
-    config.filter_parameters += [
-      'stripped-text', 'stripped-signature', 'stripped-html',
-      'body-plain', 'body-html'
-    ]
+    if Rails.env.production?
+      config.filter_parameters += [
+        'stripped-text', 'stripped-signature', 'stripped-html',
+        'body-plain', 'body-html'
+      ]
+    end
 
     config.middleware.use Rack::Cors do
       allow do
