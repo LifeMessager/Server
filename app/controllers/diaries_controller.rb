@@ -1,4 +1,6 @@
 class DiariesController < ApplicationController
+  helper_method :clean_content
+
   def show
     @diary = current_user.mail_receivers.find_by_local_note_date params[:id]
     if @diary.nil? or @diary.notes.count == 0
@@ -9,5 +11,11 @@ class DiariesController < ApplicationController
       format.json
       format.xml
     end
+  end
+
+  protected
+
+  def clean_content content
+    NoteHelper.clean_content content
   end
 end

@@ -16,6 +16,6 @@ class NotesController < ApplicationController
   private
 
   def info_for_create
-    {content: NoteHelper.clean_content(params[:content])}
+    {content: params[:content]}
   end
 end

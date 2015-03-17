@@ -13,7 +13,7 @@ class MailsController < ApplicationController
 
     note = mail_receiver.notes.build(
       from_email: params['sender'],
-      content: NoteHelper.clean_content(params['stripped-text']),
+      content: params['stripped-text'],
       mail_receiver: mail_receiver,
       created_at: params['Date']
     )

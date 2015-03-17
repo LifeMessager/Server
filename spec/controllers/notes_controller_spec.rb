@@ -10,14 +10,15 @@ RSpec.describe NotesController, :type => :controller do
     end
 
     it "create today's note to current user" do
+      content = "hello world\n\n\naaa"
       login user
-      post :create, content: 'hello world'
+      post :create, content: content
       expect(response).to have_http_status :created
       user.reload
       expect(user.notes.length).to eq 1
       mail_receiver = user.notes.first.mail_receiver
+      expect(user.notes.first.content).to eq content
       expect(mail_receiver.local_note_date).to eq MailReceiver.current_date_in_timezone mail_receiver.timezone
     end
   end
-
 end

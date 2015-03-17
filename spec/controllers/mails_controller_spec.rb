@@ -7,7 +7,7 @@ describe MailsController, type: :controller do
       @mail_data = {
         'sender' => @mail_receiver.user.email,
         'recipient' => @mail_receiver.full_address,
-        'stripped-text' => 'hello world',
+        'stripped-text' => "hello world\n\n\naaa",
         'Date' => DateTime.now.to_json
       }
     end
