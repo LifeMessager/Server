@@ -1,0 +1,200 @@
+FORMAT: 1A
+HOST: https://private-345a7-lifemessager.apiary-mock.com/
+
+# LifeMessager
+
+## The way to get user token
+
+After request the `login mail` api, user will receive an email contain a login link like this:
+
+    https://lifemessager.com/#!/login?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE0MjY3MzA1MDYsInVzZXJfaWQiOjIxfQ.q2iPcnpvMYj4enek5xTrKNmqbIdI6N6Cd8pS4XNlOkg
+
+The `token` in url hash is the user token.
+
+# Group User
+
+## User [/users/{id}]
+
++ Parameters
+    + id (required, number, `123`) ... user id
+
++ Model (application/json)
+
+        {
+            "id": 123,
+            "email": "example@example.com",
+            "subscribed": true,
+            "unsubscribe_token": "...",
+            "timezone": "Asia/Beijing",
+            "alert_time": "08:00",
+            "created_at": "2015-03-18T02:38:20.067Z",
+            "deleted_at": null
+        }
+
+### Get user info [GET]
+
++ Request (application/json)
+
+    + Headers
+
+        Authentication: Bearer [user_token from login mail]
+
++ Response 200 (application/json)
+
+    [User][]
+
+### Update user info [PATCH]
+
++ Request (application/json)
+
+    + Headers
+
+        Authentication: Bearer [user_token from login mail]
+
+    + Body
+
+        {
+          "timezone": "Asia/Beijing",
+          "alert_time": "08:00"
+        }
+
++ Response 200 (application/json)
+
+    [User][]
+
+### Delete account [DELETE]
+
++ Request (application/json)
+
+    + Headers
+
+        Authentication: Bearer [user_token from login mail]
+
++ Response 204
+
+### Subscribe daily mail [PUT /subscription]
+
+## User Collection [/users]
+
+### Create new user [POST]
+
++ Request (application/json)
+
+    ```js
+    {
+      "email": "example@example.com", // (required, string) user's email
+      "timezone": "Asia/Beijing", // (required, string) user's timezone
+      "alert_time": "08:00" // (optional, string) daily email send time in user's timezone, default: 08:00
+    }
+    ```
+
++ Response 201 (application/json)
+
+    [User][]
+
+## Login [/users/login_mail]
+
+### Send a login mail [POST]
+
++ Request (application/json)
+
+    ```js
+    {
+      "email": "example@example.com"
+    }
+    ```
+
++ Response 201 (application/json)
+
+## Manage Subscribe [/users/{id}/subscription]
+
++ Parameters
+    + id (required, number, `123`) ... user id
+
+### Subscribe daily mail [PUT]
+
++ Request (application/json)
+
+    + Headers
+
+        Authentication: Bearer [user_token from login mail]
+
++ Response 201 (application/json)
+
+### Unsubscribe daily mail [DELETE]
+
++ Request
+
+    + Headers
+
+        Authentication: unsubscribe [unsubscribe_token from user data]
+
++ Response 204 (application/json)
+
+## Cancel Delete Progress [/users/{id}/regain]
+
++ Parameters
+    + id (required, number, `123`) ... user id
+
+### Request [POST]
+
++ Request (application/json)
+
+    + Headers
+
+        Authentication: Bearer [user_token from login mail]
+
++ Response 201 (application/json)
+
+# Group Diary
+
+## Diary [/diaries/{date}]
+
++ Parameters
+    + date (required, string, `2015-03-18`) ... The date of expected diary
+
++ Model (application/json)
+
+        {
+          "created_at": "2015-03-18T02:38:20.067Z",
+          "timezone": "Asia/Beijing",
+          "local_note_date": "2015-03-18",
+          "notes": [{
+            "id": 1,
+            "from_email": "example@example.com",
+            "created_at": "2015-03-18T02:38:20.067Z",
+            "content": "..."
+          }]
+        }
+
+### Get Diary of Specified Day [GET]
+
++ Request (application/json)
+
+    + Headers
+
+        Authentication: Bearer [user_token from login mail]
+
++ Response 200 (application/json)
+
+    [Diary][]
+
+## Note Collection [/notes]
+
+### Append new note for today's diary [POST]
+
++ Request
+
+    + Headers
+
+        Authentication: Bearer [user_token from login mail]
+
+    + Body
+
+    ```js
+    {
+      "content": "..." // (required, string) note's content
+    }
+    ```
+
++ Response 201 (application/json)

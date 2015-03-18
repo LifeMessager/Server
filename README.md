@@ -1,5 +1,7 @@
 # Lifemessager
 
+* [HTTP API](http://docs.lifemessager.apiary.io/)
+
 ## Required
 
 * https://github.com/sstephenson/ruby-build/wiki#suggested-build-environment
