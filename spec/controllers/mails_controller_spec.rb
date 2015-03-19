@@ -48,14 +48,14 @@ describe MailsController, type: :controller do
     end
 
     it 'create a new note with deliverer recipient with registered user' do
-      @mail_data['recipient'] = "#{Rails.application.config.mailer_info[:deliverer]}@lifemessager.com"
+      @mail_data['recipient'] = Settings.mailer_deliverer_full_address
       post :notes, @mail_data
       expect(response).to have_http_status :created
       expect(@mail_receiver.notes.length).to eq 1
     end
 
     it 'do nothing with deliverer recipient with unregistered user' do
-      @mail_data['recipient'] = "#{Rails.application.config.mailer_info[:deliverer]}@lifemessager.com"
+      @mail_data['recipient'] = Settings.mailer_deliver_from
       @mail_data['sender'] = 'not-registered-user@example.com'
       post :notes, @mail_data
       expect(response).to have_http_status :ok

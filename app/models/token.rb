@@ -14,7 +14,7 @@ class Token
   end
 
   def login_url
-    "http://#{mailer_info[:domain]}/#!/login?token=#{id}"
+    "http://#{Settings.server_name}/#!/login?token=#{id}"
   end
 
   def self.decode id, **args
@@ -38,9 +38,5 @@ class Token
 
   def secret
     Token.secret
-  end
-
-  def mailer_info
-    Rails.application.config.mailer_info
   end
 end

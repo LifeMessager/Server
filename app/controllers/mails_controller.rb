@@ -64,7 +64,7 @@ class MailsController < ApplicationController
   end
 
   def recipient_is_deliverer
-    recipient_mail_id == Rails.application.config.mailer_info[:deliverer]
+    recipient_mail_id == Settings.mailer_deliverer
   end
 
   def check_recipient

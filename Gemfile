@@ -46,6 +46,8 @@ gem 'jwt'
 gem 'http_accept_language'
 # 用填充 deleted_at 替代真正删除数据
 gem "paranoia", "~> 2.0"
+# 配置文件封装一下
+gem 'settingslogic'
 
 group :development, :test do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring

@@ -40,8 +40,7 @@ class MailReceiver < ActiveRecord::Base
   end
 
   def full_address
-    mailer_info = Rails.application.config.mailer_info
-    "post+#{address}@#{mailer_info[:domain]}"
+    "post+#{address}@#{Settings.server_name}"
   end
 
   def user= user

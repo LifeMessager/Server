@@ -90,7 +90,6 @@ class User < ActiveRecord::Base
 
   def unsubscribe_link
     return if new_record?
-    host_domain = Rails.application.config.mailer_info[:domain]
     # http://api.rubyonrails.org/classes/ActionDispatch/Routing/UrlFor.html
     # http://stackoverflow.com/questions/341143/can-rails-routing-helpers-i-e-mymodel-pathmodel-be-used-in-models
     path = Rails.application.routes.url_helpers.subscription_user_path(
@@ -99,13 +98,12 @@ class User < ActiveRecord::Base
       id: id,
       action: :unsubscribe
     )
-    "#{host_domain}#{path}"
+    "#{Settings.server_name}#{path}"
   end
 
   def unsubscribe_email_address
     return if new_record?
-    host_domain = Rails.application.config.mailer_info[:domain]
-    "unsubscribe+#{unsubscribe_token}@#{host_domain}"
+    "unsubscribe+#{unsubscribe_token}@#{Settings.server_name}"
   end
 
   def unsubscribe_email_header

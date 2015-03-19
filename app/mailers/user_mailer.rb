@@ -33,7 +33,7 @@ class UserMailer < ActionMailer::Base
 
   def fill_default_headers headers, user
     default_headers = {
-      from: beauty_sender,
+      from: Settings.mailer_deliver_from,
       to: user.email
     }
 
