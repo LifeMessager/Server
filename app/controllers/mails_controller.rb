@@ -7,7 +7,7 @@ class MailsController < ApplicationController
 
   def notes
     unless mail_receiver
-      error_log 'notes', "target mail_receiver not exist (#{recipient[:id]})"
+      error_log "target mail_receiver not exist (#{recipient[:id]})"
       return simple_respond nil, status: :ok
     end
 
@@ -19,14 +19,14 @@ class MailsController < ApplicationController
     )
 
     if note.invalid?
-      error_log 'notes', "note info not valid: #{note.errors}"
+      error_log "note info not valid: #{note.errors}"
       return simple_respond nil, status: :ok
     end
 
     if note.save
       simple_respond nil, status: :created
     else
-      error_log 'notes', "note save failed: #{note.errors}"
+      error_log "note save failed: #{note.errors}"
       simple_respond nil, status: :internal_server_error
     end
   end
@@ -35,26 +35,27 @@ class MailsController < ApplicationController
     unsubscribe_token = recipient[:id]
 
     unless email_user
-      error_log 'unsubscriptions', "target user not exist (#{params['sender']})"
+      error_log "target user not exist (#{params['sender']})"
       return simple_respond nil, status: :ok
     end
 
     unless email_user.unsubscribe token: unsubscribe_token
-      error_log 'unsubscriptions', "unsubscribe_token not valid (#{unsubscribe_token})"
+      error_log "unsubscribe_token not valid (#{unsubscribe_token})"
       return simple_respond nil, status: :ok
     end
 
     if email_user.save
       simple_respond nil, status: :created
     else
-      error_log 'unsubscriptions', "unsubscription save failed: #{user.errors}"
+      error_log "unsubscription save failed: #{user.errors}"
       simple_respond nil, status: :internal_server_error
     end
   end
 
   private
 
-  def error_log method_name, content
+  def error_log content
+    method_name = caller_locations(1, 1).first.label
     Rails.logger.error "[MailsController##{method_name}] #{content}"
   end
 
@@ -69,7 +70,7 @@ class MailsController < ApplicationController
 
   def check_recipient
     unless recipient_is_deliverer or recipient[:id]
-      error_log "check_recipient", "recipient invalid"
+      error_log "recipient invalid"
       return simple_respond nil, status: :ok
     end
   end
@@ -78,8 +79,7 @@ class MailsController < ApplicationController
     if user = mail_receiver ? mail_receiver.user : email_user
       user.email_verified = true
       unless user.save
-        message = "save user.email_verified failed, #{user.errors.full_messages}"
-        error_log 'verify_user_email', message
+        error_log "save user.email_verified failed, #{user.errors.full_messages}"
       end
     end
   end
