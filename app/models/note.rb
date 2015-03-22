@@ -8,6 +8,7 @@
 #  created_at       :datetime
 #  updated_at       :datetime
 #  mail_receiver_id :integer          not null
+#  type             :string(255)
 #
 
 class Note < ActiveRecord::Base
@@ -26,4 +27,21 @@ class Note < ActiveRecord::Base
   def user
     mail_receiver.user
   end
+end
+
+class ImageNote < Note
+  mount_uploader :content, ImageUploader
+  validate :validation_content_size
+
+  LARGEST_SIZE = 2.megabytes
+
+  private
+
+  def validation_content_size
+    return unless content
+    errors[:content] << 'invalid' if content.size > LARGEST_SIZE
+  end
+end
+
+class TextNote < Note
 end

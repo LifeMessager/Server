@@ -1,13 +1,20 @@
 
 - @diary_notes.each do |note|
-  %section{style: "margin-bottom: 20px"}!= note_content_to_html(note.content)
+  - if note.is_a? ImageNote
+    %div{style: "margin-bottom: 20px"}
+      %img{src: note.content.url}
+  - else
+    %div{style: "margin-bottom: 20px"}!= note_content_to_html(note.content)
 
 - if @diary_notes.empty?
-  %section= t 'diary_mailer.daily.empty_diary_content'
+  %div= t 'diary_mailer.daily.empty_diary_content'
 
 %hr
 
-%section= t 'diary_mailer.daily.login_link'
+- unless @diary_notes.empty?
+  %div= t 'diary_mailer.daily.mail_me'
 
-%section
+%div= t 'diary_mailer.daily.login_link'
+
+%div
   %a{href: @token.login_url}= @token.login_url

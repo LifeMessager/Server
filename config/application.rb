@@ -20,6 +20,8 @@ module Backend
   class Application < Rails::Application
     require "#{Rails.root}/app/models/settings.rb"
 
+    config.autoload_paths += %W(#{Rails.root}/app/uploaders)
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.

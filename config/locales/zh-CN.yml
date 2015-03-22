@@ -22,4 +22,5 @@ zh-CN:
     daily:
       subject: '今天是 %{date} ，和我说说发生了什么有趣的事？'
       empty_diary_content: '您还没有任何日记，回复这封邮件开始记录您的第一篇日记吧~'
+      mail_me: '您可以回复这封邮件来记录新的日记（支持 2M 以内的 jpg, jpeg, gif, png 图片）'
       login_link: '您也可以点击或者复制打开下方链接登录您的账号'

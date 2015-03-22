@@ -1,4 +1,5 @@
 # coding: utf-8
+
 class MailsController < ApplicationController
   skip_before_action :verify_token
   skip_before_action :verify_timezone_header
@@ -11,22 +12,23 @@ class MailsController < ApplicationController
       return simple_respond nil, status: :ok
     end
 
-    note = mail_receiver.notes.build(
-      from_email: params['sender'],
-      content: params['stripped-text'],
-      mail_receiver: mail_receiver,
-      created_at: params['Date']
-    )
+    notes = build_notes(mail_receiver).select do |note|
+      next note if note.valid?
+      error_log "note info not valid: #{note.errors.as_json}"
+      false
+     end
 
-    if note.invalid?
-      error_log "note info not valid: #{note.errors}"
-      return simple_respond nil, status: :ok
-    end
+    return simple_respond nil, status: :ok if notes.empty?
 
-    if note.save
+    begin
+      Note.transaction do
+        notes.each do |note|
+          raise "note save failed: #{note.errors.as_json}" unless note.save
+        end
+      end
       simple_respond nil, status: :created
-    else
-      error_log "note save failed: #{note.errors}"
+    rescue Exception => ex
+      error_log ex.message
       simple_respond nil, status: :internal_server_error
     end
   end
@@ -79,7 +81,7 @@ class MailsController < ApplicationController
     if user = mail_receiver ? mail_receiver.user : email_user
       user.email_verified = true
       unless user.save
-        error_log "save user.email_verified failed, #{user.errors.full_messages}"
+        error_log "save user.email_verified failed, #{user.errors.as_json}"
       end
     end
   end
@@ -102,5 +104,34 @@ class MailsController < ApplicationController
       @mail_receiver = MailReceiver.find_by_address recipient[:id]
     end
     @mail_receiver
+  end
+
+  def build_notes mail_receiver
+    notes = []
+
+    stripped_text = params['stripped-text']
+    if stripped_text && !stripped_text.chomp.empty?
+      notes << mail_receiver.notes.build(
+        from_email: params['sender'],
+        created_at: params['Date'],
+        content: stripped_text
+      ).becomes!(TextNote)
+    end
+
+    params['attachment-count'].to_i.times do |index|
+      note = mail_receiver.notes.build(
+        from_email: params['sender'],
+        created_at: params['Date']
+      ).becomes!(ImageNote)
+
+      # 不能直接把 UploadedFile 作为 #build 的参数, 因为那个时候实例还不是 ImageNote
+      # carrierwave 定义的 #content= 不会生效, 导致 #content 的值会出问题 , @file 会
+      # 变成 /.../public/image_note/content/#<File:0x007fbcab438ef0>
+      note.content = params["attachment-#{index + 1}"]
+
+      notes << note
+    end
+
+    notes
   end
 end
