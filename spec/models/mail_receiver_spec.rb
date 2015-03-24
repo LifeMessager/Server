@@ -54,6 +54,15 @@ describe MailReceiver do
     expect(local_note_date_in_last_timezone.day - local_note_date_in_first_timezone.day).to be 1
   end
 
+  describe '#notes' do
+    it 'return ordered notes' do
+      expected_note_ids = (0..10).map { |index|
+        create(:note, mail_receiver: @mr, created_at: Time.now - index.second).id
+      }.reverse
+      expect(@mr.notes.map(&:id)).to eq expected_note_ids
+    end
+  end
+
   describe '.for' do
     let(:user) { create :user }
 

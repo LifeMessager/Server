@@ -21,7 +21,7 @@ class MailReceiver < ActiveRecord::Base
   validates :local_note_date , presence: true
 
   belongs_to :user
-  has_many :notes, {dependent: :destroy}, -> { order :created_at }
+  has_many :notes, -> { order :created_at }, {dependent: :destroy}
 
   pattr_writer :address
 
