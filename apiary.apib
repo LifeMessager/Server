@@ -187,14 +187,14 @@ The `token` in url hash is the user token.
 
     + Headers
 
+        Content-Type: multipart/form-data
         Authentication: Bearer [user_token from login mail]
 
     + Body
 
     ```js
-    {
-      "content": "..." // (required, string) note's content
-    }
+    content: "..." // (required, string or file) note's content
+    type: "image"  // (optional, string, `text`) note's type, avaliable: text, image
     ```
 
 + Response 201 (application/json)
