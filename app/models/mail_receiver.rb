@@ -21,7 +21,7 @@ class MailReceiver < ActiveRecord::Base
   validates :local_note_date , presence: true
 
   belongs_to :user
-  has_many :notes, {dependent: :destroy}, -> { order :created_at }
+  has_many :notes, -> { order :created_at }, {dependent: :destroy}
 
   pattr_writer :address
 
@@ -40,8 +40,7 @@ class MailReceiver < ActiveRecord::Base
   end
 
   def full_address
-    mailer_info = Rails.application.config.mailer_info
-    "post+#{address}@#{mailer_info[:domain]}"
+    "post+#{address}@#{Settings.server_name}"
   end
 
   def user= user

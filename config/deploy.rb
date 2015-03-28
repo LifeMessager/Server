@@ -4,15 +4,12 @@
 # capistrano-unicorn-nginx: https://github.com/bruno-/capistrano-unicorn-nginx
 # capistrano-safe-deploy-to: https://github.com/bruno-/capistrano-safe-deploy-to
 
-require 'pathname'
-
 # config valid only for Capistrano 3.1
 lock '3.1.0'
 
 set :application, 'lifemessager'
 set :deploy_user, fetch(:application)
 set :deploy_to, "/home/#{fetch(:deploy_user)}/#{fetch(:application)}" # Default is /var/www/my_app
-set :configs, YAML.load_file(Pathname.new './config/lifemessager.yml')
 
 # setup repo details
 # set :scm, :git # Default value for :scm is :git

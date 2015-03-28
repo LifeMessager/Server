@@ -1,8 +1,15 @@
 
 - @diary_notes.each do |note|
-  = note_content_to_text(note.content)
+  - if note.is_a? ImageNote
+    = note.content.url
+  - else
+    = note_content_to_text(note.content)
   = "\n"
   = "\n"
+
+
+- unless @diary_notes.empty?
+  = t 'diary_mailer.daily.mail_me'
 
 = t 'diary_mailer.daily.login_link'
 

@@ -3,20 +3,8 @@ module MailerHelper
 
   private
 
-  def mailer_info
-    Rails.application.config.mailer_info
-  end
-
-  def host_domain
-    mailer_info[:domain]
-  end
-
-  def beauty_sender
-    "#{mailer_info[:nickname]} <#{mailer_info[:deliverer]}@#{host_domain}>"
-  end
-
   def beauty_reply_to mail_receiver
-    "#{mailer_info[:nickname]} <#{mail_receiver.full_address}>"
+    "#{Settings.mailer_nickname} <#{mail_receiver.full_address}>"
   end
 
   module ClassMethods

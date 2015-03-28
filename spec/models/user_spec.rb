@@ -230,14 +230,13 @@ describe User, type: :model do
 
     it 'generate unsubscribe link' do
       @user.save
-      host_domain = Rails.application.config.mailer_info[:domain]
       unsubscribe_path = Rails.application.routes.url_helpers.subscription_user_path(
         token: "unsubscribe #{@user.unsubscribe_token}",
         _method: :delete,
         id: @user.id,
         action: :unsubscribe
       )
-      expect(@user.unsubscribe_link).to eq "#{host_domain}#{unsubscribe_path}"
+      expect(@user.unsubscribe_link).to eq "#{Settings.server_name}#{unsubscribe_path}"
     end
   end
 
@@ -248,8 +247,7 @@ describe User, type: :model do
 
     it 'generate unsubscribe email address' do
       @user.save
-      host_domain = Rails.application.config.mailer_info[:domain]
-      expect(@user.unsubscribe_email_address).to eq "unsubscribe+#{@user.unsubscribe_token}@#{host_domain}"
+      expect(@user.unsubscribe_email_address).to eq "unsubscribe+#{@user.unsubscribe_token}@#{Settings.server_name}"
     end
   end
 

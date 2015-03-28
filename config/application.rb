@@ -11,7 +11,6 @@ require "sprockets/railtie"
 require "rails/test_unit/railtie"
 
 require 'securerandom'
-require 'pathname'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -19,12 +18,9 @@ Bundler.require(*Rails.groups)
 
 module Backend
   class Application < Rails::Application
-    lifemessager_config = YAML.load_file(Pathname.new './config/lifemessager.yml')[Rails.env]
+    require "#{Rails.root}/app/models/settings.rb"
 
-    Raven.configure do |raven_config|
-      dsn = lifemessager_config['sentry_dsn']
-      raven_config.dsn = dsn if dsn
-    end
+    config.autoload_paths += %W(#{Rails.root}/app/uploaders)
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -64,19 +60,13 @@ module Backend
     config.action_mailer.preview_path = "#{Rails.root}/app/mailer_previews"
     config.action_mailer.delivery_method = :mailgun
     config.action_mailer.mailgun_settings = {
-      api_key: lifemessager_config['mailgun_api_key'],
-      domain: lifemessager_config['server_name']
+      api_key: Settings.mailgun_api_key,
+      domain: Settings.server_name
     }
 
     config.i18n.default_locale = 'zh-CN'
     config.i18n.available_locales = ['zh-CN', 'zh-TW', :en, 'en-US']
     I18n.load_path += Dir[Rails.root.join('config', 'locale', '*.{yml|rb}').to_s]
-
-    config.mailer_info = {
-      domain: lifemessager_config['server_name'],
-      nickname: lifemessager_config['mailer_nickname'],
-      deliverer: lifemessager_config['mailer_deliverer'],
-    }
 
     # 每次重启都重置 jwt_secret ，反正 jwt 的过期时间非常短，所以即使在用户
     # 得到 jwt 后重置了这个东西也不会产生太大的影响

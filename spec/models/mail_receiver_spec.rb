@@ -14,8 +14,6 @@
 
 require 'rails_helper'
 
-mailer_info = Rails.application.config.mailer_info
-
 describe MailReceiver do
   before { @mr = build :mail_receiver }
 
@@ -31,7 +29,7 @@ describe MailReceiver do
   it { is_expected.to have_pattr_writer :timezone }
   its(:timezone) { is_expected.not_to be_nil }
 
-  its(:full_address) { is_expected.to eq "post+#{subject.address}@#{mailer_info[:domain]}" }
+  its(:full_address) { is_expected.to eq "post+#{subject.address}@#{Settings.server_name}" }
 
   it 'is invalid without user' do
     @mr.user = nil
@@ -54,6 +52,15 @@ describe MailReceiver do
     @mr.user = user_in_last_timezone
     local_note_date_in_last_timezone = @mr.local_note_date
     expect(local_note_date_in_last_timezone.day - local_note_date_in_first_timezone.day).to be 1
+  end
+
+  describe '#notes' do
+    it 'return ordered notes' do
+      expected_note_ids = (0..10).map { |index|
+        create(:note, mail_receiver: @mr, created_at: Time.now - index.second).id
+      }.reverse
+      expect(@mr.notes.map(&:id)).to eq expected_note_ids
+    end
   end
 
   describe '.for' do

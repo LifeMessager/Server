@@ -15,7 +15,8 @@ class DiariesController < ApplicationController
 
   protected
 
-  def clean_content content
-    NoteHelper.clean_content content
+  def clean_content note
+    return note.content.url if note.is_a? ImageNote
+    NoteHelper.clean_content note.content
   end
 end

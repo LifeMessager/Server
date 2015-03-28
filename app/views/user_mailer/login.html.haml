@@ -1,9 +1,9 @@
 
-%section= t 'user_mailer.login.content'
+%div= t 'user_mailer.login.content'
 
-%section
+%div
   %a{href: @token.login_url}= @token.login_url
 
 %hr
 
-%section= t 'user_mailer.login.is_unexpected_user'
+%div= t 'user_mailer.login.is_unexpected_user'

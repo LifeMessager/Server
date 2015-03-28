@@ -8,6 +8,7 @@
 #  created_at       :datetime
 #  updated_at       :datetime
 #  mail_receiver_id :integer          not null
+#  type             :string(255)
 #
 
 # Read about factories at https://github.com/thoughtbot/factory_girl
