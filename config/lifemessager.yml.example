@@ -21,6 +21,9 @@ production:
   upyun_bucket: ...
   upyun_bucket_host: ...
 
+  # Limit registered user count, optional
+  # user_limit: 100
+
   # Config for backup database to amazon s3
   # Required
   backup_database: true

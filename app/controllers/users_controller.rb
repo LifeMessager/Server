@@ -3,6 +3,9 @@ class UsersController < ApplicationController
   before_action :check_params_user, except: [:create, :send_login_mail, :get_current_user]
 
   def create
+    unless User.creatable?
+      return simple_respond build_error('Registered user overflow'), status: :forbidden
+    end
     @user = User.new info_of_user
     @user.language ||= http_accept_language.language_region_compatible_from User.languages
     @user.timezone = current_timezone

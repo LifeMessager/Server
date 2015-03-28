@@ -81,6 +81,21 @@ describe User, type: :model do
     it { is_expected.not_to include @user2.id }
   end
 
+  describe '.creatable?' do
+    subject { User }
+    after { Settings['user_limit'] = nil }
+
+    context 'when user count do not limited' do
+      before { Settings['user_limit'] = nil }
+      it { is_expected.to be_creatable }
+    end
+
+    context 'when user count limited' do
+      before { Settings['user_limit'] = User.count }
+      it { is_expected.not_to be_creatable }
+    end
+  end
+
   describe '#email' do
     it { is_expected.to respond_to :email }
 

@@ -83,6 +83,11 @@ class User < ActiveRecord::Base
     only_deleted.where('? <= deleted_at', Time.zone.now.beginning_of_day - 7.days)
   end
 
+  def self.creatable?
+    return true if Settings['user_limit'].nil?
+    User.count < Settings.user_limit
+  end
+
   def random_diary
     return if notes.empty?
     mail_receivers.where('notes_count > 0').sample
