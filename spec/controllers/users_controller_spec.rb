@@ -13,6 +13,25 @@ describe UsersController, type: :controller do
       expect(response).to have_http_status :created
       expect(respond_json).to include *expected_user_info_keys
     end
+
+    context 'when user count limited' do
+      after { Settings['user_limit'] = nil }
+
+      it 'do nothing if user creatable' do
+        Settings['user_limit'] = User.count + 1
+        userinfo = attributes_for :user
+        post :create, userinfo
+        expect(response).to have_http_status :created
+      end
+
+      it 'return error if user count overflow' do
+        Settings['user_limit'] = User.count
+        userinfo = attributes_for :user
+        post :create, userinfo
+        expect(response).to have_http_status :forbidden
+        expect(respond_json).to include({'message' => 'Registered user overflow'})
+      end
+    end
   end
 
   describe '#show' do
