@@ -46,7 +46,7 @@ module Backend
     if Rails.env.production?
       config.filter_parameters += [
         'stripped-text', 'stripped-signature', 'stripped-html',
-        'body-plain', 'body-html'
+        'body-plain', 'body-html', 'content'
       ]
     end
 
