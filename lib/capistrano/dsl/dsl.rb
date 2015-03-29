@@ -43,7 +43,6 @@ end
 
 def gem_install *gems
   result_gems = gems.delete_if { |gem| gem_exists? gem }
-  puts "result gems #{result_gems}"
   gem_install! *result_gems
 end
 

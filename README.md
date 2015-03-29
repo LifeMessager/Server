@@ -11,7 +11,11 @@
 
 ### ubuntu
 
-* apt-get install libpq-dev
+* apt-get install libpq-dev libmagic-dev
+
+### gentoo
+
+* emerge -av libmagic
 
 ## configuration
 
