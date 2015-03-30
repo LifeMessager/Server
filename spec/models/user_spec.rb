@@ -138,7 +138,7 @@ describe User, type: :model do
     end
   end
 
-  describe '#random_diary' do
+  describe '#random_mail_receiver' do
     context 'when there are several notes' do
       it 'return a random diary' do
         @user.save
@@ -153,11 +153,11 @@ describe User, type: :model do
           )
         end
 
-        def random_diary_id
-          @user.random_diary.id
+        def random_mail_receiver_id
+          @user.random_mail_receiver.id
         end
 
-        sample_result = 10.times.map { random_diary_id != random_diary_id }
+        sample_result = 10.times.map { random_mail_receiver_id != random_mail_receiver_id }
                         .select { |is_different| is_different }
         expect(sample_result.length).to be > 5
       end
@@ -166,7 +166,7 @@ describe User, type: :model do
     context 'when there are no note' do
       it 'return nil' do
         @user.save
-        expect(@user.random_diary).to be_nil
+        expect(@user.random_mail_receiver).to be_nil
       end
     end
   end

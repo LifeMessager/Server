@@ -1,11 +1,12 @@
 
-%section= t 'user_mailer.welcome.welcome'
+%div{style: 'margin: 20px 0'}= t 'user_mailer.welcome.welcome'
 
-%section= t 'user_mailer.welcome.click_link'
+%div{style: 'margin: 20px 0'}= t 'user_mailer.welcome.mail_me'
 
-%section
+%div{style: 'margin-top: 20px'}= t 'user_mailer.welcome.click_link'
+%div{style: 'margin-bottom: 20px'}
   %a{href: @token.login_url}= @token.login_url
 
 %hr
 
-%section= t 'user_mailer.welcome.is_unexpected_user'
+%div= t 'user_mailer.welcome.is_unexpected_user'

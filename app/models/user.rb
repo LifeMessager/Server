@@ -88,7 +88,7 @@ class User < ActiveRecord::Base
     User.count < Settings.user_limit
   end
 
-  def random_diary
+  def random_mail_receiver
     return if notes.empty?
     mail_receivers.where('notes_count > 0').sample
   end

@@ -2,12 +2,13 @@
 zh-CN:
   time:
     formats:
-      mail_title: '%Y年%b%d日 %A'
+      mail_title: ' %-m 月 %d 日'
 
   user_mailer:
     welcome:
       subject: '感谢使用 LifeMessager'
-      welcome: '非常感谢您的注册，回复这封邮件开始记录您的第一篇日记吧~'
+      welcome: '初次见面，请多关照'
+      mail_me: '只需要回复这封邮件，今天的日记就完成了'
       click_link: '您也可以点击或者复制打开下方链接登录您的账号'
       is_unexpected_user: '如果这封邮件不是您要求发送的，请勿点击链接或者回复邮件，我们不会向您发送其他内容'
     login:
@@ -20,7 +21,8 @@ zh-CN:
 
   diary_mailer:
     daily:
-      subject: '今天是 %{date} ，和我说说发生了什么有趣的事？'
+      subject: '今天是%{date}，和我说说发生了什么？'
       empty_diary_content: '您还没有任何日记，回复这封邮件开始记录您的第一篇日记吧~'
+      the_past_time: '还记得吗？%{day_from_now}前你写过...'
       mail_me: '您可以回复这封邮件来记录新的日记（支持 2M 以内的 jpg, jpeg, gif, png 图片）'
-      login_link: '您也可以点击或者复制打开下方链接登录您的账号'
+      login_link: '也可以点击或者复制打开下方链接登录您的账号'

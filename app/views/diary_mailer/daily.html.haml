@@ -1,17 +1,22 @@
 
-- @diary_notes.each do |note|
-  - if note.is_a? ImageNote
-    %div{style: "margin-bottom: 20px"}
-      %img{src: note.content.url}
-  - else
-    %div{style: "margin-bottom: 20px"}!= note_content_to_html(note.content)
+- if @mail_receiver.nil?
 
-- if @diary_notes.empty?
-  %div= t 'diary_mailer.daily.empty_diary_content'
+  %div{style: 'margin-bottom: 40px'}= t 'diary_mailer.daily.empty_diary_content'
 
-%hr
+- else
 
-- unless @diary_notes.empty?
+  %div{style: 'margin-bottom: 40px'}= t 'diary_mailer.daily.the_past_time', day_from_now: distance_of_time_in_words_to_now(@mail_receiver.created_at)
+
+  - @mail_receiver.notes.each do |note|
+    - if note.is_a? ImageNote
+      %div{style: "margin: 20px 0"}
+        %img{src: note.content.url}
+    - else
+      %div{style: "margin: 20px 0"}!= note_content_to_html(note.content)
+
+%hr{style: 'margin-top: 40px'}
+
+- if @mail_receiver
   %div= t 'diary_mailer.daily.mail_me'
 
 %div= t 'diary_mailer.daily.login_link'

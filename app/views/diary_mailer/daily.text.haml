@@ -1,16 +1,27 @@
 
-- @diary_notes.each do |note|
-  - if note.is_a? ImageNote
-    = note.content.url
-  - else
-    = note_content_to_text(note.content)
-  = "\n"
+- if @mail_receiver.nil?
+
+  = t 'diary_mailer.daily.empty_diary_content'
   = "\n"
 
+- else
 
-- unless @diary_notes.empty?
-  = t 'diary_mailer.daily.mail_me'
+  = t 'diary_mailer.daily.the_past_time', day_from_now: distance_of_time_in_words_to_now(@mail_receiver.created_at)
+  = "\n"
+  = "\n"
+  = "\n"
 
+  - @mail_receiver.notes.each do |note|
+    = "\n"
+    - if note.is_a? ImageNote
+      = note.content.url
+    - else
+      = note_content_to_text(note.content)
+    = "\n"
+
+= "\n"
+= "\n"
+= "\n"
+= t 'diary_mailer.daily.mail_me'
 = t 'diary_mailer.daily.login_link'
-
 = @token.login_url
