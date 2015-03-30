@@ -2,8 +2,7 @@ class DiaryMailer < ActionMailer::Base
   helper_method :note_content_to_html, :note_content_to_text
 
   def daily user
-    random_diary = user.random_diary
-    @diary_notes = random_diary ? random_diary.notes : []
+    @mail_receiver = user.random_mail_receiver
     @user = user
     @token = Token.new user: user
     send_mail_to user, subject: I18n.t('diary_mailer.daily.subject', date: I18n.l(Time.now, format: :mail_title))
