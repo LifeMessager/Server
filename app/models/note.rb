@@ -20,8 +20,8 @@ class Note < ActiveRecord::Base
 
   belongs_to :mail_receiver, counter_cache: true
 
-  def local_note_date
-    mail_receiver.local_note_date
+  def locale_date
+    mail_receiver.locale_date
   end
 
   def user

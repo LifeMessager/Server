@@ -19,7 +19,7 @@ RSpec.describe NotesController, :type => :controller do
       mail_receiver = user.notes.first.mail_receiver
       expect(user.notes.first.content).to eq content
       expect(user.notes.first.type).to eq 'TextNote'
-      expect(mail_receiver.local_note_date).to eq MailReceiver.current_date_in_timezone mail_receiver.timezone
+      expect(mail_receiver.locale_date).to eq MailReceiver.current_date_in_timezone mail_receiver.timezone
     end
 
     it "can create image note" do

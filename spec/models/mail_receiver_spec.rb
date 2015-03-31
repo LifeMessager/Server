@@ -2,14 +2,14 @@
 #
 # Table name: mail_receivers
 #
-#  id              :integer          not null, primary key
-#  address         :string(255)      not null
-#  created_at      :datetime
-#  updated_at      :datetime
-#  user_id         :integer          not null
-#  timezone        :string(255)      not null
-#  local_note_date :date             not null
-#  notes_count     :integer          default(0)
+#  id          :integer          not null, primary key
+#  address     :string(255)      not null
+#  created_at  :datetime
+#  updated_at  :datetime
+#  user_id     :integer          not null
+#  timezone    :string(255)      not null
+#  locale_date :date             not null
+#  notes_count :integer          default(0)
 #
 
 require 'rails_helper'
@@ -44,14 +44,12 @@ describe MailReceiver do
     expect(@mr.timezone).not_to eq originUser.timezone
   end
 
-  it "update local_note_date after user changed" do
-    user_in_first_timezone = create :user, timezone: User.timezones.first
-    @mr.user = user_in_first_timezone
-    local_note_date_in_first_timezone = @mr.local_note_date
-    user_in_last_timezone = create :user, timezone: User.timezones.last
-    @mr.user = user_in_last_timezone
-    local_note_date_in_last_timezone = @mr.local_note_date
-    expect(local_note_date_in_last_timezone.day - local_note_date_in_first_timezone.day).to be 1
+  it "update locale_date after timezone changed" do
+    @mr.send :timezone=, User.timezones.first
+    time_at_first_timezone = @mr.locale_date.at_beginning_of_day
+    @mr.send :timezone=, User.timezones.last
+    time_at_last_timezone = @mr.locale_date.at_beginning_of_day
+    expect(time_at_last_timezone - time_at_first_timezone).to eq 1.day
   end
 
   describe '#notes' do
@@ -74,7 +72,7 @@ describe MailReceiver do
       it 'will create a new record for now' do
         expect(user.mail_receivers).to be_empty
         newMailReceiver = MailReceiver.for user
-        expect(newMailReceiver.local_note_date).to eq Time.now.in_time_zone(user.timezone).to_date
+        expect(newMailReceiver.locale_date).to eq Time.now.in_time_zone(user.timezone).to_date
         expect(user.mail_receivers.count).to eq 1
         expect(user.mail_receivers.last).to eq newMailReceiver
       end
@@ -82,7 +80,7 @@ describe MailReceiver do
       it 'can specify date' do
         expect(user.mail_receivers).to be_empty
         newMailReceiver = MailReceiver.for user, date: Date.today - 1.day
-        expect(newMailReceiver.local_note_date).to eq Date.today - 1.day
+        expect(newMailReceiver.locale_date).to eq Date.today - 1.day
         expect(user.mail_receivers.count).to eq 1
         expect(user.mail_receivers.last).to eq newMailReceiver
       end

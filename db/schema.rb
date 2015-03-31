@@ -11,19 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150320123647) do
+ActiveRecord::Schema.define(version: 20150331161422) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "mail_receivers", force: true do |t|
-    t.string   "address",                     null: false
+    t.string   "address",                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "user_id",                     null: false
-    t.string   "timezone",                    null: false
-    t.date     "local_note_date",             null: false
-    t.integer  "notes_count",     default: 0
+    t.integer  "user_id",                 null: false
+    t.string   "timezone",                null: false
+    t.date     "locale_date",             null: false
+    t.integer  "notes_count", default: 0
   end
 
   add_index "mail_receivers", ["user_id"], name: "index_mail_receivers_on_user_id", using: :btree

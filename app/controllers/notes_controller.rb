@@ -18,8 +18,8 @@ class NotesController < ApplicationController
 
   def note
     return @note if @note
-    local_note_date = MailReceiver.current_date_in_timezone current_user.timezone
-    mail_receiver = MailReceiver.find_or_create_by user: current_user, local_note_date: local_note_date
+    locale_date = MailReceiver.current_date_in_timezone current_user.timezone
+    mail_receiver = MailReceiver.find_or_create_by user: current_user, locale_date: locale_date
     klass = params[:type] == 'image' ? ImageNote : TextNote
     @note = klass.new info_for_create.merge mail_receiver: mail_receiver, from_email: current_user.email
   end
