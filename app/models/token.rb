@@ -33,7 +33,7 @@ class Token
   private
 
   def self.secret
-    Rails.application.config.jwt_secret
+    Rails.application.secrets[:secret_key_base]
   end
 
   def secret
