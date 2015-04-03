@@ -68,10 +68,6 @@ module Backend
     config.i18n.available_locales = ['zh-CN', 'zh-TW', :en, 'en-US']
     I18n.load_path += Dir[Rails.root.join('config', 'locale', '*.{yml|rb}').to_s]
 
-    # 每次重启都重置 jwt_secret ，反正 jwt 的过期时间非常短，所以即使在用户
-    # 得到 jwt 后重置了这个东西也不会产生太大的影响
-    config.jwt_secret = SecureRandom.hex 256
-
     config.exceptions_app = self.routes
   end
 end

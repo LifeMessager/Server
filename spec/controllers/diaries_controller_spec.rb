@@ -3,9 +3,9 @@ require 'rails_helper'
 describe DiariesController, type: :controller do
   before(:all) do
     @user = create :user
-    create :mail_receiver, user: @user, local_note_date: '2013-01-01'
+    create :mail_receiver, user: @user, locale_date: '2013-01-01'
     5.times do |time|
-      mail_receiver = create :mail_receiver, user: @user, local_note_date: "2013-02-0#{1 + time}"
+      mail_receiver = create :mail_receiver, user: @user, locale_date: "2013-02-0#{1 + time}"
       10.times do |i|
         klass = i % 2 ? TextNote : ImageNode
         build(:note, mail_receiver: mail_receiver).becomes!(klass).save!
@@ -22,7 +22,7 @@ describe DiariesController, type: :controller do
     it "return current user's diary in specified date" do
       mail_receivers = @user.mail_receivers
       query_note_date = "2013-02-0#{Array(1..5).sample}"
-      expected_ids = mail_receivers.find_by_local_note_date(query_note_date).notes.map(&:id)
+      expected_ids = mail_receivers.find_by_locale_date(query_note_date).notes.map(&:id)
       login @user
       get :show, id: query_note_date
       expect(response).to have_http_status :ok
