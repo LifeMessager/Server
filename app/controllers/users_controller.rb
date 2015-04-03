@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
-  skip_before_action :verify_token, only: [:create, :unsubscribe, :send_login_mail]
-  before_action :check_params_user, except: [:create, :send_login_mail, :get_current_user]
+  skip_before_action :verify_token, only: [:create, :unsubscribe]
+  before_action :check_params_user, except: [:create, :get_current_user]
 
   def create
     unless User.creatable?
@@ -77,16 +77,6 @@ class UsersController < ApplicationController
       data = build_error 'Unsubscribe failed', @user.errors
       simple_respond data, status: :unprocessable_entity
     end
-  end
-
-  def send_login_mail
-    user = User.find_by_email params[:email].downcase
-    if user.nil?
-      data = build_error 'Login failed', [{resource: 'User', field: 'email', code: 'missing'}]
-      return simple_respond data, status: :unprocessable_entity
-    end
-    UserMailer.login(user).deliver
-    simple_respond nil, status: :created
   end
 
   def get_current_user

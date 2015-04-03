@@ -11,6 +11,9 @@ After request the `login mail` api, user will receive an email contain a login l
 
 The `token` in url hash is the user token.
 
+
+
+
 # Group User
 
 ## User [/users/{id}]
@@ -37,7 +40,7 @@ The `token` in url hash is the user token.
 
     + Headers
 
-        Authentication: Bearer [user_token from login mail]
+        Authentication: Bearer [session_token]
 
 + Response 200 (application/json)
 
@@ -49,7 +52,7 @@ The `token` in url hash is the user token.
 
     + Headers
 
-        Authentication: Bearer [user_token from login mail]
+        Authentication: Bearer [session_token]
 
     + Body
 
@@ -68,7 +71,7 @@ The `token` in url hash is the user token.
 
     + Headers
 
-        Authentication: Bearer [user_token from login mail]
+        Authentication: Bearer [session_token]
 
 + Response 204
 
@@ -92,20 +95,6 @@ The `token` in url hash is the user token.
 
     [User][]
 
-## Login [/users/login_mail]
-
-### Send a login mail [POST]
-
-+ Request (application/json)
-
-    ```js
-    {
-      "email": "example@example.com"
-    }
-    ```
-
-+ Response 201 (application/json)
-
 ## Manage Subscribe [/users/{id}/subscription]
 
 + Parameters
@@ -117,7 +106,7 @@ The `token` in url hash is the user token.
 
     + Headers
 
-        Authentication: Bearer [user_token from login mail]
+        Authentication: Bearer [session_token]
 
 + Response 201 (application/json)
 
@@ -142,9 +131,50 @@ The `token` in url hash is the user token.
 
     + Headers
 
-        Authentication: Bearer [user_token from login mail]
+        Authentication: Bearer [session_token]
 
 + Response 201 (application/json)
+
+
+
+
+# Group Session
+
+## Login [/sessions/emails]
+
+### Request a login mail [POST]
+
++ Request (application/json)
+
+    ```js
+    {
+      "email": "example@example.com"
+    }
+    ```
+
++ Response 201 (application/json)
+
+## Keep session [/sessions]
+
+### Renew or request persistent token [POST]
+
++ Request (application/json)
+
+    + Headers
+
+        Authentication: Bearer [token from login mail]
+
++ Response 201 (application/json)
+
+    ```js
+    {
+      "token": "...",
+      "expired_at": "2015-03-18T02:38:20.067Z"
+    }
+    ```
+
+
+
 
 # Group Diary
 
@@ -173,7 +203,7 @@ The `token` in url hash is the user token.
 
     + Headers
 
-        Authentication: Bearer [user_token from login mail]
+        Authentication: Bearer [session_token]
 
 + Response 200 (application/json)
 
@@ -188,7 +218,7 @@ The `token` in url hash is the user token.
     + Headers
 
         Content-Type: multipart/form-data
-        Authentication: Bearer [user_token from login mail]
+        Authentication: Bearer [session_token]
 
     + Body
 
