@@ -28,7 +28,7 @@ vim lifemessager.yml
 ## visudo
 
 ```visudo
-Cmnd_Alias LIFEMESSAGER_CMD = bin/mkdir, \
+Cmnd_Alias LIFEMESSAGER_CMD = /bin/mkdir, \
                               \
                               /bin/mv /tmp/{server_name}.crt /etc/ssl/certs, \
                               /bin/mv /tmp/{server_name}.key /etc/ssl/private, \
@@ -37,7 +37,7 @@ Cmnd_Alias LIFEMESSAGER_CMD = bin/mkdir, \
                               \
                               /bin/mv /tmp/lifemessager_{stage} /etc/nginx/sites-available, \
                               /bin/ln -fs /etc/nginx/sites-available/lifemessager_{stage} /etc/nginx/sites-enabled/lifemessager_{stage}, \
-                              /etc/init.d/nginx reload \
+                              /etc/init.d/nginx reload, \
                               \
                               /bin/ln -fs /home/lifemessager/lifemessager/shared/config/monit.conf /etc/monit.d/lifemessager, \
                               /usr/bin/monit reload, \
