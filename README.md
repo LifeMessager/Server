@@ -48,8 +48,16 @@ Cmnd_Alias LIFEMESSAGER_CMD = bin/mkdir, \
 
 lifemessager ALL=NOPASSWD: LIFEMESSAGER_CMD, \
                  (postgres) NOPASSWD: /usr/bin/psql
+                 ```
+
+## Deploy
+
+```bash
+cap production setup
+cap production deploy
 ```
 
+Can use `CAP_LOG_LEVEL` to set output log level. Avaliable level: `trace`, `debug`, `info`, `warn`, `error`, `fatal`.
 
 ## Troubleshooting
 
