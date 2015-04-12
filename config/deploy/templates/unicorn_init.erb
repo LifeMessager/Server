@@ -15,7 +15,7 @@ TIMEOUT=${TIMEOUT-60}
 APP_ROOT=<%= current_path %>
 PID=<%= fetch(:unicorn_pid) %>
 
-CMD="cd $APP_ROOT && <%= bundle_unicorn("-D -c", fetch(:unicorn_config), "-E", fetch(:stage)) %>"
+CMD="export HOME; true "${HOME:=$(getent passwd "$AS_USER" | cut -d: -f6;)}"; cd $APP_ROOT && <%= bundle_unicorn("-D -c", fetch(:unicorn_config), "-E", fetch(:unicorn_app_env)) %>"
 
 AS_USER=<%= fetch(:unicorn_user) %>
 set -u
