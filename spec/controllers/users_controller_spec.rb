@@ -191,24 +191,4 @@ describe UsersController, type: :controller do
       expect(response).to have_http_status :no_content
     end
   end
-
-  describe '#send_login_mail' do
-    before(:all) { @user = create :user }
-
-    it 'send a mail contain valid token' do
-      expect(UserMailer).to receive(:login).and_call_original do |user|
-        expect(user.email).to eq @user.email
-      end
-      post :send_login_mail, email: @user.email
-      expect(response).to have_http_status :created
-    end
-
-    context 'if user not exist' do
-      it 'return an error' do
-        post :send_login_mail, email: 'not-exist@example.com'
-        expect(response).to have_http_status :unprocessable_entity
-        expect(respond_json['errors'].first.symbolize_keys).to eq resource: 'User', field: 'email', code: 'missing'
-      end
-    end
-  end
 end

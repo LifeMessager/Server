@@ -5,9 +5,11 @@ Rails.application.routes.draw do
 
   get 'user' => 'users#get_current_user'
 
-  resources :users, only: [:create, :show, :update, :destroy] do
-    post :login_mail, action: :send_login_mail, on: :collection
+  resources :sessions, only: [:create] do
+    post :emails, action: :send_login_mail, on: :collection
+  end
 
+  resources :users, only: [:create, :show, :update, :destroy] do
     member do
       put :subscription, action: :subscribe
       delete :subscription, action: :unsubscribe

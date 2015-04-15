@@ -1,11 +1,13 @@
 class Token
-  EXPIRED_INTERVAL = 1.day
+  MAIL_EXPIRED_INTERVAL = 1.day
+  EXPIRED_INTERVAL = 15.day
 
-  attr_reader :user, :id
+  attr_reader :user, :id, :expired_at
 
   def initialize **args
-    interval = args[:expired_interval] || EXPIRED_INTERVAL
-    data = {exp: (Time.now + interval).to_i}
+    interval = args[:expired_interval] || MAIL_EXPIRED_INTERVAL
+    @expired_at = Time.now + interval
+    data = {exp: @expired_at.to_i}
     if args[:user]
       @user = args[:user]
       data[:user_id] = @user.id
@@ -13,9 +15,14 @@ class Token
     @id = args[:id] || JWT.encode(data, args[:secret] || secret)
   end
 
-  def login_url
+  def to_s
+    @id
+  end
+
+  def to_url
     "http://#{Settings.server_name}/#!/login?token=#{id}"
   end
+  alias_method :login_url, :to_url
 
   def self.decode id, **args
     begin

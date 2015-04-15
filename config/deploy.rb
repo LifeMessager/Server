@@ -64,7 +64,7 @@ set :whenever_identifier, ->{ "#{fetch :application}_#{fetch :stage}" }
 # set :format, :pretty
 
 # Default value for :log_level is :debug
-set :log_level, :info
+set :log_level, ENV['CAP_LOG_LEVEL'] || :info
 
 # Default value for :pty is false
 # set :pty, true
