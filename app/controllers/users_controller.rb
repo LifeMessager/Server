@@ -50,7 +50,7 @@ class UsersController < ApplicationController
   end
 
   def cancel_destroy
-    if @user.destroyed?
+    if @user.deleted?
       User.restore @user.id
     end
     simple_respond nil, status: :no_content

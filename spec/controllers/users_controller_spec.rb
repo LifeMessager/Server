@@ -105,7 +105,7 @@ describe UsersController, type: :controller do
       delete :destroy, id: user.id
       expect(response).to have_http_status :no_content
       user.reload
-      expect(user).to be_destroyed
+      expect(user).to be_deleted
     end
   end
 

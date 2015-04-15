@@ -50,6 +50,7 @@ gem 'settingslogic'
 # 图片上传
 gem 'rest-client'
 gem 'ruby-filemagic'
+gem "fog", "~> 1.27"
 gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
 gem 'carrierwave-upyun'
 
