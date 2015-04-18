@@ -1,12 +1,12 @@
 class UsersController < ApplicationController
-  skip_before_action :verify_token, only: [:create, :unsubscribe]
+  skip_before_action :verify_token, only: [:create, :unsubscribe, :change_email]
   before_action :check_params_user, except: [:create, :get_current_user]
 
   def create
     unless User.creatable?
       return simple_respond build_error('Registered user overflow'), status: :forbidden
     end
-    @user = User.new info_of_user
+    @user = User.new user_info_for_create
     @user.language ||= http_accept_language.language_region_compatible_from User.languages
     @user.timezone = current_timezone
     @user.alert_time ||= '08:00'
@@ -29,7 +29,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    unless @user.update update_info
+    unless @user.update user_info_for_update
       data = build_error 'Update failed', @user.errors
       return simple_respond data, status: :unprocessable_entity
     end
@@ -79,6 +79,28 @@ class UsersController < ApplicationController
     end
   end
 
+  def apply_change_email
+    if valid_params_email.nil?
+      data = build_error 'Validation Failed', [resource: 'User', field: 'email', code: 'invalid']
+      return simple_respond data, status: :unprocessable_entity
+    end
+    if current_user.email != valid_params_email
+      UserMailer.change_email(current_user, params[:email]).deliver
+    end
+    simple_respond nil, status: :created
+  end
+
+  def change_email
+    unless authorization && authorization[:token] && authorization[:type] == 'change_email'
+      return simple_respond nil, status: :unauthorized
+    end
+    if @user.change_email authorization[:token]
+      simple_respond nil, status: :ok
+    else
+      simple_respond nil, status: :unauthorized
+    end
+  end
+
   def get_current_user
     @user = current_user
     respond_to do |format|
@@ -94,11 +116,18 @@ class UsersController < ApplicationController
     return simple_respond(nil, status: :not_found) unless @user
   end
 
-  def info_of_user
+  def user_info_for_create
     params.permit :email, :timezone, :alert_time, :language
   end
 
-  def update_info
+  def user_info_for_update
     params.permit :timezone, :alert_time
+  end
+
+  def valid_params_email
+    return @_valid_params_email if @_valid_params_email_called
+    email = params[:email].chomp
+    @_valid_params_email_called = true
+    @_valid_params_email = ValidateEmail.valid?(email) ? email : nil
   end
 end

@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'securerandom'
 
 expected_user_info_keys = ['id', 'email', 'created_at', 'deleted_at', 'subscribed', 'timezone', 'alert_time']
 
@@ -86,6 +87,16 @@ describe UsersController, type: :controller do
       expect(respond_json['alert_time']).to eq '01:00'
       user.reload
       expect(user.alert_time).to eq '01:00'
+    end
+
+    it 'will not update user email' do
+      login user
+      patch :update, id: user.id, email: 'aaa@bbb.com'
+      expect(response).to have_http_status :ok
+      expect(respond_json).to include *expected_user_info_keys
+      expect(respond_json['email']).not_to eq 'aaa@bbb.com'
+      user.reload
+      expect(user.email).not_to eq 'aaa@bbb.com'
     end
   end
 
@@ -189,6 +200,75 @@ describe UsersController, type: :controller do
     it 'support unsubscribe from mail link' do
       get :unsubscribe, id: @user.id, _method: 'delete', token: "unsubscribe #{@user.unsubscribe_token}"
       expect(response).to have_http_status :no_content
+    end
+  end
+
+  describe '#apply_change_email' do
+    let(:user) { create :user }
+
+    it 'require authentication' do
+      post :apply_change_email, id: user.id, email: 'test@example.com'
+      expect(response).to have_http_status :unauthorized
+    end
+
+    it 'return the created user' do
+      expect(UserMailer).to receive(:change_email).and_call_original do |target_user, email|
+        expect(email).to eq 'test@example.com'
+        expect(target_user).to eq user
+      end
+
+      login user
+      post :apply_change_email, id: user.id, email: 'test@example.com'
+      expect(response).to have_http_status :created
+    end
+
+    it 'validate email format' do
+      login user
+      post :apply_change_email, id: user.id, email: 'test'
+      expect(response).to have_http_status :unprocessable_entity
+      expect(respond_json).to match(
+                                "message" => 'Validation Failed',
+                                "errors" => [{
+                                  "resource" => 'User',
+                                  "field" => 'email',
+                                  "code" => 'invalid'
+                                }]
+                              )
+    end
+
+    it 'will not send mail if address not change' do
+      expect(UserMailer).not_to receive(:change_email)
+      login user
+      post :apply_change_email, id: user.id, email: user.email
+      expect(response).to have_http_status :created
+    end
+  end
+
+  describe '#change_email' do
+    let(:user) { create :user }
+
+    it 'require authentication' do
+      put :change_email, id: user.id
+      expect(response).to have_http_status :unauthorized
+    end
+
+    it "change user's email address" do
+      target_email = "test#{SecureRandom.hex}@example.com"
+      token = user.change_email_token target_email
+      request.env['HTTP_AUTHORIZATION'] = "change_email #{token}"
+      put :change_email, id: user.id
+      expect(response).to have_http_status :ok
+      user.reload
+      expect(user.email).to eq target_email
+    end
+
+    it 'check user validity' do
+      another_user = create :user
+      target_email = "test#{SecureRandom.hex}@example.com"
+      token = another_user.change_email_token target_email
+      request.env['HTTP_AUTHORIZATION'] = "change_email #{token}"
+      put :change_email, id: user.id
+      expect(response).to have_http_status :unauthorized
     end
   end
 end

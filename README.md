@@ -15,7 +15,7 @@
 
 ### gentoo
 
-* emerge -av libmagic
+* emerge -av libmagic vixie-cron
 
 ## configuration
 

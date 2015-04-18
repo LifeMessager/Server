@@ -307,4 +307,50 @@ describe User, type: :model do
       expect(Note.find_by_id note.id).to be_nil
     end
   end
+
+  describe '#change_email_token' do
+    let(:user) { create :user }
+
+    it "generate a json web token for change user's email address" do
+      application_secret = Rails.application.secrets[:secret_key_base]
+      token = user.change_email_token 'test@example.com'
+      result = JWT.decode(token, application_secret).first.symbolize_keys
+      expect(result).to include(
+                          user_id: user.id,
+                          email: 'test@example.com',
+                          exp: (Time.now + 1.day).to_i
+                        )
+    end
+  end
+
+  describe '#change_email' do
+    let(:user) { create :user }
+
+    it 'will change user email address' do
+      token = user.change_email_token 'test@example.com'
+      expect(user.change_email token).to be true
+      expect(user.email).to eq 'test@example.com'
+    end
+
+    it 'validate token' do
+      expect(user.change_email 'invalid_token').to be false
+      other_user = create :user
+      other_user_email_token = other_user.change_email_token 'test@example.com'
+      expect(user.change_email other_user_email_token).to be false
+    end
+  end
+
+  describe '#change_email_url' do
+    it 'return nil if user is a new record' do
+      expect(@user.change_email_url 'test@example.com').to be_nil
+    end
+
+    it 'generate change email url' do
+      @user.save
+      target_email = 'test@example.com'
+      token = @user.change_email_token target_email
+      expected_url = "http://#{Settings.server_name}/#!/user/email/edit?token=#{token}"
+      expect(@user.change_email_url target_email).to eq expected_url
+    end
+  end
 end

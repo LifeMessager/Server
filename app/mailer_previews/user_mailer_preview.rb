@@ -12,6 +12,10 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.destroyed user
   end
 
+  def change_email
+    UserMailer.change_email user, 'test@example.com'
+  end
+
   private
 
   def user

@@ -50,4 +50,16 @@ RSpec.describe UserMailer, :type => :mailer do
       expect(mail.attachments.first.read).to eq user.export_data.to_json
     end
   end
+
+  describe '.change_email' do
+    let(:user) { create :user }
+
+    let(:mail) { UserMailer.change_email user, 'test@example.com' }
+
+    it "renders the headers" do
+      expect(mail).to have_subject 'subject'
+      expect(mail).to deliver_to 'test@example.com'
+      expect(mail).to deliver_from Settings.mailer_deliver_from
+    end
+  end
 end

@@ -15,6 +15,9 @@ Rails.application.routes.draw do
       delete :subscription, action: :unsubscribe
 
       post :regain, action: :cancel_destroy
+
+      post :change_email_applies, action: :apply_change_email
+      put :email, action: :change_email
     end
   end
 

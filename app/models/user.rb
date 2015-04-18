@@ -94,16 +94,12 @@ class User < ActiveRecord::Base
   end
 
   def unsubscribe_url
-    return if new_record?
-    # http://api.rubyonrails.org/classes/ActionDispatch/Routing/UrlFor.html
-    # http://stackoverflow.com/questions/341143/can-rails-routing-helpers-i-e-mymodel-pathmodel-be-used-in-models
-    path = Rails.application.routes.url_helpers.subscription_user_path(
+    generate_url :subscription_user, {
       _method: :delete,
       token: "unsubscribe #{unsubscribe_token}",
       id: id,
       action: :unsubscribe
-    )
-    "#{Settings.server_name}#{path}"
+    }
   end
 
   def unsubscribe_email_address
@@ -158,9 +154,43 @@ class User < ActiveRecord::Base
     end
   end
 
+  def change_email_token email
+    raise '[change_email_token] called before user saved' if new_record?
+    data = {user_id: self.id, email: email, exp: (Time.now + 1.day).to_i}
+    JWT.encode data, application_secret
+  end
+
+  def change_email_url email
+    return if new_record?
+    token = change_email_token email
+    "http://#{Settings.server_name}/#!/user/email/edit?token=#{token}"
+  end
+
+  def change_email token
+    begin
+      data = JWT.decode(token, application_secret).first.symbolize_keys
+    rescue
+      return false
+    end
+    return false unless data[:user_id] == self.id
+    update_attributes email: data[:email]
+  end
+
   private
+
+  # http://api.rubyonrails.org/classes/ActionDispatch/Routing/UrlFor.html
+  # http://stackoverflow.com/questions/341143/can-rails-routing-helpers-i-e-mymodel-pathmodel-be-used-in-models
+  def generate_url path_name, options
+    return if new_record?
+    path = Rails.application.routes.url_helpers.send "#{path_name.to_s}_path".to_sym, options
+    "#{Settings.server_name}#{path}"
+  end
 
   def generate_unsubscribe_token
     self.unsubscribe_token = SecureRandom.hex
+  end
+
+  def application_secret
+    Rails.application.secrets[:secret_key_base]
   end
 end

@@ -359,6 +359,9 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
+    valid_email (0.0.7)
+      activemodel
+      mail
     whenever (0.9.4)
       chronic (>= 0.6.3)
 
@@ -407,4 +410,5 @@ DEPENDENCIES
   spring
   spring-commands-rspec
   unicorn
+  valid_email
   whenever

@@ -53,6 +53,8 @@ gem 'ruby-filemagic'
 gem "fog", "~> 1.27"
 gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
 gem 'carrierwave-upyun'
+# 邮件地址格式验证
+gem 'valid_email'
 
 group :development, :test do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
