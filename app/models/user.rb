@@ -93,7 +93,7 @@ class User < ActiveRecord::Base
     mail_receivers.where('notes_count > 0').sample
   end
 
-  def unsubscribe_link
+  def unsubscribe_url
     return if new_record?
     # http://api.rubyonrails.org/classes/ActionDispatch/Routing/UrlFor.html
     # http://stackoverflow.com/questions/341143/can-rails-routing-helpers-i-e-mymodel-pathmodel-be-used-in-models
@@ -113,7 +113,7 @@ class User < ActiveRecord::Base
 
   def unsubscribe_email_header
     return if new_record?
-    "<mailto:#{unsubscribe_email_address}>, <http://#{unsubscribe_link}>"
+    "<mailto:#{unsubscribe_email_address}>, <http://#{unsubscribe_url}>"
   end
 
   def subscribe

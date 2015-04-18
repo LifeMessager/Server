@@ -238,9 +238,9 @@ describe User, type: :model do
     end
   end
 
-  describe '#unsubscribe_link' do
+  describe '#unsubscribe_url' do
     it 'return nil if user is a new record' do
-      expect(@user.unsubscribe_link).to be_nil
+      expect(@user.unsubscribe_url).to be_nil
     end
 
     it 'generate unsubscribe link' do
@@ -251,7 +251,7 @@ describe User, type: :model do
         id: @user.id,
         action: :unsubscribe
       )
-      expect(@user.unsubscribe_link).to eq "#{Settings.server_name}#{unsubscribe_path}"
+      expect(@user.unsubscribe_url).to eq "#{Settings.server_name}#{unsubscribe_path}"
     end
   end
 
@@ -273,7 +273,7 @@ describe User, type: :model do
 
     it 'generate unsubscribe email header' do
       @user.save
-      expect(@user.unsubscribe_email_header).to eq "<mailto:#{@user.unsubscribe_email_address}>, <http://#{@user.unsubscribe_link}>"
+      expect(@user.unsubscribe_email_header).to eq "<mailto:#{@user.unsubscribe_email_address}>, <http://#{@user.unsubscribe_url}>"
     end
   end
 
