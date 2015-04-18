@@ -109,7 +109,7 @@ class User < ActiveRecord::Base
 
   def unsubscribe_email_header
     return if new_record?
-    "<mailto:#{unsubscribe_email_address}>, <http://#{unsubscribe_url}>"
+    "<mailto:#{unsubscribe_email_address}>, <#{unsubscribe_url}>"
   end
 
   def subscribe
@@ -163,7 +163,7 @@ class User < ActiveRecord::Base
   def change_email_url email
     return if new_record?
     token = change_email_token email
-    "http://#{Settings.server_name}/#!/user/email/edit?token=#{token}"
+    "#{Settings.url_protocol}://#{Settings.server_name}/#!/user/email/edit?token=#{token}"
   end
 
   def change_email token
@@ -183,7 +183,7 @@ class User < ActiveRecord::Base
   def generate_url path_name, options
     return if new_record?
     path = Rails.application.routes.url_helpers.send "#{path_name.to_s}_path".to_sym, options
-    "#{Settings.server_name}#{path}"
+    "#{Settings.url_protocol}://#{Settings.server_name}#{path}"
   end
 
   def generate_unsubscribe_token

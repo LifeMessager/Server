@@ -251,7 +251,7 @@ describe User, type: :model do
         id: @user.id,
         action: :unsubscribe
       )
-      expect(@user.unsubscribe_url).to eq "#{Settings.server_name}#{unsubscribe_path}"
+      expect(@user.unsubscribe_url).to eq "http://#{Settings.server_name}#{unsubscribe_path}"
     end
   end
 
@@ -273,7 +273,7 @@ describe User, type: :model do
 
     it 'generate unsubscribe email header' do
       @user.save
-      expect(@user.unsubscribe_email_header).to eq "<mailto:#{@user.unsubscribe_email_address}>, <http://#{@user.unsubscribe_url}>"
+      expect(@user.unsubscribe_email_header).to eq "<mailto:#{@user.unsubscribe_email_address}>, <#{@user.unsubscribe_url}>"
     end
   end
 
