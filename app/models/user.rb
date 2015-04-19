@@ -32,7 +32,6 @@ class TimezoneValidator
 end
 
 class User < ActiveRecord::Base
-  VALID_EMAIL_REGEXP = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   ALERT_PLACEHOLDER_DAY = '2014-01-01'
 
   def self.timezones
@@ -45,7 +44,7 @@ class User < ActiveRecord::Base
 
   acts_as_paranoid
 
-  validates :email,      presence: true, format: { with: VALID_EMAIL_REGEXP }, uniqueness: { case_sensitive: false }
+  validates :email,      presence: true, email: true, uniqueness: { case_sensitive: false }
   validates :timezone,   presence: true, inclusion: { in: TimezoneValidator.new }
   validates :language,   presence: true, inclusion: { in: languages }
   validates :alert_time, presence: true

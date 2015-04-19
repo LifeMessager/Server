@@ -122,7 +122,7 @@ describe User, type: :model do
     end
 
     it 'is invalid with wrong format' do
-      invalid_addresses = %w[user@foo,com user_at_foo.org example.user@foo.foo@bar_baz.com foo@bar+baz.com]
+      invalid_addresses = %w[user@foo,com user_at_foo.org example.user@foo.foo@bar_baz.com foo@barbaz]
       invalid_addresses.each do |invalid_address|
         @user.email = invalid_address
         expect(@user).to be_invalid
