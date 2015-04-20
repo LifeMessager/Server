@@ -311,15 +311,16 @@ describe User, type: :model do
   describe '#change_email_token' do
     let(:user) { create :user }
 
-    it "generate a json web token for change user's email address" do
-      application_secret = Rails.application.secrets[:secret_key_base]
+    it 'return nil if user is a new record' do
+      expect(@user.change_email_url 'test@example.com').to be_nil
+    end
+
+    it "generate token for change user's email address" do
       token = user.change_email_token 'test@example.com'
-      result = JWT.decode(token, application_secret).first.symbolize_keys
-      expect(result).to include(
-                          user_id: user.id,
-                          email: 'test@example.com',
-                          exp: (Time.now + 1.day).to_i
-                        )
+      decode_info = Token.decode token
+      expect(decode_info).to include success: true
+      expect(decode_info[:token]).to have_attributes user: user
+      expect(decode_info[:token].data).to include 'email' => 'test@example.com'
     end
   end
 
@@ -332,8 +333,11 @@ describe User, type: :model do
       expect(user.email).to eq 'test@example.com'
     end
 
-    it 'validate token' do
+    it 'return false with invalid token' do
       expect(user.change_email 'invalid_token').to be false
+    end
+
+    it "return false with other user's token" do
       other_user = create :user
       other_user_email_token = other_user.change_email_token 'test@example.com'
       expect(user.change_email other_user_email_token).to be false

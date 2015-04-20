@@ -155,8 +155,7 @@ class User < ActiveRecord::Base
 
   def change_email_token email
     raise '[change_email_token] called before user saved' if new_record?
-    data = {user_id: self.id, email: email, exp: (Time.now + 1.day).to_i}
-    JWT.encode data, application_secret
+    Token.new(user: self, data: {email: email}).to_s
   end
 
   def change_email_url email
@@ -166,13 +165,13 @@ class User < ActiveRecord::Base
   end
 
   def change_email token
-    begin
-      data = JWT.decode(token, application_secret).first.symbolize_keys
-    rescue
-      return false
-    end
-    return false unless data[:user_id] == self.id
-    update_attributes email: data[:email]
+    decode_info = Token.decode token
+    return false unless decode_info[:success]
+    token = decode_info[:token]
+    return false unless token.user == self
+    data = token.data
+    return false unless data and data['email']
+    update_attributes email: data['email']
   end
 
   private
