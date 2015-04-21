@@ -1,6 +1,9 @@
 # coding: utf-8
-# source 'https://ruby.taobao.org/'
-source 'https://rubygems.org/'
+if ENV['DEV_ENV']
+  source 'http://ruby.taobao.org/'
+else
+  source 'https://rubygems.org/'
+end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.5'
@@ -50,8 +53,11 @@ gem 'settingslogic'
 # 图片上传
 gem 'rest-client'
 gem 'ruby-filemagic'
+gem "fog", "~> 1.27"
 gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
 gem 'carrierwave-upyun'
+# 邮件地址格式验证
+gem 'valid_email'
 
 group :development, :test do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring

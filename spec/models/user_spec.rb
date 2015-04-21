@@ -122,7 +122,7 @@ describe User, type: :model do
     end
 
     it 'is invalid with wrong format' do
-      invalid_addresses = %w[user@foo,com user_at_foo.org example.user@foo.foo@bar_baz.com foo@bar+baz.com]
+      invalid_addresses = %w[user@foo,com user_at_foo.org example.user@foo.foo@bar_baz.com foo@barbaz]
       invalid_addresses.each do |invalid_address|
         @user.email = invalid_address
         expect(@user).to be_invalid
@@ -238,9 +238,9 @@ describe User, type: :model do
     end
   end
 
-  describe '#unsubscribe_link' do
+  describe '#unsubscribe_url' do
     it 'return nil if user is a new record' do
-      expect(@user.unsubscribe_link).to be_nil
+      expect(@user.unsubscribe_url).to be_nil
     end
 
     it 'generate unsubscribe link' do
@@ -251,7 +251,7 @@ describe User, type: :model do
         id: @user.id,
         action: :unsubscribe
       )
-      expect(@user.unsubscribe_link).to eq "#{Settings.server_name}#{unsubscribe_path}"
+      expect(@user.unsubscribe_url).to eq "http://#{Settings.server_name}#{unsubscribe_path}"
     end
   end
 
@@ -273,7 +273,7 @@ describe User, type: :model do
 
     it 'generate unsubscribe email header' do
       @user.save
-      expect(@user.unsubscribe_email_header).to eq "<mailto:#{@user.unsubscribe_email_address}>, <http://#{@user.unsubscribe_link}>"
+      expect(@user.unsubscribe_email_header).to eq "<mailto:#{@user.unsubscribe_email_address}>, <#{@user.unsubscribe_url}>"
     end
   end
 
@@ -305,6 +305,56 @@ describe User, type: :model do
       user.really_destroy!
       expect(MailReceiver.find_by_id mail_receiver.id).to be_nil
       expect(Note.find_by_id note.id).to be_nil
+    end
+  end
+
+  describe '#change_email_token' do
+    let(:user) { create :user }
+
+    it 'return nil if user is a new record' do
+      expect(@user.change_email_url 'test@example.com').to be_nil
+    end
+
+    it "generate token for change user's email address" do
+      token = user.change_email_token 'test@example.com'
+      decode_info = Token.decode token
+      expect(decode_info).to include success: true
+      expect(decode_info[:token]).to have_attributes user: user
+      expect(decode_info[:token].data).to include 'email' => 'test@example.com'
+    end
+  end
+
+  describe '#change_email' do
+    let(:user) { create :user }
+
+    it 'will change user email address' do
+      token = user.change_email_token 'test@example.com'
+      expect(user.change_email token).to be true
+      expect(user.email).to eq 'test@example.com'
+    end
+
+    it 'return false with invalid token' do
+      expect(user.change_email 'invalid_token').to be false
+    end
+
+    it "return false with other user's token" do
+      other_user = create :user
+      other_user_email_token = other_user.change_email_token 'test@example.com'
+      expect(user.change_email other_user_email_token).to be false
+    end
+  end
+
+  describe '#change_email_url' do
+    it 'return nil if user is a new record' do
+      expect(@user.change_email_url 'test@example.com').to be_nil
+    end
+
+    it 'generate change email url' do
+      @user.save
+      target_email = 'test@example.com'
+      token = @user.change_email_token target_email
+      expected_url = "http://#{Settings.server_name}/#!/user/email/edit?token=#{token}"
+      expect(@user.change_email_url target_email).to eq expected_url
     end
   end
 end

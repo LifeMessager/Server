@@ -1,0 +1,12 @@
+#!/bin/sh
+
+#
+# echo "#\!bin/sh\nsource ./scripts/githook_gemfile_source_check" > .git/hooks/pre-commit
+#
+
+if test $(git diff --cached Gemfile.lock | grep 'remote: http://ruby.taobao.org/'  | wc -l) != 0 ; then
+  cat <<\EOF
+Error: You should not commit Gemfile source http://ruby.taobao.org/
+EOF
+  exit 1
+fi

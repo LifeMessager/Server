@@ -120,7 +120,7 @@ The `token` in url hash is the user token.
 
 + Response 204 (application/json)
 
-## Cancel Delete Progress [/users/{id}/regain]
+## Cancel delete progress [/users/{id}/regain]
 
 + Parameters
     + id (required, number, `123`) ... user id
@@ -135,7 +135,29 @@ The `token` in url hash is the user token.
 
 + Response 201 (application/json)
 
+## Send change mail address validation email [/users/{id}/change_email_applies]
 
+### Request [POST]
+
++ Request (application/json)
+
+    + Headers
+
+        Authentication: Bearer [session_token]
+
++ Response 201 (application/json)
+
+## Request change email [/users/{id}/email]
+
+### Request [PUT]
+
++ Request (application/json)
+
+    + Headers
+
+        Authentication: change_email [session_token]
+
++ Response 200 (application/json)
 
 
 # Group Session

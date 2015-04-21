@@ -29,6 +29,12 @@ class UserMailer < ActionMailer::Base
     mail fill_default_headers(nil, user)
   end
 
+  def change_email user, email
+    @user = user
+    @change_email_url = user.change_email_url email
+    mail fill_default_headers({to: email}, user)
+  end
+
   private
 
   def fill_default_headers headers, user

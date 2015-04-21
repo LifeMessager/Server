@@ -32,7 +32,6 @@ class TimezoneValidator
 end
 
 class User < ActiveRecord::Base
-  VALID_EMAIL_REGEXP = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   ALERT_PLACEHOLDER_DAY = '2014-01-01'
 
   def self.timezones
@@ -45,7 +44,7 @@ class User < ActiveRecord::Base
 
   acts_as_paranoid
 
-  validates :email,      presence: true, format: { with: VALID_EMAIL_REGEXP }, uniqueness: { case_sensitive: false }
+  validates :email,      presence: true, email: true, uniqueness: { case_sensitive: false }
   validates :timezone,   presence: true, inclusion: { in: TimezoneValidator.new }
   validates :language,   presence: true, inclusion: { in: languages }
   validates :alert_time, presence: true
@@ -93,17 +92,13 @@ class User < ActiveRecord::Base
     mail_receivers.where('notes_count > 0').sample
   end
 
-  def unsubscribe_link
-    return if new_record?
-    # http://api.rubyonrails.org/classes/ActionDispatch/Routing/UrlFor.html
-    # http://stackoverflow.com/questions/341143/can-rails-routing-helpers-i-e-mymodel-pathmodel-be-used-in-models
-    path = Rails.application.routes.url_helpers.subscription_user_path(
+  def unsubscribe_url
+    generate_url :subscription_user, {
       _method: :delete,
       token: "unsubscribe #{unsubscribe_token}",
       id: id,
       action: :unsubscribe
-    )
-    "#{Settings.server_name}#{path}"
+    }
   end
 
   def unsubscribe_email_address
@@ -113,7 +108,7 @@ class User < ActiveRecord::Base
 
   def unsubscribe_email_header
     return if new_record?
-    "<mailto:#{unsubscribe_email_address}>, <http://#{unsubscribe_link}>"
+    "<mailto:#{unsubscribe_email_address}>, <#{unsubscribe_url}>"
   end
 
   def subscribe
@@ -158,9 +153,42 @@ class User < ActiveRecord::Base
     end
   end
 
+  def change_email_token email
+    raise '[change_email_token] called before user saved' if new_record?
+    Token.new(user: self, data: {email: email}).to_s
+  end
+
+  def change_email_url email
+    return if new_record?
+    token = change_email_token email
+    "#{Settings.url_protocol}://#{Settings.server_name}/#!/user/email/edit?token=#{token}"
+  end
+
+  def change_email token
+    decode_info = Token.decode token
+    return false unless decode_info[:success]
+    token = decode_info[:token]
+    return false unless token.user == self
+    data = token.data
+    return false unless data and data['email']
+    update_attributes email: data['email']
+  end
+
   private
+
+  # http://api.rubyonrails.org/classes/ActionDispatch/Routing/UrlFor.html
+  # http://stackoverflow.com/questions/341143/can-rails-routing-helpers-i-e-mymodel-pathmodel-be-used-in-models
+  def generate_url path_name, options
+    return if new_record?
+    path = Rails.application.routes.url_helpers.send "#{path_name.to_s}_path".to_sym, options
+    "#{Settings.url_protocol}://#{Settings.server_name}#{path}"
+  end
 
   def generate_unsubscribe_token
     self.unsubscribe_token = SecureRandom.hex
+  end
+
+  def application_secret
+    Rails.application.secrets[:secret_key_base]
   end
 end

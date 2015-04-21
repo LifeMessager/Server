@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'rails_helper'
 
 describe Token do
@@ -12,23 +13,42 @@ describe Token do
 
   it { is_expected.to have_pattr_writer :user }
 
-  it 'receive :expired_interval option' do
-    token = Token.new user: @user, expired_interval: -10
-    decode_info = Token.decode token.id
-    expect(decode_info[:success]).to be false
-    expect(decode_info[:message]).to eq 'token expired'
-  end
+  describe '.new' do
+    it 'receive :expired_interval option' do
+      token = Token.new user: @user, expired_interval: -10
+      decode_info = Token.decode token.id
+      expect(decode_info[:success]).to be false
+      expect(decode_info[:message]).to eq 'token expired'
+    end
 
-  it 'receive :secret option' do
-    token = Token.new user: @user, secret: 'secret'
+    it 'receive :secret option' do
+      token = Token.new user: @user, secret: 'secret'
 
-    correct_decode_info = Token.decode token.id, secret: 'secret'
-    expect(correct_decode_info[:success]).to be true
-    expect(correct_decode_info[:token].user.id).to eq @user.id
+      correct_decode_info = Token.decode token.id, secret: 'secret'
+      expect(correct_decode_info[:success]).to be true
+      expect(correct_decode_info[:token].user.id).to eq @user.id
 
-    wrong_decode_info = Token.decode token.id
-    expect(wrong_decode_info[:success]).to be false
-    expect(wrong_decode_info[:message]).to eq 'unprocessable token'
+      wrong_decode_info = Token.decode token.id
+      expect(wrong_decode_info[:success]).to be false
+      expect(wrong_decode_info[:message]).to eq 'unprocessable token'
+    end
+
+    it 'receive :data option to take extra data' do
+      token = Token.new user: @user, data: {key: 'value'}
+      decode_info = Token.decode token.id
+      expect(decode_info).to include success: true
+      expect(decode_info[:token].data).to include 'key' => 'value'
+    end
+
+    it 'receive :id option to deserialize jwt' do
+      new_token = Token.new id: @token.id
+      expect(new_token).to have_attributes(id: @token.id)
+                      .and have_attributes(user: @user)
+                      .and have_attributes(data: @token.data)
+      # 因为 @token.expired_at 可能是 2015-04-21 06:04:01.143773819 +0000
+      # 而 new_token.expired_at 只能是 2015-04-21 06:04:01.000000000 +0000
+      expect(new_token.expired_at.to_i).to eq @token.expired_at.to_i
+    end
   end
 
   describe '.decode' do
