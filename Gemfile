@@ -1,6 +1,9 @@
 # coding: utf-8
-# source 'https://ruby.taobao.org/'
-source 'https://rubygems.org/'
+if ENV['DEV_ENV']
+  source 'http://ruby.taobao.org/'
+else
+  source 'https://rubygems.org/'
+end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.5'

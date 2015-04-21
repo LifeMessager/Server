@@ -48,7 +48,7 @@ Cmnd_Alias LIFEMESSAGER_CMD = /bin/mkdir, \
 
 lifemessager ALL=NOPASSWD: LIFEMESSAGER_CMD, \
                  (postgres) NOPASSWD: /usr/bin/psql
-                 ```
+```
 
 ## Deploy
 
