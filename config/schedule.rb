@@ -9,7 +9,7 @@ preparation = <<-SHELL
 SHELL
 
 job_type :shell_with_env, "#{preparation} && :task :output"
-job_type :rake_with_env , "#{preparation} && :environment_variable=:environment bin/rake :task --silent :output"
+job_type :rake_with_env , "#{preparation} && :environment_variable=:environment rbenv exec bundle exec rake :task --silent :output"
 
 every :hour do
   rake_with_env 'schedule:mail_hourly', output: 'log/crontab.log'
@@ -22,9 +22,9 @@ end
 time = ActiveSupport::TimeZone['Asia/Shanghai'].parse('03:00').utc
 every :day, at: time.strftime('%H:%M') do
   command_string = <<-SHELL
-    ~/.rbenv/bin/rbenv exec backup version && {
+    rbenv exec backup version && {
       echo "=================== Start Backup Database ==================";
-       ~/.rbenv/bin/rbenv exec backup perform -t backup_db --config-file ../../shared/backup/config.rb;
+      rbenv exec backup perform -t backup_db --config-file ../../shared/backup/config.rb;
       echo "=================== Finish Backup Database =================";
     }
   SHELL
