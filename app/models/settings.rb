@@ -1,6 +1,6 @@
 class WebUrl
   def login **params
-    "#{prefix}/login?#{params.to_query}"
+    "#{prefix}/sessions/new?#{params.to_query}"
   end
 
   def change_email **params
