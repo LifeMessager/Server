@@ -19,10 +19,6 @@ class WebUrl
 end
 
 class Settings < Settingslogic
-  source "#{Rails.root}/config/lifemessager.yml"
-  namespace Rails.env
-  load! if Rails.env.development?
-
   def initialize
     @web_url = WebUrl.new
     super
@@ -43,4 +39,8 @@ class Settings < Settingslogic
   def mailer_deliver_from
     "#{mailer_nickname} <#{mailer_deliverer_full_address}>"
   end
+
+  source "#{Rails.root}/config/lifemessager.yml"
+  namespace Rails.env
+  load! if Rails.env.development?
 end
