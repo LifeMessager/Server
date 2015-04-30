@@ -160,8 +160,7 @@ class User < ActiveRecord::Base
 
   def change_email_url email
     return if new_record?
-    token = change_email_token email
-    "#{Settings.url_protocol}://#{Settings.server_name}/#!/user/email/edit?token=#{token}"
+    Settings.web_url_for :change_email, token: change_email_token(email)
   end
 
   def change_email token

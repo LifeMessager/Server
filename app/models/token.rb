@@ -26,7 +26,7 @@ class Token
   end
 
   def to_url
-    "#{Settings.url_protocol}://#{Settings.server_name}/#!/login?token=#{id}"
+    Settings.web_url_for :login, token: id
   end
 
   alias_method :to_s, :id

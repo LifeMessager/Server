@@ -82,4 +82,11 @@ describe Token do
       end
     end
   end
+
+  describe '.to_url' do
+    it 'generate login url' do
+      expected_url = "http://#{Settings.server_name}/#!/sessions/new?token=#{@token.id}"
+      expect(@token.to_url).to eq expected_url
+    end
+  end
 end
