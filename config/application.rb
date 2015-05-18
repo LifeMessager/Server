@@ -43,7 +43,11 @@ module Backend
       generators.helper_specs false
     end
 
+    config.log_level = :debug
+
     if Rails.env.production?
+      config.log_level = :info
+
       config.filter_parameters += [
         'stripped-text', 'stripped-signature', 'stripped-html',
         'body-plain', 'body-html', 'content'
@@ -56,6 +60,8 @@ module Backend
         resource '*', :headers => :any, :methods => [:get, :post, :put, :patch, :delete, :options, :head]
       end
     end
+
+    config.active_record.raise_in_transactional_callbacks = true
 
     config.action_mailer.preview_path = "#{Rails.root}/app/mailer_previews"
     config.action_mailer.delivery_method = :mailgun

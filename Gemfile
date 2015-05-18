@@ -6,7 +6,7 @@ else
 end
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.1.5'
+gem 'rails', '4.2'
 
 # Use SCSS for stylesheets
 # gem 'sass-rails', '~> 4.0.3'
@@ -67,10 +67,13 @@ group :development, :test do
   gem 'guard-rails'
   # 用来给模型声明数据库结构的工具
   gem 'guard-annotate'
+  # 用来生成外键迁移的工具
+  gem 'immigrant'
 
   # 调试
   gem 'pry'
   gem 'pry-nav'
+  gem 'web-console', '~> 2.0'
 
   # 测试框架
   gem 'rspec-rails'

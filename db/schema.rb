@@ -11,47 +11,49 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150331161422) do
+ActiveRecord::Schema.define(version: 20150505044032) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "mail_receivers", force: true do |t|
-    t.string   "address",                 null: false
+  create_table "mail_receivers", force: :cascade do |t|
+    t.string   "address",     limit: 255,             null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "user_id",                 null: false
-    t.string   "timezone",                null: false
-    t.date     "locale_date",             null: false
-    t.integer  "notes_count", default: 0
+    t.integer  "user_id",                             null: false
+    t.string   "timezone",    limit: 255,             null: false
+    t.date     "locale_date",                         null: false
+    t.integer  "notes_count",             default: 0
   end
 
   add_index "mail_receivers", ["user_id"], name: "index_mail_receivers_on_user_id", using: :btree
 
-  create_table "notes", force: true do |t|
-    t.string   "from_email",       null: false
-    t.text     "content",          null: false
+  create_table "notes", force: :cascade do |t|
+    t.string   "from_email",       limit: 255, null: false
+    t.text     "content",                      null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "mail_receiver_id", null: false
-    t.string   "type"
+    t.integer  "mail_receiver_id",             null: false
+    t.string   "type",             limit: 255
   end
 
   add_index "notes", ["mail_receiver_id"], name: "index_notes_on_mail_receiver_id", using: :btree
 
-  create_table "users", force: true do |t|
-    t.string   "email",                               null: false
+  create_table "users", force: :cascade do |t|
+    t.string   "email",             limit: 255,                   null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "subscribed",        default: true
-    t.string   "unsubscribe_token",                   null: false
-    t.string   "timezone",                            null: false
-    t.string   "language",                            null: false
-    t.boolean  "email_verified",    default: false,   null: false
-    t.string   "alert_time",        default: "08:00", null: false
+    t.boolean  "subscribed",                    default: true
+    t.string   "unsubscribe_token", limit: 255,                   null: false
+    t.string   "timezone",          limit: 255,                   null: false
+    t.string   "language",          limit: 255,                   null: false
+    t.boolean  "email_verified",                default: false,   null: false
+    t.string   "alert_time",        limit: 255, default: "08:00", null: false
     t.datetime "deleted_at"
   end
 
   add_index "users", ["deleted_at"], name: "index_users_on_deleted_at", using: :btree
 
+  add_foreign_key "mail_receivers", "users"
+  add_foreign_key "notes", "mail_receivers"
 end

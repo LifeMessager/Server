@@ -14,7 +14,7 @@ class UsersController < ApplicationController
       data = build_error 'Register failed', @user.errors
       return simple_respond data, status: :unprocessable_entity
     end
-    UserMailer.welcome(@user).deliver
+    UserMailer.welcome(@user).deliver_now
     respond_to do |format|
       format.json { render json: @user, status: :created, location: @user }
       format.xml  { render  xml: @user, status: :created, location: @user }
@@ -41,7 +41,7 @@ class UsersController < ApplicationController
 
   def destroy
     if @user.destroy
-      UserMailer.destroyed(@user).deliver
+      UserMailer.destroyed(@user).deliver_now
       simple_respond nil, status: :no_content
     else
       data = build_error 'Destroy user failed', @user.errors
@@ -85,7 +85,7 @@ class UsersController < ApplicationController
       return simple_respond data, status: :unprocessable_entity
     end
     if current_user.email != valid_params_email
-      UserMailer.change_email(current_user, params[:email]).deliver
+      UserMailer.change_email(current_user, params[:email]).deliver_now
     end
     simple_respond nil, status: :created
   end
