@@ -56,6 +56,12 @@ set :backup_notify_params, cap_configs('backup_notify_params')
 # setup whenever
 set :whenever_identifier, ->{ "#{fetch :application}_#{fetch :stage}" }
 
+# setup delayed job
+set :delayed_job_workers, 2
+set :delayed_job_server_roles, [:app]
+set :delayed_job_monit_enabled, false
+set :delayed_job_service, -> { "delayed_job_#{fetch(:application)}_#{fetch(:stage)}" }
+
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }

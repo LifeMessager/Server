@@ -60,22 +60,8 @@ class User < ActiveRecord::Base
   # unsubscribe_token 还是空的，所以需要额外检查一下
   after_initialize { generate_unsubscribe_token if unsubscribe_token.nil? }
 
-  scope :alertable, -> (time = Time.now) do
-    case time
-    when Time, DateTime
-      utc_time = time.in_time_zone 'UTC'
-    when String
-      utc_time = ActiveSupport::TimeZone['UTC'].parse time
-    else
-      raise ArgumentError, 'User.alertable only handle Time, DateTime, String instance'
-    end
-
-    query_string = ActiveSupport::TimeZone.all.map{ |tz|
-      alert_time = utc_time.in_time_zone(tz).strftime '%H:00'
-      "(timezone = '#{tz.identifier}' AND alert_time = '#{alert_time}')"
-    }.join ' OR '
-
-    where(email_verified: true).where(subscribed: true).where(query_string)
+  scope :all_alertable, -> do
+    where(email_verified: true).where(subscribed: true)
   end
 
   scope :really_destroyable, -> do
@@ -85,6 +71,10 @@ class User < ActiveRecord::Base
   def self.creatable?
     return true if Settings['user_limit'].nil?
     User.count < Settings.user_limit
+  end
+
+  def alert_time_for_tomorrow
+    timezone.parse(alert_time) + 1.day
   end
 
   def random_mail_receiver
@@ -115,6 +105,7 @@ class User < ActiveRecord::Base
     return if subscribed
     self.subscribed = true
     generate_unsubscribe_token
+    true
   end
 
   def unsubscribe **options

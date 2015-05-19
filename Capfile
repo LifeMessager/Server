@@ -24,6 +24,7 @@ require 'capistrano/unicorn_nginx'
 require 'capistrano/safe_deploy_to'
 require 'capistrano/postgresql'
 require 'capistrano/rbenv_install'
+require 'capistrano/delayed_job'
 require "whenever/capistrano"
 
 require "./lib/capistrano/dsl/dsl.rb"

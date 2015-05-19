@@ -43,8 +43,6 @@ module Backend
       generators.helper_specs false
     end
 
-    config.log_level = :debug
-
     if Rails.env.production?
       config.log_level = :info
 
@@ -61,7 +59,13 @@ module Backend
       end
     end
 
+    config.log_level = :debug
+
     config.active_record.raise_in_transactional_callbacks = true
+
+    config.exceptions_app = self.routes
+
+    config.active_job.queue_adapter = :delayed_job
 
     config.action_mailer.preview_path = "#{Rails.root}/app/mailer_previews"
     config.action_mailer.delivery_method = :mailgun
@@ -73,7 +77,5 @@ module Backend
     config.i18n.default_locale = 'zh-CN'
     config.i18n.available_locales = ['zh-CN', 'zh-TW', :en, 'en-US']
     I18n.load_path += Dir[Rails.root.join('config', 'locale', '*.{yml|rb}').to_s]
-
-    config.exceptions_app = self.routes
   end
 end

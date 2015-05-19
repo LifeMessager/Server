@@ -58,6 +58,8 @@ gem 'carrierwave', github: 'carrierwaveuploader/carrierwave'
 gem 'carrierwave-upyun'
 # 邮件地址格式验证
 gem 'valid_email'
+# 消息队列
+gem 'delayed_job_active_record'
 
 group :development, :test do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
@@ -123,6 +125,8 @@ group :development do
   gem 'capistrano-unicorn-nginx', github: 'bolasblack/capistrano-unicorn-nginx', branch: 'master'
   # Abstracts and speeds up common administration tasks for PostgreSQL
   gem 'capistrano-postgresql', '~> 3.0'
+  # For delayed job
+  gem 'capistrano-delayed-job', github: 'bolasblack/capistrano-delayed-job', branch: 'master'
 end
 
 # Use debugger

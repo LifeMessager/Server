@@ -32,38 +32,21 @@ describe User, type: :model do
   it { is_expected.to have_pattr_writer :unsubscribe_token }
   its(:unsubscribe_token) { is_expected.not_to be_nil }
 
-  describe '.alertable' do
-    def create_user alert_time
-      user = build :user
-      user.alert_time = alert_time.in_time_zone(user.timezone).strftime '%H:00'
-      user.save!
-      user
-    end
-
+  describe '.all_alertable' do
     before(:all) do
-      @user1 = create_user Time.now
-      @user2 = create_user Time.now - 1.hour
-
-      @unsubscribed_user1 = create_user Time.now
-      @unsubscribed_user1.update_attribute :subscribed, false
-
-      @unsubscribed_user2 = create_user Time.now - 1.hour
-      @unsubscribed_user2.update_attribute :subscribed, false
+      @normal_user = create :user
+      @deleted_user = create :user, deleted_at: Time.now
+      @unverified_user = create :user,  email_verified: false
+      @unsubscribed_user = create :user
+      @unsubscribed_user.unsubscribe token: @unsubscribed_user.unsubscribe_token
+      @unsubscribed_user.save!
     end
 
-    context 'when alert time unspecified' do
-      subject { User.alertable.pluck :id }
-      it { is_expected.to include @user1.id }
-      it { is_expected.not_to include @user2.id }
-      it { is_expected.not_to include @unsubscribed_user1.id }
-    end
-
-    context 'when alert time specified' do
-      subject { User.alertable(@user2.timezone.parse @user2.alert_time).pluck :id }
-      it { is_expected.not_to include @user1.id }
-      it { is_expected.to include @user2.id }
-      it { is_expected.not_to include @unsubscribed_user2.id }
-    end
+    subject { User.all_alertable.pluck :id }
+    it { is_expected.to include @normal_user.id }
+    it { is_expected.not_to include @deleted_user.id }
+    it { is_expected.not_to include @unsubscribed_user.id }
+    it { is_expected.not_to include @unverified_user.id }
   end
 
   describe '.really_destroyable' do
@@ -355,6 +338,16 @@ describe User, type: :model do
       token = @user.change_email_token target_email
       expected_url = "http://#{Settings.server_name}/#!/user/email/edit?token=#{token}"
       expect(@user.change_email_url target_email).to eq expected_url
+    end
+  end
+
+  describe '#alert_time_for_tomorrow' do
+    TZ = ActiveSupport::TimeZone
+
+    it 'return a alert time' do
+      @user.timezone = 'Asia/Shanghai'
+      @user.alert_time = '08:00'
+      expect(@user.alert_time_for_tomorrow).to eq @user.timezone.parse "#{(Date.today + 1.day).iso8601} 08:00"
     end
   end
 end

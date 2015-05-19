@@ -1,4 +1,14 @@
 GIT
+  remote: git://github.com/bolasblack/capistrano-delayed-job.git
+  revision: cb04c8d2046f0d316074298a69e5b497e58768d2
+  branch: master
+  specs:
+    capistrano-delayed-job (1.1.0)
+      capistrano (>= 3.1)
+      daemons (>= 1.1)
+      sshkit (>= 1.2.0)
+
+GIT
   remote: git://github.com/bolasblack/capistrano-unicorn-nginx.git
   revision: 224a491d8747562839b4c17c7fc944651c60abf4
   branch: master
@@ -92,7 +102,13 @@ GEM
     chronic (0.10.2)
     coderay (1.1.0)
     colorize (0.7.7)
+    daemons (1.2.2)
     debug_inspector (0.0.2)
+    delayed_job (4.0.6)
+      activesupport (>= 3.0, < 5.0)
+    delayed_job_active_record (4.0.3)
+      activerecord (>= 3.0, < 5.0)
+      delayed_job (>= 3.0, < 4.1)
     diff-lcs (1.2.5)
     domain_name (0.5.24)
       unf (>= 0.0.5, < 1.0.0)
@@ -399,6 +415,7 @@ PLATFORMS
 DEPENDENCIES
   capistrano (~> 3.1.0)
   capistrano-bundler
+  capistrano-delayed-job!
   capistrano-postgresql (~> 3.0)
   capistrano-rails (~> 1.1.0)
   capistrano-rbenv (~> 2.0)
@@ -407,6 +424,7 @@ DEPENDENCIES
   capistrano-unicorn-nginx!
   carrierwave!
   carrierwave-upyun
+  delayed_job_active_record
   email_spec
   enumerize
   factory_girl_rails

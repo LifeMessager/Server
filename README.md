@@ -44,7 +44,9 @@ Cmnd_Alias LIFEMESSAGER_CMD = /bin/mkdir, \
                               \
                               /bin/mv /tmp/unicorn_lifemessager_{stage} /etc/init.d, \
                               /usr/sbin/update-rc.d -f unicorn_lifemessager_production defaults, \
-                              /bin/chown lifemessager\:lifemessager /home/lifemessager/lifemessager
+                              /bin/chown lifemessager\:lifemessager /home/lifemessager/lifemessager, \
+                              \
+                              /bin/mv /tmp/delayed_job_lifemessager_{state} /etc/init.d
 
 lifemessager ALL=NOPASSWD: LIFEMESSAGER_CMD, \
                  (postgres) NOPASSWD: /usr/bin/psql

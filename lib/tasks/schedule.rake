@@ -5,17 +5,17 @@ end
 
 namespace :schedule do
 
-desc 'Send mail to current hour alertable users'
-task :mail_hourly => :environment do
-  if User.alertable.empty?
+desc 'Schedule to send tomorrow mail to all alertable users'
+task :mail_daily => :environment do
+  if User.all_alertable.empty?
     log 'mail_hourly', 'No alertable user'
   else
-    log 'mail_hourly', '===================== Alert user start ====================='
-    User.alertable.find_each do |user|
-      DiaryMailer.daily(user).deliver!
-      log 'mail_hourly', "Alert user #{user.email} finished"
+    log 'mail_hourly', '===================== Schedule alert user start ====================='
+    User.all_alertable.find_each do |user|
+      DiaryMailer.daily(user).deliver_later! wait_until: user.alert_time_for_tomorrow
+      log 'mail_hourly', "Schedule alert user #{user.email} at #{user.alert_time_for_tomorrow} finished"
     end
-    log 'mail_hourly', '===================== Alert user finished =================='
+    log 'mail_hourly', '===================== Schedule alert user finished =================='
   end
 end
 

@@ -11,11 +11,8 @@ SHELL
 job_type :shell_with_env, "#{preparation} && :task :output"
 job_type :rake_with_env , "#{preparation} && :environment_variable=:environment rbenv exec bundle exec rake :task --silent :output"
 
-every :hour do
-  rake_with_env 'schedule:mail_hourly', output: 'log/crontab.log'
-end
-
 every :day do
+  rake_with_env 'schedule:mail_daily', output: 'log/crontab.log'
   rake_with_env 'schedule:delete_user_daily', output: 'log/crontab.log'
 end
 
