@@ -43,10 +43,13 @@ Cmnd_Alias LIFEMESSAGER_CMD = /bin/mkdir, \
                               /usr/bin/monit reload, \
                               \
                               /bin/mv /tmp/unicorn_lifemessager_{stage} /etc/init.d, \
-                              /usr/sbin/update-rc.d -f unicorn_lifemessager_production defaults, \
+                              /usr/sbin/update-rc.d -f unicorn_lifemessager_{stage} defaults, \
+                              /usr/bin/rc-config add unicorn_lifemessager_{stage} defaults, \
                               /bin/chown lifemessager\:lifemessager /home/lifemessager/lifemessager, \
                               \
-                              /bin/mv /tmp/delayed_job_lifemessager_{state} /etc/init.d
+                              /bin/mv /tmp/delayed_job_lifemessager_{state} /etc/init.d, \
+                              /usr/sbin/update-rc.d -f delayed_job_lifemessager_{state} defaults, \
+                              /usr/bin/rc-config add delayed_job_lifemessager_{state} defaults
 
 lifemessager ALL=NOPASSWD: LIFEMESSAGER_CMD, \
                  (postgres) NOPASSWD: /usr/bin/psql

@@ -10,10 +10,10 @@ GIT
 
 GIT
   remote: git://github.com/bolasblack/capistrano-unicorn-nginx.git
-  revision: 224a491d8747562839b4c17c7fc944651c60abf4
+  revision: 0c4fa88888731fa776856a353324c5667b3350b1
   branch: master
   specs:
-    capistrano-unicorn-nginx (3.3.2)
+    capistrano-unicorn-nginx (3.3.3)
       capistrano (>= 3.1)
       sshkit (>= 1.2.0)
 

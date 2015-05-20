@@ -20,11 +20,11 @@ require 'capistrano/rbenv'
 require 'capistrano/bundler'
 # require 'capistrano/rails/assets'
 require 'capistrano/rails/migrations'
-require 'capistrano/unicorn_nginx'
 require 'capistrano/safe_deploy_to'
 require 'capistrano/postgresql'
 require 'capistrano/rbenv_install'
-require 'capistrano/delayed_job'
+#require 'capistrano/unicorn_nginx'
+#require 'capistrano/delayed_job'
 require "whenever/capistrano"
 
 require "./lib/capistrano/dsl/dsl.rb"

@@ -43,10 +43,10 @@ set :backup_notify_url, cap_configs('backup_notify_url')
 set :backup_notify_params, cap_configs('backup_notify_params')
 
 # setup unicorn
-# set :unicorn_service, # Default is "unicorn_#{fetch(:application)}_#{fetch(:stage)}"
-# set :unicorn_pid, # Default is shared_path.join("tmp/pids/unicorn.pid")
-# set :unicorn_config, # Default is shared_path.join("config/unicorn.rb")
-# set :unicorn_workers, # Default is 2
+set :unicorn_service, "unicorn_#{fetch(:application)}_#{fetch(:stage)}"
+set :unicorn_pid, -> { shared_path.join("tmp/pids/unicorn.pid") }
+set :unicorn_config, -> { shared_path.join("config/unicorn.rb") }
+set :unicorn_workers, 2
 
 # setup postgresql
 # set :pg_database, # Default is "#{fetch(:application)}_#{fetch(:stage)}"

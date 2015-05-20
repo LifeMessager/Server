@@ -108,7 +108,6 @@ gem 'unicorn'
 gem "sentry-raven"
 
 # Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
 gem 'capistrano', '~> 3.1.0'
 # Rails specific capistrano functions
 gem 'capistrano-rails', '~> 1.1.0'
@@ -121,12 +120,12 @@ gem 'capistrano-safe-deploy-to', '~> 1.1.1'
 # Automatic install specificed ruby
 gem 'capistrano-rbenv-install'
 group :development do
+  # For delayed_job
+  gem 'capistrano-delayed-job', github: 'bolasblack/capistrano-delayed-job', branch: 'master'
   # Automatic and sensible unicorn + nginx configuraion.
   gem 'capistrano-unicorn-nginx', github: 'bolasblack/capistrano-unicorn-nginx', branch: 'master'
   # Abstracts and speeds up common administration tasks for PostgreSQL
   gem 'capistrano-postgresql', '~> 3.0'
-  # For delayed job
-  gem 'capistrano-delayed-job', github: 'bolasblack/capistrano-delayed-job', branch: 'master'
 end
 
 # Use debugger
